@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db:
+    container_name: dfs_db
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: dfs123
+      MARIADB_DATABASE: fileDB
+      MYSQL_USER: user
+      MYSQL_PASSWORD: dfs123
+    ports:
+      - '3310:3306'
+    volumes:
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
