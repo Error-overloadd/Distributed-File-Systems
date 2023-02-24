@@ -11,4 +11,29 @@ app.get('/', (req, res) => {
   })
 
 
+app.get('/getByFileName',(req, res) => {
 
+
+// res.download(__dirname + '/testdownload.txt')    
+    res.send("Testing getByFileName")
+})
+
+app.delete('/deleteByFileName',(req,res) => {
+    //call main server method to generate response
+    res.send("Testing deleteByFileName")
+})
+
+app.post('/saveFile', (req, res) => {
+    
+    //call main server method to save the file
+    res.send("Testing saveFile")
+})
+
+app.post('/registerUser', (req,res) =>{
+    //call main server to save new user
+    res.send("Testing registerUser")
+})
+
+app.get('/authenticateUser', (req,res) => {
+    res.send("Testing authenticateUser")
+})
