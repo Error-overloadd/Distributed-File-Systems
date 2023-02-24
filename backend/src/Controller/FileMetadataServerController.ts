@@ -1,4 +1,4 @@
-import { FileMetadataServerDAO } from "../DAO/FileServerDAO";
+import { FileMetadataServerDAO } from "../DAO/FileMetadataServerDAO";
 
 export class FileMetadataServerController {
 
