@@ -1,6 +1,8 @@
 import express from "express";
+import { MainServer } from "./MainServer";
 
 const app = express();
+const ms = new MainServer()
 
 app.listen(3001, () => {
     console.log("server started")
@@ -13,7 +15,7 @@ app.get('/', (req, res) => {
 
 app.get('/getByFileName',(req, res) => {
 
-
+   ms.getByFileName("test.jfif")
 // res.download(__dirname + '/testdownload.txt')    
     res.send("Testing getByFileName")
 })

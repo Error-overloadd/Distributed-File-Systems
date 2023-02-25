@@ -13,4 +13,5 @@ services:
     ports:
       - '3310:3306'
     volumes:
-      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+      # - "./storgae/init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "./init:/docker-entrypoint-initdb.d/:ro"
