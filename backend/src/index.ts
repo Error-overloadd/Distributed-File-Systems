@@ -1,9 +1,28 @@
 import express from "express";
 
+// jwt
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import routes from "./routes";
+import deserializeUser from "./Middleware/DecserializeUser";
+
 const app = express();
 
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+app.use(deserializeUser);
+app.use(
+    cors({
+        credentials: true,
+        origin: "http://localhost:4001"
+    })
+);
+
+
+
 app.listen(3001, () => {
-    console.log("server started")
+    console.log("server started, listening at port 3001")
 });
 
 app.get('/', (req, res) => {
@@ -37,3 +56,5 @@ app.post('/registerUser', (req,res) =>{
 app.get('/authenticateUser', (req,res) => {
     res.send("Testing authenticateUser")
 })
+
+routes(app);
