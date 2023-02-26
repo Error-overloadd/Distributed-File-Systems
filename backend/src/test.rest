@@ -1,0 +1,15 @@
+### // get current session
+GET http://localhost:3001/api/session
+
+### //create new session
+POST http://localhost:3001/api/session
+Content-Type: application/json
+
+{
+  "email": "adam@test.com",
+  "password": "adam123"
+}
+
+### // delete session
+DELETE  http://localhost:3001/api/session
+

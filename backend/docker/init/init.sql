@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS fileDB;
 USE fileDB;
 
 CREATE TABLE dds_file_server (
-    id bigint primary key,
+    id bigint primary key AUTO_INCREMENT,
     name varchar(255),
     address varchar(255),
     type varchar(255),
@@ -11,7 +11,7 @@ CREATE TABLE dds_file_server (
 );
 
 CREATE TABLE dds_file (
-    fileId bigint primary key,
+    fileId bigint primary key AUTO_INCREMENT,
     name varchar(255),
     size bigint,
     content_type varchar(255),

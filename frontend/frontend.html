@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>599 frontend</title>
+    <link rel="stylesheet" href="./fronend.css">
+    <script defer src="frontend.js"></script>
+</head>
+<body>
+    <div class ="user_interface">
+        
+            <div class = username>
+                <label for="username">Username:</label>
+            </div>
+            
+            <div>
+                <input type="text" id="username" name="username">
+            </div>
+
+            <div class = password>
+                <label for="pass">Password (8 characters minimum):</label>
+            </div>
+            <div>
+                <input type="password" id="pass" name="password">
+            </div>
+
+            <!-- <div class = "button">
+                <button class="userButton" id = "login">login</button>
+            </div>
+             -->
+         <!-- Test the login part work to realize if the password and username match with database-->
+         <div class = "button1">
+            <button class="userButton" id = "login" onclick="location.replace('MainInterface.html')">login</button>
+        </div>
+           
+            <div class = "UserStatus" id = "loginStatus">
+                not login yet
+            </div>
+
+      
+            
+    </div>
+
+<!-- 
+    <div class = fileInterface>
+        <div class ="getFile">
+            <label for="getFileName">Filename want to get from server:</label>
+            <br>
+            <input type="text" id="getFileName" name="getFileName">
+            <div class = "button">
+                <button class="fileButton" id = "getFileButton">delete</button>
+            </div>
+            <div class = "fileStatus" id = "getFileStatus">
+
+            </div>
+
+        </div>
+
+        <div class = "uploadFile">
+            <input type="file" id="uploadFile" name="uploadFile" accept="video/*,image/*" />
+            <div class = "button">
+                <button class="fileButton" id = "uploadFileButton">upload</button>
+            </div>
+            <div class = "fileStatus" id = "uploadFileStatus">
+
+            </div>
+
+        </div>
+
+        <div class ="deleteFile">
+            <label for="deleteFileName">Filename want to delete on server:</label>
+            <br>
+            <input type="text" id="deleteFileName" name="deleteFileName">
+            <div class = "button">
+                <button class="fileButton" id = "deleteFileButton">delete</button>
+            </div>
+            <div class = "fileStatus" id = "deleteFileStatus">
+
+            </div>
+        </div>
+
+        </div>
+
+
+    </div> -->
+
+
+</body>
+</html>
