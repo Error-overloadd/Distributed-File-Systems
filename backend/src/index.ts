@@ -1,8 +1,14 @@
 import express from "express";
+import { FileMetadataServerDAO } from "./DAO/FileMetadataServerDAO";
+import bodyParser from 'body-parser';
 
 const app = express();
+const db = new FileMetadataServerDAO();
 
-app.listen(3001, () => {
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+
+app.listen(3002, () => {
     console.log("server started")
 });
 
@@ -11,22 +17,41 @@ app.get('/', (req, res) => {
   })
 
 
-app.get('/getByFileName',(req, res) => {
-
-
+app.get('/getFileById/:id',(req, res) => {
 // res.download(__dirname + '/testdownload.txt')    
-    res.send("Testing getByFileName")
+    db.getByFileId(parseInt(req.params.id), (rows: any) => {
+        res.json(rows);
+    });
 })
 
-app.delete('/deleteByFileName',(req,res) => {
+app.get('/getFileServerById/:id',(req, res) => {
+    // res.download(__dirname + '/testdownload.txt')    
+        db.getByFileServerId(parseInt(req.params.id), (rows: any) => {
+            res.json(rows);
+        });
+    })
+
+app.delete('/deleteByFileId/:id',(req,res) => {
     //call main server method to generate response
-    res.send("Testing deleteByFileName")
+    db.deleteByFileId(parseInt(req.params.id), (rows: any) => {
+        res.json(rows);
+    });
 })
 
-app.post('/saveFile', (req, res) => {
-    
+app.post('/addFile', (req, res) => {
+    let data = req.body;    
     //call main server method to save the file
-    res.send("Testing saveFile")
+    db.addFile(data, (rows: any) => {
+        res.json(rows);
+    });
+})
+
+app.post('/addFileServer', (req, res) => {
+    let data = req.body;    
+    //call main server method to save the file
+    db.addFileServer(data, (rows: any) => {
+        res.json(rows);
+    });
 })
 
 app.post('/registerUser', (req,res) =>{
