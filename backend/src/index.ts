@@ -40,9 +40,9 @@ app.get('/', (req, res) => {
 
   app.get('/getFileById/:id',(req, res) => {
     // res.download(__dirname + '/testdownload.txt')    
-        db.getByFileId(parseInt(req.params.id), (rows: any) => {
-            res.json(rows);
-        });
+        let id:number = parseInt(req.params.id)    
+        let rows = ms.getByFileID(id)
+        res.json(rows)
     })
     
     app.get('/getFileServerById/:id',(req, res) => {

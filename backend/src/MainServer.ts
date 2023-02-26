@@ -9,7 +9,7 @@ export class MainServer {
         
     }
 
-    getByFileName(name: string){
+    getByFileNameFromFileServer(name: string){
         // return this.fsc.getByFileName(name)
         let data = axios.get('http://localhost:4000/getByFileName', {
             params: {
@@ -17,6 +17,11 @@ export class MainServer {
             }
         })
 
+    }
+
+    getByFileID(id: number){
+        let rows = this.fsc.getByFileId(id)
+        return rows
     }
     
     deleteByFileName(){

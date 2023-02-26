@@ -8,8 +8,14 @@ export class FileMetadataServerController {
         this.file_metadata_serverDAO = new FileMetadataServerDAO()
     }
 
-    getByFileName(name: string){
-        return this.file_metadata_serverDAO.getByFileName(name)
+    // getByFileName(name: string){
+    //     return this.file_metadata_serverDAO.getByFileName(name)
+    // }
+
+    getByFileId(id: number){
+        this.file_metadata_serverDAO.getByFileId(id, (rows: any) => {
+            return rows;
+        });
     }
     
     deleteByFileName(){
