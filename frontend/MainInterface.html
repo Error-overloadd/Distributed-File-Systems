@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>599 frontend</title>
+    <link rel="stylesheet" href="./fronend.css">
+    <script defer src="frontend.js"></script>
+</head>
+
+
+    <div class = fileInterface>
+        
+        <div class ="getFile">
+            <label for="getFileName">Filename want to get from server:</label>
+            <br>
+            <input type="text" id="getFileName" name="getFileName">
+            <div class = "button">
+                <button class="fileButton" id = "getFileButton">Get current file</button>
+            </div>
+            <div class = "fileStatus" id = "getFileStatus">
+
+            </div>
+        
+
+        </div> 
+      <div class = "uploadFile">
+            <input type="file" id="uploadFile" name="uploadFile" accept="video/*,image/*" />
+            <div class = "button">
+                <button class="fileButton" id = "uploadFileButton">upload</button>
+            </div>
+            <div class = "fileStatus" id = "uploadFileStatus">
+
+            </div>
+
+        </div>
+
+        <div class ="deleteFile">
+            <label for="deleteFileName">Filename want to delete on server:</label>
+            <br>
+            <input type="text" id="deleteFileName" name="deleteFileName">
+            <div class = "button">
+                <button class="fileButton" id = "deleteFileButton">delete</button>
+            </div>
+            <div class = "fileStatus" id = "deleteFileStatus">
+
+            </div>
+        </div>
+
+        </div>
+
+
+    </div>
+
+
+</body>
+</html>

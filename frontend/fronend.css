@@ -1,0 +1,80 @@
+body {
+    background-color: powderblue;
+  }
+.user_interface{
+ background-color: rgba(169, 105, 21, 0.524);
+ border-radius:13 px;
+ text-align: center;
+ margin: 0px auto;
+ margin-top: 80px;
+ width: 350px;
+ height: 400px;    
+
+}
+.user_interface .input_box{
+    margin-top: 30px;
+}
+.user_interface .input_box .username #username{
+    margin-top: 60px;
+    line-height: 45px;
+    
+    border:none;
+    background: none;
+    border-bottom: #FFFFFF 2px solid;
+    padding: 5px 10px;
+    outline: none;
+    color:#FFFFFF
+}
+
+.user_interface #register{
+    line-height: 30px;
+    margin-top:30px;
+    width: 130px;
+    height: 30px;
+    border-radius: 13px;
+    outline:none;
+    border:none;
+    color: black;
+    text-align: center;
+}
+.user_interface  #login{
+    line-height: 30px;
+    margin-top:60px;
+    width: 130px;
+    height: 30px;
+    border-radius: 13px;
+    outline:none;
+    border:none;
+    color: black;
+    text-align: center;
+}
+.user_interface #loginStatus{
+    line-height: 30px;
+    border-radius: auto;
+    color: black;
+}
+.fileInterface .uploadFile .deleteFile{
+    background-color: aquamarine;}
+
+    .fileInterface{
+        margin-top: 160px;
+        border-radius: 60px;
+        font-size: 30px;
+        text-align: center;
+    }
+
+.button{
+    border-radius: 10px;
+    height: 60px;
+    width: 160px;
+}
+.ProjectName{
+    font-size: 30px;
+    text-align: center;
+    margin-top: 60px;
+}
+.button{
+    display: block;
+    margin: 0 auto;
+    width: auto;
+}
