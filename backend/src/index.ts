@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 
 app.listen(3002, () => {
-    console.log("server started, listening at port 3001")
+    console.log("server started, listening at port 3002")
 });
 
 app.get('/', (req, res) => {
@@ -38,12 +38,20 @@ app.get('/', (req, res) => {
   })
 
 
-  app.get('/getFileById/:id',(req, res) => {
+    app.get('/getFileById/:id',(req, res) => {
     // res.download(__dirname + '/testdownload.txt')    
         let id:number = parseInt(req.params.id)    
         let rows = ms.getByFileID(id)
         res.json(rows)
     })
+
+    app.get('/getByFileName/',(req, res) => {
+            // let name: string = req.params.Name
+            let name = "test.jfif"  
+            ms.getByFileName(name,res)
+            // res.download(__dirname + '/'+ name)
+            // ms.removeFileFromMainServer(__dirname+'/'+name)
+        })
     
     app.get('/getFileServerById/:id',(req, res) => {
         // res.download(__dirname + '/testdownload.txt')    
@@ -54,17 +62,25 @@ app.get('/', (req, res) => {
     
     app.delete('/deleteByFileId/:id',(req,res) => {
         //call main server method to generate response
-        db.deleteByFileId(parseInt(req.params.id), (rows: any) => {
-            res.json(rows);
-        });
+        // db.deleteByFileId(parseInt(req.params.id), (rows: any) => {
+        //     res.json(rows);
+        // });
+    })
+
+    app.delete('/deleteByFilename/',(req,res) => {
+        let name = req.body.fileName
+        ms.deleteByFileName(name,res)
     })
     
     app.post('/addFile', (req, res) => {
-        let data = req.body;    
+        // let data = req.body;    
         //call main server method to save the file
-        db.addFile(data, (rows: any) => {
-            res.json(rows);
-        });
+        // db.addFile(data, (rows: any) => {
+        //     res.json(rows);
+        // });
+        console.log("starting add file")
+        let name = "tree.jpg"
+        ms.addFile(name,res)
     })
     
     app.post('/addFileServer', (req, res) => {

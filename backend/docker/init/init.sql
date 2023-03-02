@@ -18,4 +18,5 @@ CREATE TABLE dds_file (
     created_date DateTime DEFAULT CURRENT_TIMESTAMP,
     fileserver bigint references dds_file_server(id),
     path varchar(255)
+    user varchar(255)
 );
