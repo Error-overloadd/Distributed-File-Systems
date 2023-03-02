@@ -1,8 +1,13 @@
 import express, { NextFunction, Request, response, Response } from "express";
+import path from 'path';
 import * as fs from 'fs';
+import { base64ToFile } from "./fileUtil";
 
+const bodyParser = require('body-parser')
 const app = express();
 
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 app.listen(4000, () => {
     console.log("server started")
 });
@@ -29,21 +34,32 @@ app.get('/getByFileName',(req: Request, res: Response) => {
 })
 
 app.post('/saveFile', (req, res) => {
-    res.send("saved")
+    const filename = req.body.Name
+    const base64String = req.body.base64
+
+    const filepath = path.join(__dirname,filename)
+    base64ToFile(base64String,filepath).then(()=>{
+        console.log(filename+"saved")
+    })
 })
 
-app.delete('/deleteByFileName',(req: Request, res:Response) => {
-    let filename:string = req.body.name
+app.post('/deleteByFileName',(req: Request, res:Response) => {
+    let filename:string = req.body.Filename
     
-    const directory = './';
+    const directory = './src/';
     const fs = require('fs');
 
     fs.readdirSync(directory).forEach((file: string) => {
-        let path:string = './'
         if (filename == file) 
         {
-            path = path + filename
-            fs.unlinkSync(path)
+            let filepath = directory+filename
+            fs.unlink(filepath, (err:any) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                console.log('File has been deleted!');
+                });
         }
     });
 })
