@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+  <meta charset="UTF-8">
+  <title>559 project frontend</title>
+  <!--<link rel="stylesheet" href="./fronend.css">-->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+<div class = email>
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" title="Please input correct email format" >
+</div>
+
+<div class ="user_interface">
+  <div class = username>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username">
+  </div>
+
+  <div class = password>
+    <label for="pass">Password:</label>
+    <input type="password" id="pass" name="password">
+  </div>
+
+  <div class = "button">
+    <button class="userButton" id = "register" onclick="userRegister()">register</button>
+  </div>
+
+  <div class = "button">
+    <button class="userButton" id = "login" onclick="userLogin()">login</button>
+  </div>
+  <div class = "userStatus" id = "loginStatus">
+    not login yet
+  </div>
+</div>
+<hr>
+
+<div class = fileInterface>
+  <div class ="getFile">
+    <label for="getFileName">File name want to get from server:</label>
+    <br>
+    <input type="text" id="getFileName" name="getFileName">
+    <div class = "button">
+      <button class="fileButton" id = "getFileButton" onclick="getFile()">getFile</button>
+    </div>
+    <div class = "fileStatus" id = "getFileStatus">
+      <br>
+    </div>
+  </div>
+  <hr>
+  <div class = "uploadFile">
+    <label for="uploadFile">Choose file you want to upload to server:</label>
+    <br>
+    <input type="file" id="uploadFile" name="uploadFile" accept="video/*,image/*" />
+    <div class = "button">
+      <button class="fileButton" id = "uploadFileButton" onclick="uploadFile()">upload</button>
+    </div>
+    <div class = "fileStatus" id = "uploadFileStatus">
+      <br>
+    </div>
+
+  </div>
+  <hr>
+  <div class ="deleteFile">
+    <label for="deleteFileName">FileName want to delete on server:</label>
+    <br>
+    <input type="text" id="deleteFileName" name="deleteFileName">
+    <div class = "button">
+      <button class="fileButton" id = "deleteFileButton" onclick="deleteFile()">delete</button>
+    </div>
+    <div class = "fileStatus" id = "deleteFileStatus">
+      <br>
+    </div>
+  </div>
+
+</div>
+
+<script src = "frontend.js"></script>
+
+</body>
+</html>

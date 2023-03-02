@@ -54,7 +54,7 @@ export class MainServer {
 
 
     async getByFileName(name: string, res:Response){
-        
+        console.log("getFileByName"+name)
         //todo: check in db if we have file and if the user is allowed to get file
         //if allowed run getByFileNameFromFileServer else raise error
         await this.getByFileNameFromFileServer(name).then(()=>{
@@ -66,6 +66,7 @@ export class MainServer {
     }
 
     async addFile(name: string, res: Response){
+        console.log("addFile"+name)
         //Todo: check if file already exists in for this user, if not save file otherwise dont
         console.log("mainserver attempting to save file")
         await this.saveFileToFileServer(name).then(()=>{
