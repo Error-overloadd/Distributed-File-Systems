@@ -19,7 +19,7 @@ CREATE TABLE dds_file (
     created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     fileserver BIGINT REFERENCES dds_file_server(id),
     path VARCHAR(255),
-    user VARCHAR(255)
+    user BIGINT
 );
 
 USE userDB;
