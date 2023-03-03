@@ -15,16 +15,20 @@ export class MainServer {
         
     }
 
-    async getByFileNameFromFileServer(name: string){
+    async getByFileNameFromFileServer(name: string, res: Response){
         // return this.fsc.getByFileName(name)
         let data = axios.get('http://localhost:4000/getByFileName', {
             params: {
                 Name: name
             }
         })
+        // console.log(data);
         await data.then((result)=>{
             const filepath = path.join(__dirname, name);
-            base64ToFile(result.data,filepath).then(()=>{console.log("file saved to ms")})
+            base64ToFile(result.data,filepath).then(()=>{ 
+                const path = `${__dirname}/${name}`; 
+                res.download(path); 
+                console.log("file saved to ms")});
         })
 
     }
@@ -37,8 +41,9 @@ export class MainServer {
                 Name: name,
                 base64: base64String
             }
-          ).then(function (response) {
+          ).then( (response) => {
             console.log("file saved");
+            this.removeFileFromMainServer(filePath);
           }).catch(error=>console.log(error))
     }
 
@@ -57,9 +62,9 @@ export class MainServer {
         console.log("getFileByName"+name)
         //todo: check in db if we have file and if the user is allowed to get file
         //if allowed run getByFileNameFromFileServer else raise error
-        await this.getByFileNameFromFileServer(name).then(()=>{
+        await this.getByFileNameFromFileServer(name,res).then(()=>{
             console.log("complete")
-            res.download(__dirname + '/'+ name)
+            // res.download(__dirname + '/'+ name)
             // this.removeFileFromMainServer(__dirname + '/'+ name)
         })
     }
