@@ -1,6 +1,7 @@
 import express from "express";
 import { MainServer } from "./MainServer";
-
+import fs from 'fs';
+import path from 'path';
 // jwt
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -8,6 +9,27 @@ import routes from "./routes";
 import deserializeUser from "./Middleware/DecserializeUser";
 import { FileMetadataServerDAO } from "./DAO/FileMetadataServerDAO";
 import bodyParser from 'body-parser';
+//file handlding
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: (req:any, file:any, cb:any) => {
+        cb(null, __dirname); // setting path
+    },
+    filename: (req:any, file:any, cb:any) => {
+        const extname = path.extname(file.originalname);
+        cb(null, file.originalname); // setting file name
+    },
+});
+const upload = multer({ storage });
+declare global {
+    namespace Express {
+        interface Request {
+            file: any;
+        }
+    }
+}
+//file handling done
+
 
 const app = express();
 const ms = new MainServer()
@@ -57,8 +79,8 @@ app.get('/', (req, res) => {
     })
 
     app.get('/getByFileName/',(req, res) => {
-            // let name: string = req.params.Name
-            let name = "test.jfif"  
+        let name: string = req.query.fileName as string;
+        console.log("getByFileName:"+ name);
             ms.getByFileName(name,res)
             // res.download(__dirname + '/'+ name)
             // ms.removeFileFromMainServer(__dirname+'/'+name)
@@ -83,15 +105,27 @@ app.get('/', (req, res) => {
         ms.deleteByFileName(name,res)
     })
     
-    app.post('/addFile', (req, res) => {
+    app.post('/addFile',upload.single('file'), (req, res) => {
+        if (!req.file) {
+            res.status(400).send('No file uploaded');
+            return;
+        }
+        const name = req.file.originalname;
         // let data = req.body;    
         //call main server method to save the file
         // db.addFile(data, (rows: any) => {
         //     res.json(rows);
         // });
         console.log("starting add file")
-        let name = "tree.jpg"
-        ms.addFile(name,res)
+        const filePath = req.file.path;
+        console.log(filePath);
+        fs.readFile(filePath,(err,data)=>{
+            if(err){
+                res.status(500).send('Error reading file');
+            }else{
+                ms.addFile(name,res)
+            }
+        })
     })
     
     app.post('/addFileServer', (req, res) => {

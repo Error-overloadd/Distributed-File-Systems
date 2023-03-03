@@ -13,7 +13,7 @@ function userRegister(){
     let userName = document.querySelector("#username").value
     let passWord = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
-    resourcesServer.post("registerUser",{
+    resourcesServer.post({
         method:'post',
         url:"registerUser",
         userName:userName,
@@ -67,7 +67,7 @@ function getFile(){
     let fileName = document.querySelector("#getFileName").value;
     resourcesServer({
         method:'GET',
-        url:"getFileByName/",
+        url:"getByFileName/",
         responseType: 'arraybuffer',
         params: {
             fileName:fileName
@@ -122,7 +122,8 @@ function deleteFile(){
     if(loginUser){
         resourcesServer({
             method:'delete',
-            url:"deleteByFilename"+fileName
+            url:"deleteByFilename",
+            fileName:fileName
         }).then(res=>{
             if(res.status >= 200 && res.status < 300){
                 document.querySelector("#deleteFileStatus").innerHTML=res.data;
