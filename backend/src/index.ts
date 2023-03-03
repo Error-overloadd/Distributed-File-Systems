@@ -101,7 +101,8 @@ app.get('/', (req, res) => {
     })
 
     app.delete('/deleteByFilename/',(req,res) => {
-        let name = req.body.fileName
+        let name: string = req.query.fileName as string;
+        console.log("deleteFileByname:"+name);
         ms.deleteByFileName(name,res)
     })
     

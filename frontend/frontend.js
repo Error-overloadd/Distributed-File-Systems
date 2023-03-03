@@ -2,7 +2,7 @@ let resourcesServer =new axios.create({
     baseURL:"http://localhost:3002/",
     crossDomain: true
 })
-let loginUser = false;
+let loginUser = true;
 
 /*
 * ====================================================================
@@ -123,7 +123,9 @@ function deleteFile(){
         resourcesServer({
             method:'delete',
             url:"deleteByFilename",
-            fileName:fileName
+            params: {
+                fileName:fileName
+            }
         }).then(res=>{
             if(res.status >= 200 && res.status < 300){
                 document.querySelector("#deleteFileStatus").innerHTML=res.data;
