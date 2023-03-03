@@ -43,6 +43,7 @@ app.post('/saveFile', (req, res) => {
     const filepath = path.join(__dirname,filename)
     base64ToFile(base64String,filepath).then(()=>{
         console.log(filename+"saved")
+        res.send("ok");
     })
 })
 
