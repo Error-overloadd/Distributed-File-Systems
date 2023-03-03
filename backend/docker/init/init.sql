@@ -25,7 +25,7 @@ CREATE TABLE dds_file (
 USE userDB;
 
 CREATE TABLE user (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id VARCHAR(255) KEY,
     name VARCHAR(255),
     email VARCHAR(255),
     password VARCHAR(255),
