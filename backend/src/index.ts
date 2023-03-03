@@ -24,7 +24,7 @@ const upload = multer({ storage });
 declare global {
     namespace Express {
         interface Request {
-            uploadfile: any;
+            file: any;
         }
     }
 }
@@ -106,19 +106,20 @@ app.get('/', (req, res) => {
         ms.deleteByFileName(name,res)
     })
     
-    app.post('/addFile',upload.single('uploadfile'), (req, res) => {
-        if (!req.uploadfile) {
+    app.post('/addFile',upload.single('file'), (req, res) => {
+        console.log(req);
+        if (!req.file) {
             res.status(400).send('No file uploaded');
             return;
         }
-        const name = req.uploadfile.originalname;
+        const name = req.file.originalname;
         // let data = req.body;    
         //call main server method to save the file
         // db.addFile(data, (rows: any) => {
         //     res.json(rows);
         // });
         console.log("starting add file")
-        const filePath = req.uploadfile.path;
+        const filePath = req.file.path;
         console.log(filePath);
         fs.readFile(filePath,(err,data)=>{
             if(err){
