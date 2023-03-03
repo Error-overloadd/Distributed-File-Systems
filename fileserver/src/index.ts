@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, response, Response } from "express";
 import path from 'path';
 import * as fs from 'fs';
-import { base64ToFile } from "./fileUtil";
+import { base64ToFile, fileToBase64 } from "./fileUtil";
 
 const bodyParser = require('body-parser')
 const app = express();
@@ -23,12 +23,15 @@ app.get('/getByFileName',(req: Request, res: Response) => {
     const path = require( "path" );
 
     fs.readdirSync(directory).forEach((file: string) => {
-        let absolutePath = path.resolve( directory, file );
+        
         console.log(file)
         if (filename == file) 
         {
+            let absolutePath = path.resolve( directory, file );
             console.log(file)
-            res.download(absolutePath)
+            fileToBase64(absolutePath).then((base64)=>{
+                res.send(base64)
+            })
         }
     });
 })

@@ -94,7 +94,7 @@ function getFile(){
 function uploadFile(){
     let file =document.querySelector("#uploadFile").files[0]
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('uploadfile', file);
     resourcesServer({
         method:'post',
         url:"addFile",
