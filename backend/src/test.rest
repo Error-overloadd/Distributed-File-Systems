@@ -3,9 +3,9 @@ POST http://localhost:3002/registerUser
 Content-Type: application/json
 
 {
-  "name":"El Lephant",
-  "email":"el@test.com",
-  "password":"el123",
+  "name":"Hed Der",
+  "email":"hed@test.com",
+  "password":"hed123",
   "isAdmin":0
 }
 
@@ -14,6 +14,6 @@ GET http://localhost:3002/login
 Content-Type: application/json
 
 {
-    "email":"el@test.com",
-    "password":"el123"
+    "email":"hed@test.com",
+    "password":"hed123"
 }

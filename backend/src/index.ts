@@ -9,6 +9,9 @@ import { FileMetadataServerDAO } from "./DAO/FileMetadataServerDAO";
 import { UserDAO } from "./DAO/UserDAO";
 import bodyParser from 'body-parser';
 import { brotliDecompress } from "zlib";
+
+const bcrypt = require("bcrypt");
+
 //file handlding
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -33,6 +36,7 @@ declare global {
 
 const app = express();
 const ms = new MainServer()
+
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, delete');
@@ -54,6 +58,7 @@ app.use(express.urlencoded({extended: false}));
         origin: "http://localhost:4001"
     })
 );*/
+
 
 const db = new FileMetadataServerDAO();
 const udb = new UserDAO();
@@ -139,26 +144,42 @@ app.get('/', (req, res) => {
     })
 
     // adds user to the userDB
-    // to do:   get # of rows from db, use # of rows + 1 as user.id
-    //          hash pw
-    app.post('/registerUser', (req,res) =>{
+    app.post('/registerUser', async (req,res) =>{
         let user = req.body;
+
+        // generate userID
+        const dateStr:any = Date.now().toString(36); // convert num to base 36 and stringify
+        const randomStr:any = Math.random().toString(36).substring(2, 8); // start at index 2 to skip decimal point
+        const id = `${dateStr}-${randomStr}`;
+        user.id = id;
+
+        // hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedpw = await bcrypt.hash(user.password, salt);
+        user.password = hashedpw;
+
+        console.log(user);
+
         udb.addUser(user, (rows: any) => {
             res.status(200).json(rows);
         });
     })
     
-    // to do:   hash pw 
-    app.get('/login', (req,res) => {
-        // res.json("test")
+    // checks if user exists in the userDB
+    app.get('/login', async (req,res) => {
         let user = req.body;
-        udb.getUser(user.email, (rows: any) => {
+        
+        udb.getUser(user.email, async (rows: any) => {
             if (!rows[0]) {
                 res.status(404).json("user not found");
-            } else if (rows[0].password !== user.password) {
-                res.status(400).json("invalid pw");
             } else {
-                res.status(200).json("successful login");
+                //check if password is valid
+                const validpw = await bcrypt.compare(user.password, rows[0].password);
+                if (!validpw) {
+                    res.status(400).json("invalid pw");
+                } else {
+                    res.status(200).json("successful login");
+                }
             }
         });
     })
