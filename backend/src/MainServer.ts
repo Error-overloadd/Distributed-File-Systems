@@ -22,9 +22,9 @@ export class MainServer {
                 Name: name
             }
         })
-        data.then((result)=>{
+        await data.then((result)=>{
             const filepath = path.join(__dirname, name);
-            base64ToFile(result.data,filepath).then(()=>{console.log("file saved")})
+            base64ToFile(result.data,filepath).then(()=>{console.log("file saved to ms")})
         })
 
     }
@@ -59,7 +59,7 @@ export class MainServer {
         //if allowed run getByFileNameFromFileServer else raise error
         await this.getByFileNameFromFileServer(name).then(()=>{
             console.log("complete")
-            // res.download(__dirname + '/'+ name)
+            res.download(__dirname + '/'+ name)
             // this.removeFileFromMainServer(__dirname + '/'+ name)
         })
 
