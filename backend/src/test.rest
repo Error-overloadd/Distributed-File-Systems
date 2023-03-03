@@ -1,15 +1,20 @@
-### // get current session
-GET http://localhost:3001/api/session
-
-### //create new session
-POST http://localhost:3001/api/session
+### register user
+POST http://localhost:3002/registerUser
 Content-Type: application/json
 
 {
-  "email": "adam@test.com",
-  "password": "adam123"
+  "id":4,
+  "name":"Dan Delion",
+  "email":"dan@test.com",
+  "password":"dan123",
+  "isAdmin":0
 }
 
-### // delete session
-DELETE  http://localhost:3001/api/session
+### user login
+GET http://localhost:3002/login
+Content-Type: application/json
 
+{
+    "email":"adam@test.com",
+    "password":"adam123"
+}

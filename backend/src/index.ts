@@ -5,10 +5,10 @@ import path from 'path';
 // jwt
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import routes from "./routes";
-import deserializeUser from "./Middleware/DecserializeUser";
 import { FileMetadataServerDAO } from "./DAO/FileMetadataServerDAO";
+import { UserDAO } from "./DAO/UserDAO";
 import bodyParser from 'body-parser';
+import { brotliDecompress } from "zlib";
 //file handlding
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -48,7 +48,6 @@ app.use(function (req, res, next) {
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use(deserializeUser);
 /*app.use(
     cors({
         credentials: true,
@@ -57,6 +56,7 @@ app.use(deserializeUser);
 );*/
 
 const db = new FileMetadataServerDAO();
+const udb = new UserDAO();
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -137,14 +137,28 @@ app.get('/', (req, res) => {
             res.json(rows);
         });
     })
-    
-    app.post('/registerUser', (req,res) =>{
-        //call main server to save new user
-        res.send("Testing registerUser")
-    })
-    
-    app.get('/authenticateUser', (req,res) => {
-        res.send("Testing authenticateUser")
-    })
 
-routes(app);
+    // adds user to the userDB
+    // to do:   get # of rows from db, use # of rows + 1 as user.id
+    //          hash pw
+    app.post('/registerUser', (req,res) =>{
+        let user = req.body;
+        udb.addUser(user, (rows: any) => {
+            res.status(200).json(rows);
+        });
+    })
+    
+    // to do:   hash pw 
+    app.get('/login', (req,res) => {
+        // res.json("test")
+        let user = req.body;
+        udb.getUser(user.email, (rows: any) => {
+            if (!rows[0]) {
+                res.status(404).json("user not found");
+            } else if (rows[0].password !== user.password) {
+                res.status(400).json("invalid pw");
+            } else {
+                res.status(200).json("successful login");
+            }
+        });
+    })
