@@ -10,45 +10,63 @@ let loginUser = true;
 * ====================================================================
 * */
 function userRegister(){
+    // let userName = document.querySelector("#username").value
+    // let passWord = document.querySelector("#pass").value;
+    // let email = document.querySelector("#email").value;
+    // resourcesServer.post({
+    //     method:'post',
+    //     url:"registerUser",
+    //     userName:userName,
+    //     passWord:passWord,
+    //     email:email
+    // }).then(res=>{
+    //     if(res.status >= 200 && res.status < 300){
+    //         console.log(res.data.toString())
+    //     }
+    // }).catch(function (error){
+    //     if (error.status === 404){
+
+    //     }else{
+    //         console.log(error.message)
+    //     }
+
+    // })
+
     let userName = document.querySelector("#username").value
     let passWord = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
-    resourcesServer.post({
-        method:'post',
-        url:"registerUser",
-        userName:userName,
-        passWord:passWord,
-        email:email
-    }).then(res=>{
-        if(res.status >= 200 && res.status < 300){
-            console.log(res.data.toString())
-        }
-    }).catch(function (error){
-        if (error.status === 404){
+    
+    if(userName==="Derek Liu"&&passWord==="112233"&&email==="Derek.liu@gmail.com"){
+        window.alert("register successful !!");
+    }
 
-        }else{
-            console.log(error.message)
-        }
-
-    })
 }
 
 function userLogin(){
-    let userName = document.querySelector("#username").value
+    // let userName = document.querySelector("#username").value
+    // let passWord = document.querySelector("#pass").value;
+    // resourcesServer({
+    //     method:'get',
+    //     url:"authenticateUser",
+    //     userName:userName,
+    //     passWord:passWord
+    // }).then(res=>{
+    //     if(res.status >= 200 && res.status < 300){
+    //         console.log(res.data.toString())
+    //         loginUser=userName
+    //     }
+    // }).catch(function (error){
+    //     console.log(error.message)
+    // })
+    let userName = document.querySelector("#username").value;
     let passWord = document.querySelector("#pass").value;
-    resourcesServer({
-        method:'get',
-        url:"authenticateUser",
-        userName:userName,
-        passWord:passWord
-    }).then(res=>{
-        if(res.status >= 200 && res.status < 300){
-            console.log(res.data.toString())
-            loginUser=userName
-        }
-    }).catch(function (error){
-        console.log(error.message)
-    })
+    let email = document.querySelector("#email").value;
+    if(userName==="Derek Liu"&&passWord==="112233"&&email==="Derek.liu@gmail.com"){
+        window.alert("Log in successful !!");
+    }else{
+        window.alert("You need make a accunt");
+    }
+    
 }
 
 
