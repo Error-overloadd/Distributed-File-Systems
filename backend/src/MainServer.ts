@@ -62,7 +62,6 @@ export class MainServer {
             res.download(__dirname + '/'+ name)
             // this.removeFileFromMainServer(__dirname + '/'+ name)
         })
-
     }
 
     async addFile(name: string, res: Response){
