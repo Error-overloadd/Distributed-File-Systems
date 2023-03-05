@@ -12,6 +12,9 @@ import { brotliDecompress } from "zlib";
 
 const bcrypt = require("bcrypt");
 
+
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
 //file handlding
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -73,113 +76,126 @@ app.listen(3002, () => {
 
 app.get('/', (req, res) => {
     res.send('hello world')
-  })
+})
 
+app.use('/getByFileName', createProxyMiddleware({
+    target: "http://localhost:4000",
+    changeOrigin: true,
+    // pathRewrite: {
+    //     [`^/getByFileName`]: '/getByFileName',
+    // },
+ }));
 
-    app.get('/getFileById/:id',(req, res) => {
+ app.use('/getByFileId', createProxyMiddleware({
+    target: "http://localhost:4000",
+    changeOrigin: true
+ }));
+ 
+
+// app.get('/getFileById/:id',(req, res) => {
+// // res.download(__dirname + '/testdownload.txt')    
+//     let id:number = parseInt(req.params.id)    
+//     let rows = ms.getByFileID(id)
+//     res.json(rows)
+// })
+
+// app.get('/getByFileName/',(req, res) => {
+//     let name: string = req.query.fileName as string;
+//     console.log("getByFileName:"+ name);
+//         ms.getByFileName(name,res)
+//         // res.download(__dirname + '/'+ name)
+//         // ms.removeFileFromMainServer(__dirname+'/'+name)
+//     })
+
+app.get('/getFileServerById/:id',(req, res) => {
     // res.download(__dirname + '/testdownload.txt')    
-        let id:number = parseInt(req.params.id)    
-        let rows = ms.getByFileID(id)
-        res.json(rows)
-    })
-
-    app.get('/getByFileName/',(req, res) => {
-        let name: string = req.query.fileName as string;
-        console.log("getByFileName:"+ name);
-            ms.getByFileName(name,res)
-            // res.download(__dirname + '/'+ name)
-            // ms.removeFileFromMainServer(__dirname+'/'+name)
-        })
-    
-    app.get('/getFileServerById/:id',(req, res) => {
-        // res.download(__dirname + '/testdownload.txt')    
-            db.getByFileServerId(parseInt(req.params.id), (rows: any) => {
-                res.json(rows);
-            });
-        })
-    
-    app.delete('/deleteByFileId/:id',(req,res) => {
-        //call main server method to generate response
-        // db.deleteByFileId(parseInt(req.params.id), (rows: any) => {
-        //     res.json(rows);
-        // });
-    })
-
-    app.delete('/deleteByFilename/',(req,res) => {
-        let name: string = req.query.fileName as string;
-        console.log("deleteFileByname:"+name);
-        ms.deleteByFileName(name,res)
-    })
-    
-    app.post('/addFile',upload.single('file'), (req, res) => {
-        console.log(req);
-        if (!req.file) {
-            res.status(400).send('No file uploaded');
-            return;
-        }
-        const name = req.file.originalname;
-        // let data = req.body;    
-        //call main server method to save the file
-        // db.addFile(data, (rows: any) => {
-        //     res.json(rows);
-        // });
-        console.log("starting add file")
-        const filePath = req.file.path;
-        console.log(filePath);
-        fs.readFile(filePath,(err,data)=>{
-            if(err){
-                res.status(500).send('Error reading file');
-            }else{
-                ms.addFile(name,res)
-            }
-        })
-    })
-    
-    app.post('/addFileServer', (req, res) => {
-        let data = req.body;    
-        //call main server method to save the file
-        db.addFileServer(data, (rows: any) => {
+        db.getByFileServerId(parseInt(req.params.id), (rows: any) => {
             res.json(rows);
         });
     })
 
-    // adds user to the userDB
-    app.post('/registerUser', async (req,res) =>{
-        let user = req.body;
+app.delete('/deleteByFileId/:id',(req,res) => {
+    //call main server method to generate response
+    // db.deleteByFileId(parseInt(req.params.id), (rows: any) => {
+    //     res.json(rows);
+    // });
+})
 
-        // generate userID
-        const dateStr:any = Date.now().toString(36); // convert num to base 36 and stringify
-        const randomStr:any = Math.random().toString(36).substring(2, 8); // start at index 2 to skip decimal point
-        const id = `${dateStr}-${randomStr}`;
-        user.id = id;
+app.delete('/deleteByFilename/',(req,res) => {
+    let name: string = req.query.fileName as string;
+    console.log("deleteFileByname:"+name);
+    ms.deleteByFileName(name,res)
+})
 
-        // hash password
-        const salt = await bcrypt.genSalt(10);
-        const hashedpw = await bcrypt.hash(user.password, salt);
-        user.password = hashedpw;
-
-        console.log(user);
-
-        udb.addUser(user, (rows: any) => {
-            res.status(200).json(rows);
-        });
+app.post('/addFile',upload.single('file'), (req, res) => {
+    console.log(req);
+    if (!req.file) {
+        res.status(400).send('No file uploaded');
+        return;
+    }
+    const name = req.file.originalname;
+    // let data = req.body;    
+    //call main server method to save the file
+    // db.addFile(data, (rows: any) => {
+    //     res.json(rows);
+    // });
+    console.log("starting add file")
+    const filePath = req.file.path;
+    console.log(filePath);
+    fs.readFile(filePath,(err,data)=>{
+        if(err){
+            res.status(500).send('Error reading file');
+        }else{
+            ms.addFile(name,res)
+        }
     })
+})
+
+app.post('/addFileServer', (req, res) => {
+    let data = req.body;    
+    //call main server method to save the file
+    db.addFileServer(data, (rows: any) => {
+        res.json(rows);
+    });
+})
+
+// adds user to the userDB
+app.post('/registerUser', async (req,res) =>{
+    let user = req.body;
+
+    // generate userID
+    const dateStr:any = Date.now().toString(36); // convert num to base 36 and stringify
+    const randomStr:any = Math.random().toString(36).substring(2, 8); // start at index 2 to skip decimal point
+    const id = `${dateStr}-${randomStr}`;
+    user.id = id;
+
+    // hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedpw = await bcrypt.hash(user.password, salt);
+    user.password = hashedpw;
+
+    console.log(user);
+
+    udb.addUser(user, (rows: any) => {
+        res.status(200).json(rows);
+    });
+})
+
+// checks if user exists in the userDB
+app.get('/login', async (req,res) => {
+    let user = req.body;
     
-    // checks if user exists in the userDB
-    app.get('/login', async (req,res) => {
-        let user = req.body;
-        
-        udb.getUser(user.email, async (rows: any) => {
-            if (!rows[0]) {
-                res.status(404).json("user not found");
+    udb.getUser(user.email, async (rows: any) => {
+        if (!rows[0]) {
+            res.status(404).json("user not found");
+        } else {
+            //check if password is valid
+            const validpw = await bcrypt.compare(user.password, rows[0].password);
+            if (!validpw) {
+                res.status(400).json("invalid pw");
             } else {
-                //check if password is valid
-                const validpw = await bcrypt.compare(user.password, rows[0].password);
-                if (!validpw) {
-                    res.status(400).json("invalid pw");
-                } else {
-                    res.status(200).json("successful login");
-                }
+                res.status(200).json("successful login");
             }
-        });
-    })
+        }
+    });
+})
