@@ -12,28 +12,33 @@ app.listen(4000, () => {
     console.log("server started")
 });
 
+app.get('/checkApi', (req: Request, res: Response) => {
+    res.status(200).send("API running");
+})
+
 app.get('/getByFileName',(req: Request, res: Response) => {
     console.log("request made")
-    let filename = req.query.Name
+    let filename = req.query.fileName
     console.log(filename)
         
 
     const directory = './src';
     const fs = require('fs');
     const path = require( "path" );
-
-    fs.readdirSync(directory).forEach((file: string) => {
+        fs.readdirSync(directory).forEach((file: string) => {
         
-        console.log(file)
-        if (filename == file) 
-        {
-            let absolutePath = path.resolve( directory, file );
-            console.log(file)
-            fileToBase64(absolutePath).then((base64)=>{
-                res.send(base64)
-            })
-        }
-    });
+            if (filename == file) 
+            {
+                console.log(file)
+                let absolutePath = path.resolve( directory, file );
+                console.log(file)
+                res.download(absolutePath);
+                // fileToBase64(absolutePath).then((base64)=>{
+                //     res.send(base64)
+                // })
+            }
+        });
+
 })
 
 app.post('/saveFile', (req, res) => {
