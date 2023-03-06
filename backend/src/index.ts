@@ -83,8 +83,6 @@ const files = [
         filename: 'test2.txt'
     },
 ]
-
-let refreshTokens:any = []
 //
 // jwt hardcoded testing end
 //
@@ -166,6 +164,9 @@ app.get('/', (req, res) => {
         });
     })
 
+    // AUTH START
+
+
     // adds user to the userDB
     app.post('/registerUser', async (req,res) =>{
         let user = req.body;
@@ -194,13 +195,17 @@ app.get('/', (req, res) => {
 
     app.post('/token', (req, res) => {
         const refreshToken = req.body.token;
+        const userID = req.body.userID;
         if (refreshToken == null) return res.sendStatus(401);
-        if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
-        jwt.verify(refreshToken, 'refreshSecretKey', (err: any, user: any) => {
-            if(err) return res.sendStatus(403)
-            const accessToken = generateAccessToken({email: user.email})
-            res.json({accessToken: accessToken});
+        udb.getRefreshToken(userID, (rows: any) => {
+            if(rows[0].refreshToken == null) return res.sendStatus(403);
+            jwt.verify(refreshToken, 'refreshSecretKey', (err: any, user: any) => {
+                if(err) return res.sendStatus(403)
+                const accessToken = generateAccessToken({email: user.email})
+                res.json({accessToken: accessToken});
+            })    
         })
+        // if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
     })
 
     // checks if user exists in the userDB
@@ -208,31 +213,43 @@ app.get('/', (req, res) => {
         let user = req.body;
         
         udb.getUser(user.email, async (rows: any) => {
-            if (!rows[0]) {
+            const result = rows[0];
+            if (!result) {
                 return res.status(404).json("user not found");
             } else {
                 //check if password is valid
-                const validpw = await bcrypt.compare(user.password, rows[0].password);
+                const validpw = await bcrypt.compare(user.password, result.password);
                 if (!validpw) {
                     return res.status(400).json("invalid pw");
                 } else {
                     const payload = {email: user.email}
                     const accessToken = generateAccessToken(payload);
                     const refreshToken = jwt.sign(payload, 'refreshSecretKey');
-                    refreshTokens.push(refreshToken);
-                    return res.status(200).json({accessToken: accessToken, refreshToken: refreshToken});
+
+                    console.log("Refresh Token: "+refreshToken);
+                    console.log("ID: "+result.id);
+                    // refreshTokens.push(refreshToken);
+
+                    udb.addRefreshToken(result.id, refreshToken, (rows: any)=> {
+                        return res.status(200).json({userID: result.id, accessToken: accessToken, refreshToken: refreshToken});
+                    })
                 }
             }
         });
     })
 
     app.delete('/logout', (req, res) => {
-        refreshTokens = refreshTokens.filter((token:any) => token !== req.body.token)
-        res.sendStatus(204);
+        // refreshTokens = refreshTokens.filter((token:any) => token !== req.body.token)
+        
+        udb.removeRefreshToken(req.body.id, (rows: any) => {
+            return res.status(204).json("logout successful, refresh token deleted");
+        })
+
+
     })
     
     // put below programs to other server (file managing) 
-    // sample usage of authenticateToken (middleware) function
+    // sample usage of authenticateToken function
     app.get('/fetchFiles', authenticateToken, (req, res) => {
         // @ts-ignore
         res.json(files.filter(files => files.email === req.payload.email))
