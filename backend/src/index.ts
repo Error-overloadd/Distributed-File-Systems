@@ -5,7 +5,6 @@ import path from 'path';
 // jwt
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { FileMetadataServerDAO } from "./DAO/FileMetadataServerDAO";
 import { UserDAO } from "./DAO/UserDAO";
 import bodyParser from 'body-parser';
 import { brotliDecompress } from "zlib";
@@ -63,7 +62,6 @@ app.use(express.urlencoded({extended: false}));
 );*/
 
 
-const db = new FileMetadataServerDAO();
 const udb = new UserDAO();
 
 app.use(bodyParser.json())
@@ -101,7 +99,38 @@ app.use('/getByFileName', createProxyMiddleware({
     target: "http://localhost:4000",
     changeOrigin: true
  }));
- 
+
+ app.use('/addFile', createProxyMiddleware({
+    target: "http://localhost:4000",
+    changeOrigin: true,
+    pathRewrite: {
+        [`^/addFile`]: '/upload',
+    },
+ }));
+
+ app.use('/getFileList', createProxyMiddleware({
+    target: "http://localhost:4000",
+    changeOrigin: true,
+    // pathRewrite: {
+    //     [`^/getFileList`]: '/upload',
+    // },
+ }));
+
+ app.use('/getFileById', createProxyMiddleware({
+    target: "http://localhost:4000",
+    changeOrigin: true,
+    // pathRewrite: {
+    //     [`^/getFileList`]: '/upload',
+    // },
+ }));
+
+ app.use('/deleteFileById', createProxyMiddleware({
+    target: "http://localhost:4000",
+    changeOrigin: true,
+    // pathRewrite: {
+    //     [`^/getFileList`]: '/upload',
+    // },
+ }));
 
 // app.get('/getFileById/:id',(req, res) => {
 // // res.download(__dirname + '/testdownload.txt')    
@@ -120,9 +149,9 @@ app.use('/getByFileName', createProxyMiddleware({
 
 app.get('/getFileServerById/:id',(req, res) => {
     // res.download(__dirname + '/testdownload.txt')    
-        db.getByFileServerId(parseInt(req.params.id), (rows: any) => {
-            res.json(rows);
-        });
+        // db.getByFileServerId(parseInt(req.params.id), (rows: any) => {
+        //     res.json(rows);
+        // });
     })
 
 app.delete('/deleteByFileId/:id',(req,res) => {
@@ -138,36 +167,35 @@ app.delete('/deleteByFilename/',(req,res) => {
     ms.deleteByFileName(name,res)
 })
 
-app.post('/addFile',upload.single('file'), (req, res) => {
-    console.log(req);
-    if (!req.file) {
-        res.status(400).send('No file uploaded');
-        return;
-    }
-    const name = req.file.originalname;
-    // let data = req.body;    
-    //call main server method to save the file
-    // db.addFile(data, (rows: any) => {
-    //     res.json(rows);
-    // });
-    console.log("starting add file")
-    const filePath = req.file.path;
-    console.log(filePath);
-    fs.readFile(filePath,(err,data)=>{
-        if(err){
-            res.status(500).send('Error reading file');
-        }else{
-            ms.addFile(name,res)
-        }
-    })
-})
+// app.post('/addFile',upload.single('file'), (req, res) => {
+//     console.log(req);
+//     if (!req.file) {
+//         res.status(400).send('No file uploaded');
+//         return;
+//     }
+//     const name = req.file.originalname;
+//     // let data = req.body;    
+//     //call main server method to save the file
+//     // db.addFile(data, (rows: any) => {
+//     //     res.json(rows);
+//     // });
+//     const filePath = req.file.path;
+//     console.log(filePath);
+//     fs.readFile(filePath,(err,data)=>{
+//         if(err){
+//             res.status(500).send('Error reading file');
+//         }else{
+//             ms.addFile(name,res)
+//         }
+//     })
+// })
 
 app.post('/addFileServer', (req, res) => {
     let data = req.body;    
     //call main server method to save the file
-    db.addFileServer(data, (rows: any) => {
-        res.json(rows);
-    });
+    // db.addFileServer(data, (rows: any) => {
+    //     res.json(rows);
+    // });
 })
 
     // AUTH START

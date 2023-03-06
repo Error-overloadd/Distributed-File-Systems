@@ -1,29 +1,29 @@
-import { FileMetadataServerDAO } from "../DAO/FileMetadataServerDAO";
+// import { FileMetadataServerDAO } from "../DAO/FileMetadataServerDAO";
 
-export class FileMetadataServerController {
+// export class FileMetadataServerController {
 
-    file_metadata_serverDAO: FileMetadataServerDAO
+//     file_metadata_serverDAO: FileMetadataServerDAO
     
-    constructor(){
-        this.file_metadata_serverDAO = new FileMetadataServerDAO()
-    }
+//     constructor(){
+//         this.file_metadata_serverDAO = new FileMetadataServerDAO()
+//     }
 
-    // getByFileName(name: string){
-    //     return this.file_metadata_serverDAO.getByFileName(name)
-    // }
+//     // getByFileName(name: string){
+//     //     return this.file_metadata_serverDAO.getByFileName(name)
+//     // }
 
-    getByFileId(id: number){
-        this.file_metadata_serverDAO.getByFileId(id, (rows: any) => {
-            return rows;
-        });
-    }
+//     getByFileId(id: number){
+//         this.file_metadata_serverDAO.getByFileId(id, (rows: any) => {
+//             return rows;
+//         });
+//     }
     
-    deleteByFileName(){
+//     deleteByFileName(){
 
-    }
+//     }
     
-    saveFile(){
+//     saveFile(){
 
-    }
+//     }
 
-}
+// }
