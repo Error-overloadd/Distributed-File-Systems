@@ -1,6 +1,6 @@
 import axios from "axios"
 import path from 'path';
-import { FileMetadataServerController } from "./Controller/FileMetadataServerController"
+// import { FileMetadataServerController } from "./Controller/FileMetadataServerController"
 import { base64ToFile, fileToBase64 } from "./Utils/fileUtil";
 import fs from 'fs';
 import { response, Response } from "express";
@@ -9,9 +9,9 @@ import { STATUS_CODES } from "http";
 
 export class MainServer {
 
-    fsc: FileMetadataServerController
+    // fsc: FileMetadataServerController
     constructor(){
-        this.fsc = new FileMetadataServerController()
+        // this.fsc = new FileMetadataServerController()
         
     }
 
@@ -78,10 +78,10 @@ export class MainServer {
         })
     }
     
-    getByFileID(id: number){
-        let rows = this.fsc.getByFileId(id)
-        return rows
-    }
+    // getByFileID(id: number){
+    //     let rows = this.fsc.getByFileId(id)
+    //     return rows
+    // }
     
     async deleteByFileName(filename: string, res: Response){
         //todo: delete file from database if the user has permission

@@ -14,9 +14,19 @@ export class FileMetadataServerDAO{
             if (err){
                 throw err;
             }  
-            console.log('connected');});
+            console.log('connected to file db');});
     }
-      
+    
+    getAllFiles(callback: Function){
+        this.dbConnection.query(`SELECT * FROM dds_file`, (err: any,rows: any) => {
+            if(err) throw err;
+          
+            console.log('Data received from Db:');
+            console.log(rows);
+            callback(rows);
+          });
+        //sql statements
+    }
 
     getByFileId(id:number, callback: Function){
         this.dbConnection.query(`SELECT * FROM dds_file WHERE fileId = ${id}`, (err: any,rows: any) => {
@@ -41,7 +51,7 @@ export class FileMetadataServerDAO{
     }
 
     deleteByFileId(id: number, callback: Function){
-        this.dbConnection.query(`DELETE dds_file WHERE fileId = ${id}`, (err: any,rows: any) => {
+        this.dbConnection.query(`DELETE FROM dds_file WHERE fileId = ${id}`, (err: any,rows: any) => {
             if(err) throw err;
           
             console.log('Data received from Db:');
