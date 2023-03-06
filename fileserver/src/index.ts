@@ -156,6 +156,7 @@ app.delete('/deleteFileById/:id',(req: Request, res:Response) => {
             fs.unlink(filePath, (err : any) => {
                 if(err) {
                     res.status(500).send({error : "Error deleting File from server", message: err.Message || "undefined"});
+                    return;
                 }
                 try {
                     db.deleteByFileId(id, (rows: any) => {
