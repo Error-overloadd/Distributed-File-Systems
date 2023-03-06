@@ -10,62 +10,76 @@ let loginUser = true;
 * ====================================================================
 * */
 function userRegister(){
-    // let userName = document.querySelector("#username").value
-    // let passWord = document.querySelector("#pass").value;
-    // let email = document.querySelector("#email").value;
-    // resourcesServer.post({
-    //     method:'post',
-    //     url:"registerUser",
-    //     userName:userName,
-    //     passWord:passWord,
-    //     email:email
-    // }).then(res=>{
-    //     if(res.status >= 200 && res.status < 300){
-    //         console.log(res.data.toString())
-    //     }
-    // }).catch(function (error){
-    //     if (error.status === 404){
-
-    //     }else{
-    //         console.log(error.message)
-    //     }
-
-    // })
-
     let userName = document.querySelector("#username").value
     let passWord = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
-    
-    if(userName==="Derek Liu"&&passWord==="112233"&&email==="Derek.liu@gmail.com"){
-        window.alert("register successful !!");
+    let datas ={
+        name:userName,
+        password:passWord,
+        email:email,
+        isAdmin:0
+
     }
+    console.log(typeof(passWord),typeof(userName),typeof(email));
+    console.log(JSON.stringify(datas));
+    resourcesServer({
+        method:'post',
+        url:"registerUser/",
+        headers:{
+            'content-type':"application/json"
+        },
+       data:JSON.stringify(datas)
+        // data:{id:12}
+    }).then(res=>{
+        if(res.status >= 200 && res.status < 300){
+            console.log("It works rn")
+            console.log(res)
+        }
+    }).catch(function (error){
+        if (error.status === 404){
+
+        }else{
+            console.log(error.message)
+        }
+
+    })
+
 
 }
 
 function userLogin(){
-    // let userName = document.querySelector("#username").value
-    // let passWord = document.querySelector("#pass").value;
-    // resourcesServer({
-    //     method:'get',
-    //     url:"authenticateUser",
-    //     userName:userName,
-    //     passWord:passWord
-    // }).then(res=>{
-    //     if(res.status >= 200 && res.status < 300){
-    //         console.log(res.data.toString())
-    //         loginUser=userName
-    //     }
-    // }).catch(function (error){
-    //     console.log(error.message)
-    // })
-    let userName = document.querySelector("#username").value;
-    let passWord = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
-    if(userName==="Derek Liu"&&passWord==="112233"&&email==="Derek.liu@gmail.com"){
-        window.alert("Log in successful !!");
-    }else{
-        window.alert("You need make a accunt");
+    let passWord = document.querySelector("#pass").value;
+    let datas ={
+     
+        email:email,
+        password:passWord
+
     }
+    resourcesServer({
+        method:'get',
+        url:"login",
+        headers:{
+            'content-type':"application/json"
+        },
+        params:datas
+        
+    }).then(res=>{
+        if(res.status >= 200 && res.status < 300){
+          //  console.log(res.data.toString())
+            loginUser=userName
+        }
+    }).catch(function (error){
+        console.log(error.message)
+    })
+    // let userName = document.querySelector("#username").value;
+    // let passWord = document.querySelector("#pass").value;
+    // let email = document.querySelector("#email").value;
+    // if(userName==="Derek Liu"&&passWord==="112233"&&email==="Derek.liu@gmail.com"){
+    //     window.alert("Log in successful !!");
+    // }else{
+    //     window.alert("You need make a accunt");
+    // }
     
 }
 

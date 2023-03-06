@@ -146,7 +146,7 @@ app.get('/', (req, res) => {
     // adds user to the userDB
     app.post('/registerUser', async (req,res) =>{
         let user = req.body;
-
+       
         // generate userID
         const dateStr:any = Date.now().toString(36); // convert num to base 36 and stringify
         const randomStr:any = Math.random().toString(36).substring(2, 8); // start at index 2 to skip decimal point
