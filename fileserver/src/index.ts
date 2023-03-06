@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req:any, file:any, cb:any) => {
-        cb(null, __dirname); // setting path
+        cb(null, './storage/'); // setting path
     },
     filename: (req:any, file:any, cb:any) => {
         const extname = path.extname(file.originalname);
@@ -68,7 +68,6 @@ app.get('/getFileById/:id',(req: Request, res: Response) => {
 app.get('/getByFileName',(req: Request, res: Response) => {
     console.log("request made")
     let filename = req.query.fileName
-    console.log(filename)
         
 
     const directory = './src';
@@ -110,7 +109,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
         size: req.file.size,
         content_type: req.file.mimetype,
         serverId: 1,
-        path: `${req.file.destination}/${req.file.filename}`
+        path: req.file.path,
     }
     try {
         db.addFile(fileObj, (rows: any) => {
