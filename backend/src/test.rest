@@ -3,17 +3,40 @@ POST http://localhost:3002/registerUser
 Content-Type: application/json
 
 {
-  "name":"Hed Der",
-  "email":"hed@test.com",
-  "password":"hed123",
-  "isAdmin":0
+  "name":"Ben Ten",
+  "email":"ben@test.com",
+  "password":"ben123",
+  "isAdmin":true
 }
 
-### user login
-GET http://localhost:3002/login
+### user login, generate access token & refresh token
+POST http://localhost:3002/login
 Content-Type: application/json
 
 {
-    "email":"hed@test.com",
-    "password":"hed123"
+    "email":"adam@test.com",
+    "password":"adam123"
 }
+
+### generate new access token using provided refresh token during login
+POST http://localhost:3002/token
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkYW1AdGVzdC5jb20iLCJpYXQiOjE2NzgwODQyMTd9.4G5v4Z-bey733CPqUaiHF2kA8p8LISPjAl7946lLAmQ",
+  "userID": "lewce26s-dfafe5"
+
+}
+
+### logout, delete refresh token provided during login
+DELETE  http://localhost:3002/logout
+Content-Type: application/json
+
+{
+  "id": "lewce26s-dfafe5"
+}
+
+### fetch posts
+GET http://localhost:3002/fetchFiles
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkYW1AdGVzdC5jb20iLCJpYXQiOjE2NzgwODQyNTEsImV4cCI6MTY3ODA4NDI4MX0.U37UwEd0gqU49jqNMv7x4-vj5xAIHMJWkRld0LGGl4U
+
