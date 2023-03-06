@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-  db:
-    container_name: dfs_db
+  db_1:
+    container_name: dfs_db_1
     image: mysql:5.7
     restart: always
     environment:
@@ -15,3 +15,33 @@ services:
     volumes:
       # - "./storgae/init.sql:/docker-entrypoint-initdb.d/init.sql"
       - "./init:/docker-entrypoint-initdb.d/:ro"
+  db_2:
+    container_name: dfs_db_2
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: dfs123
+      MARIADB_DATABASE: fileDB
+      MYSQL_USER: user
+      MYSQL_PASSWORD: dfs123
+    ports:
+      - '3320:3306'
+    volumes:
+      # - "./storgae/init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "./init:/docker-entrypoint-initdb.d/:ro"    
+  db_3:
+    container_name: dfs_db_3
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: dfs123
+      MARIADB_DATABASE: fileDB
+      MYSQL_USER: user
+      MYSQL_PASSWORD: dfs123
+    ports:
+      - '3330:3306'
+    volumes:
+      # - "./storgae/init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "./init:/docker-entrypoint-initdb.d/:ro"     
