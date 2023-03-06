@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { MainServer } from "./MainServer";
 import fs from 'fs';
 import path from 'path';
@@ -10,8 +10,8 @@ import { UserDAO } from "./DAO/UserDAO";
 import bodyParser from 'body-parser';
 import { brotliDecompress } from "zlib";
 
-const bcrypt = require("bcrypt");
-
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 //file handlding
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -65,6 +65,29 @@ const udb = new UserDAO();
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+
+//
+// jwt hardcoded testing
+//
+const files = [
+    {
+        email: 'adam@test.com',
+        filename: 'test.txt'
+    },
+    {
+        email: 'adam@test.com',
+        filename: 'test2.txt'
+    },
+    {
+        email: 'ben@test.com',
+        filename: 'test2.txt'
+    },
+]
+
+let refreshTokens:any = []
+//
+// jwt hardcoded testing end
+//
 
 
 app.listen(3002, () => {
@@ -164,22 +187,66 @@ app.get('/', (req, res) => {
             res.status(200).json(rows);
         });
     })
-    
+
+    function generateAccessToken(payload:any) {
+        return jwt.sign(payload, 'secretKey', {expiresIn: '30s'});
+    }
+
+    app.post('/token', (req, res) => {
+        const refreshToken = req.body.token;
+        if (refreshToken == null) return res.sendStatus(401);
+        if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+        jwt.verify(refreshToken, 'refreshSecretKey', (err: any, user: any) => {
+            if(err) return res.sendStatus(403)
+            const accessToken = generateAccessToken({email: user.email})
+            res.json({accessToken: accessToken});
+        })
+    })
+
     // checks if user exists in the userDB
-    app.get('/login', async (req,res) => {
+    app.post('/login', async (req,res) => {
         let user = req.body;
         
         udb.getUser(user.email, async (rows: any) => {
             if (!rows[0]) {
-                res.status(404).json("user not found");
+                return res.status(404).json("user not found");
             } else {
                 //check if password is valid
                 const validpw = await bcrypt.compare(user.password, rows[0].password);
                 if (!validpw) {
-                    res.status(400).json("invalid pw");
+                    return res.status(400).json("invalid pw");
                 } else {
-                    res.status(200).json("successful login");
+                    const payload = {email: user.email}
+                    const accessToken = generateAccessToken(payload);
+                    const refreshToken = jwt.sign(payload, 'refreshSecretKey');
+                    refreshTokens.push(refreshToken);
+                    return res.status(200).json({accessToken: accessToken, refreshToken: refreshToken});
                 }
             }
         });
     })
+
+    app.delete('/logout', (req, res) => {
+        refreshTokens = refreshTokens.filter((token:any) => token !== req.body.token)
+        res.sendStatus(204);
+    })
+    
+    // put below programs to other server (file managing) 
+    // sample usage of authenticateToken (middleware) function
+    app.get('/fetchFiles', authenticateToken, (req, res) => {
+        // @ts-ignore
+        res.json(files.filter(files => files.email === req.payload.email))
+    })
+
+    function authenticateToken(req:Request, res:Response, next:NextFunction) {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1]
+        if(token == null) return res.sendStatus(401)
+
+        jwt.verify(token, 'secretKey', (err:any, payload:any) => {
+            if(err) return res.sendStatus(403);
+            // @ts-ignore
+            req.payload = payload
+            next();
+        })
+    }
