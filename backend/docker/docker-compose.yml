@@ -13,7 +13,6 @@ services:
     ports:
       - '3310:3306'
     volumes:
-      # - "./storgae/init.sql:/docker-entrypoint-initdb.d/init.sql"
       - "./init:/docker-entrypoint-initdb.d/:ro"
   db_2:
     container_name: dfs_db_2
@@ -28,7 +27,6 @@ services:
     ports:
       - '3320:3306'
     volumes:
-      # - "./storgae/init.sql:/docker-entrypoint-initdb.d/init.sql"
       - "./init:/docker-entrypoint-initdb.d/:ro"    
   db_3:
     container_name: dfs_db_3
@@ -43,5 +41,5 @@ services:
     ports:
       - '3330:3306'
     volumes:
-      # - "./storgae/init.sql:/docker-entrypoint-initdb.d/init.sql"
-      - "./init:/docker-entrypoint-initdb.d/:ro"     
+      - "./init:/docker-entrypoint-initdb.d/:ro"
+    
