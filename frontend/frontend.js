@@ -47,7 +47,7 @@ function userRegister(){
 
 }
 
-function userLogin(){
+async function userLogin(){
     // let userName = document.querySelector("#username").value
     // let passWord = document.querySelector("#pass").value;
     // resourcesServer({
@@ -63,9 +63,27 @@ function userLogin(){
     // }).catch(function (error){
     //     console.log(error.message)
     // })
-    let userName = document.querySelector("#username").value;
-    let passWord = document.querySelector("#pass").value;
+    let username = document.querySelector("#username").value;
+    let password = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
+
+    await resourcesServer({
+        method: 'post',
+        url: "login",
+        email:email,
+        password:password
+    }).then(res=>{
+        if(res.status == 200){
+            const accessToken = res.data.accessToken;
+            const refreshToken = res.data.refreshToken;
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            document.querySelector("#loginStatus").innerHTML="login success";
+        }
+    }).catch(function (error){
+        document.querySelector("#loginStatus").innerHTML="login failed"+"<br>"+error.message
+    })
+
     if(userName==="Derek Liu"&&passWord==="112233"&&email==="Derek.liu@gmail.com"){
         window.alert("Log in successful !!");
     }else{
