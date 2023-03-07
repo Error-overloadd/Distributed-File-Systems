@@ -45,7 +45,7 @@ export class UserDAO{
     getUser(email:string, callback: Function){
 
         const q = `SELECT * FROM user WHERE email = '${email}'`;
-        console.log(q);
+     
         this.dbConnection.query(`SELECT * FROM user WHERE email = '${email}';`, (err: any,rows: any) => {
             if(err) throw err;
           
@@ -76,8 +76,16 @@ export class UserDAO{
             callback(rows);
         });
     }
-
-
+    getUserID(userID:any, callback:Function){
+        this.dbConnection.query(`SELECT * FROM user WHERE id = '${userID}';`, (err: any,rows: any) => {
+            if(err) throw err;
+          
+            console.log('Data received from Db:');
+            console.log(rows);
+            callback(rows);
+          });
+    }
+    
 
     // sql query to add a refresh token to a user
     removeRefreshToken(id: any, callback: Function){

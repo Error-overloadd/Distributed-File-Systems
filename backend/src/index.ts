@@ -69,21 +69,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 //
 // jwt hardcoded testing
 //
-const files = [
-    {
-        email: 'adam@test.com',
-        filename: 'test.txt'
-    },
-    {
-        email: 'adam@test.com',
-        filename: 'test2.txt'
-    },
-    {
-        email: 'ben@test.com',
-        filename: 'test2.txt'
-    },
-]
-//
+
+
+//save the current files
+let files= {} // user id
+
 // jwt hardcoded testing end
 //
 
@@ -190,7 +180,11 @@ app.get('/', (req, res) => {
     })
 
     function generateAccessToken(payload:any) {
+<<<<<<< Updated upstream
         return jwt.sign(payload, 'secretKey', {expiresIn: '30s'});
+=======
+        return jwt.sign(payload, 'secretKey', {expiresIn: '95s'});
+>>>>>>> Stashed changes
     }
 
     app.post('/token', (req, res) => {
@@ -227,9 +221,11 @@ app.get('/', (req, res) => {
                     const refreshToken = jwt.sign(payload, 'refreshSecretKey');
 
                     console.log("Refresh Token: "+refreshToken);
-                    console.log("ID: "+result.id);
+                    console.log("UserID",result.id);
+                  
+                    files=[{userID:user.id}];
                     // refreshTokens.push(refreshToken);
-
+                    console.log(files)
                     udb.addRefreshToken(result.id, refreshToken, (rows: any)=> {
                         return res.status(200).json({userID: result.id, accessToken: accessToken, refreshToken: refreshToken});
                     })
@@ -252,7 +248,12 @@ app.get('/', (req, res) => {
     // sample usage of authenticateToken function
     app.get('/fetchFiles', authenticateToken, (req, res) => {
         // @ts-ignore
+<<<<<<< Updated upstream
         res.json(files.filter(files => files.email === req.payload.email))
+=======
+        
+        res.json(files.filter(files => req.userID === req.payload.userID))
+>>>>>>> Stashed changes
     })
 
     function authenticateToken(req:Request, res:Response, next:NextFunction) {
@@ -264,6 +265,12 @@ app.get('/', (req, res) => {
             if(err) return res.sendStatus(403);
             // @ts-ignore
             req.payload = payload
+<<<<<<< Updated upstream
+=======
+            
+            console.log('fetch files test pass')
+>>>>>>> Stashed changes
             next();
         })
+        
     }
