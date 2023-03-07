@@ -4,12 +4,12 @@ import fs from 'fs';
 import path from 'path';
 // jwt
 import cookieParser from "cookie-parser";
-import cors from "cors";
 import { FileMetadataServerDAO } from "./DAO/FileMetadataServerDAO";
 import { UserDAO } from "./DAO/UserDAO";
 import bodyParser from 'body-parser';
 import { brotliDecompress } from "zlib";
 
+const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 //file handlding
@@ -37,18 +37,19 @@ declare global {
 const app = express();
 const ms = new MainServer()
 
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, delete');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    if (req.method == 'OPTIONS') {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'content-type');
-        res.status(200).end();
-    }
-    next();
-});
+// app.use(function (req, res, next) {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, delete');
+//     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//     if (req.method == 'OPTIONS') {
+//         res.setHeader('Access-Control-Allow-Origin', '*');
+//         res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+//         res.setHeader('Access-Control-Allow-Headers', 'content-type');
+//         res.status(200).end();
+//     }
+//     next();
+// });
+app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));

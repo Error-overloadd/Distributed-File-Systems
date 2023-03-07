@@ -3,9 +3,9 @@ POST http://localhost:3002/registerUser
 Content-Type: application/json
 
 {
-  "name":"Ben Ten",
-  "email":"ben@test.com",
-  "password":"ben123",
+  "name":"Finul Lee",
+  "email":"finul@test.com",
+  "password":"finul123",
   "isAdmin":true
 }
 
