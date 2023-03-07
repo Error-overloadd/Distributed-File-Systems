@@ -37,15 +37,12 @@ function userRegister(){
         }
     }).catch(function (error){
         if (error.status === 404){
-
         }else{
             console.log(error.message)
         }
-
     })
-
-
 }
+
 
 async function userLogin(){
     // let userName = document.querySelector("#username").value
@@ -66,30 +63,38 @@ async function userLogin(){
     let username = document.querySelector("#username").value;
     let password = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
-
+    console.log(email+"\n"+password);
     await resourcesServer({
         method: 'post',
         url: "login",
-        email:email,
-        password:password
+        data:{
+            email:email,
+            password:password
+        }
     }).then(res=>{
-        if(res.status == 200){
+        if(res.status === 200){
+            const userID = res.data.userID;
             const accessToken = res.data.accessToken;
             const refreshToken = res.data.refreshToken;
+            localStorage.setItem('userID', userID);
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             document.querySelector("#loginStatus").innerHTML="login success";
+            console.log(accessToken);
+            console.log("#############");
+            console.log(refreshToken);
         }
     }).catch(function (error){
         document.querySelector("#loginStatus").innerHTML="login failed"+"<br>"+error.message
     })
 
+    /*
     if(userName==="Derek Liu"&&passWord==="112233"&&email==="Derek.liu@gmail.com"){
         window.alert("Log in successful !!");
     }else{
         window.alert("You need make a accunt");
     }
-    
+    */
 }
 
 
@@ -178,5 +183,29 @@ function deleteFile(){
     }else{
         alert("please login");
     }
+
+}
+
+function updateToken(){
+    const refreshToken = localStorage.getItem('refreshToken');
+    const userID = localStorage.getItem('userID');
+    resourcesServer({
+        method: 'post',
+        url: "token",
+        data:{
+            userID:userID,
+            token:refreshToken
+        }
+    }).then(res=>{
+        if(res.status === 200){
+            const accessToken = res.data.accessToken;
+            localStorage.setItem('accessToken', accessToken);
+            console.log("Updated access Token");
+            console.log(accessToken);
+            console.log("#############");
+        }
+    }).catch(function (error){
+        alert("Token failed, please try login again"+"\n"+error.message);
+    })
 
 }

@@ -211,7 +211,7 @@ app.get('/', (req, res) => {
     // checks if user exists in the userDB
     app.post('/login', async (req,res) => {
         let user = req.body;
-        
+        console.log("login:"+user.email+"<br>"+user.password);
         udb.getUser(user.email, async (rows: any) => {
             const result = rows[0];
             if (!result) {
@@ -222,7 +222,7 @@ app.get('/', (req, res) => {
                 if (!validpw) {
                     return res.status(400).json("invalid pw");
                 } else {
-                    const payload = {email: user.email}
+                    const payload = {userID: user.id}
                     const accessToken = generateAccessToken(payload);
                     const refreshToken = jwt.sign(payload, 'refreshSecretKey');
 
