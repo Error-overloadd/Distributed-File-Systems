@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 version: '3.8'
 networks:
   dfsnetwork:
@@ -129,3 +130,60 @@ services:
       - 4002:4002
     networks:
       - dfsnetwork            
+=======
+# version: '3.8'
+# networks:
+#   dfsnetwork:
+#     name: dfsnetwork
+# services:
+#   db_1:
+#     container_name: dfs_db_1
+#     image: mysql:5.7
+#     restart: always
+#     environment:
+#       MYSQL_ROOT_USER: root
+#       MYSQL_ROOT_PASSWORD: dfs123
+#       MARIADB_DATABASE: fileDB
+#       MYSQL_USER: user
+#       MYSQL_PASSWORD: dfs123
+#     ports:
+#       - '3310:3306'
+#     volumes:
+#       - "./init:/docker-entrypoint-initdb.d/:ro"
+#     networks:
+#       - dfsnetwork    
+#   db_2:
+#     container_name: dfs_db_2
+#     image: mysql:5.7
+#     restart: always
+#     environment:
+#       MYSQL_ROOT_USER: root
+#       MYSQL_ROOT_PASSWORD: dfs123
+#       MARIADB_DATABASE: fileDB
+#       MYSQL_USER: user
+#       MYSQL_PASSWORD: dfs123
+#     ports:
+#       - '3320:3306'
+#     volumes:
+#       - "./init:/docker-entrypoint-initdb.d/:ro"    
+#     networks:
+#       - dfsnetwork    
+#   db_3:
+#     container_name: dfs_db_3
+#     image: mysql:5.7
+#     restart: always
+#     environment:
+#       MYSQL_ROOT_USER: root
+#       MYSQL_ROOT_PASSWORD: dfs123
+#       MARIADB_DATABASE: fileDB
+#       MYSQL_USER: user
+#       MYSQL_PASSWORD: dfs123
+#     ports:
+#       - '3330:3306'
+#     volumes:
+#       - "./init:/docker-entrypoint-initdb.d/:ro"
+#     networks:
+#       - dfsnetwork    
+
+    
+>>>>>>> 94ae257 (singe docker-compose file)
