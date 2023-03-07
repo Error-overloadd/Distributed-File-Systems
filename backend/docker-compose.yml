@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  backendserver_1:
+    build: 
+      context: .
+      target: production
+    ports: 
+      - 3002:3002             
