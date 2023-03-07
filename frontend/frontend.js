@@ -2,7 +2,7 @@ let resourcesServer =new axios.create({
     baseURL:"http://localhost:3002/",
     crossDomain: true
 })
-let loginUser = true;
+let loginUser = false;
 
 /*
 * ====================================================================
@@ -80,9 +80,13 @@ async function userLogin(){
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             document.querySelector("#loginStatus").innerHTML="login success";
-            console.log(accessToken);
             console.log("#############");
+            console.log("accessToken")
+            console.log(accessToken);
+            console.log("refreshtoken");
             console.log(refreshToken);
+            console.log("#############");
+            loginUser = true;
         }
     }).catch(function (error){
         document.querySelector("#loginStatus").innerHTML="login failed"+"<br>"+error.message
@@ -185,6 +189,33 @@ function deleteFile(){
     }
 
 }
+
+
+async function fetchFiles(){
+    if (loginUser == false){
+        alert("please login");
+    }else {
+        //await updateToken();
+        const userID = localStorage.getItem('userID');
+        const token = localStorage.getItem('accessToken');
+        resourcesServer({
+            method: 'get',
+            url: "fetchFiles",
+            payload:{userID:userID},
+            headers: {Authorization: `Bearer ${token}`},
+        }).then(res => {
+            if (res.status >= 200 && res.status < 300) {
+                console.log("fetchFiles succeed! \n"+res.data);
+            }
+        }).catch(function (error) {
+            console.log("fetchFiles failed! \n"+error.message);
+        })
+    }
+}
+
+/*
+* function for updating access token before accessing resources
+* */
 
 function updateToken(){
     const refreshToken = localStorage.getItem('refreshToken');

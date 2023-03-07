@@ -190,7 +190,7 @@ app.get('/', (req, res) => {
     })
 
     function generateAccessToken(payload:any) {
-        return jwt.sign(payload, 'secretKey', {expiresIn: '30s'});
+        return jwt.sign(payload, 'secretKey', {expiresIn: '999s'});
     }
 
     app.post('/token', (req, res) => {
@@ -252,10 +252,11 @@ app.get('/', (req, res) => {
     // sample usage of authenticateToken function
     app.get('/fetchFiles', authenticateToken, (req, res) => {
         // @ts-ignore
-        res.json(files.filter(files => files.email === req.payload.email))
+        res.json(files.filter(files => files.userID === req.payload.userID))
     })
 
     function authenticateToken(req:Request, res:Response, next:NextFunction) {
+    console.log('fetch files test')
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1]
         if(token == null) return res.sendStatus(401)
@@ -264,6 +265,7 @@ app.get('/', (req, res) => {
             if(err) return res.sendStatus(403);
             // @ts-ignore
             req.payload = payload
+            console.log('fetch files test pass')
             next();
         })
     }

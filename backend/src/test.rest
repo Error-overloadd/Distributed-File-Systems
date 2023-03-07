@@ -38,5 +38,5 @@ Content-Type: application/json
 
 ### fetch posts
 GET http://localhost:3002/fetchFiles
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkYW1AdGVzdC5jb20iLCJpYXQiOjE2NzgwODQyNTEsImV4cCI6MTY3ODA4NDI4MX0.U37UwEd0gqU49jqNMv7x4-vj5xAIHMJWkRld0LGGl4U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzgxNzAwOTgsImV4cCI6MTY3ODE3MDEyOH0.yyw5qE9la9hvWu_FCbNouHC8_gr2Kyea_poQWpAaypU
 
