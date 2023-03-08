@@ -23,8 +23,8 @@ POST http://localhost:3002/token
 Content-Type: application/json
 
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkYW1AdGVzdC5jb20iLCJpYXQiOjE2NzgwODQyMTd9.4G5v4Z-bey733CPqUaiHF2kA8p8LISPjAl7946lLAmQ",
-  "userID": "lewce26s-dfafe5"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMDByeXJnLXV5MnRxZSIsImlhdCI6MTY3ODMwNjY5MH0.SeyRm65PZADHQRpqwKmhqeJ7fS4BlJ1CF_UnDG1Ccvs",
+  "userID": "lf00ryrg-uy2tqe"
 
 }
 
@@ -33,10 +33,9 @@ DELETE  http://localhost:3002/logout
 Content-Type: application/json
 
 {
-  "id": "lewce26s-dfafe5"
+  "id": "lf01cbnq-s0fjk6"
 }
 
 ### fetch posts
-POST  http://localhost:3002/fetchFiles
-Authorization: Bearer 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbnkiOiJsZXpha2VhZi12NXV5aDMiLCJpYXQiOjE2NzgyNTkxNTF9.nGSn3B__1bKX_qHRiwjr7AV5JxYS9mXTakJIasIcOmw'
-
+GET http://localhost:3002/fetchFiles
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMDByeXJnLXV5MnRxZSIsImlhdCI6MTY3ODMwNjY5MCwiZXhwIjoxNjc4MzA2NzUwfQ.UkKWURNEmGTd5iO0muSQEYyvh154s7GBkrvQkb2fSQk
