@@ -123,10 +123,10 @@ app.post('/upload', upload.single('file'), async (req, res) => {
         });
         db.end();
     } catch (ex: any) {
+        res.status(500).send({ error : "Could not upload file", message: ex || "Unknown"})
         console.log('err: '+ ex || ex.Message || 'undefined');
         fs.unlink(`${req.file.destination}/${req.file.filename}`, (err : any) => {
             // if(err) throw err;
-            res.status(500).send({ error : "Could not upload file", message: err.Message || "Unknown"})
         })
     }
   });
