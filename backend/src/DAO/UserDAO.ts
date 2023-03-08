@@ -29,6 +29,9 @@ export class UserDAO{
     //   });
 
 
+    end(){
+        this.dbConnection.end();
+    }
 
     // sql query to add user to database for registration
     addUser(user: any, callback: Function){
