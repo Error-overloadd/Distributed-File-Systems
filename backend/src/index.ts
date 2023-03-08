@@ -274,24 +274,24 @@ app.post('/registerUser', async (req,res) =>{
         });
     })
 
-// checks if user exists in the userDB
-app.get('/login', async (req,res) => {
-    let user = req.body;
+// // checks if user exists in the userDB
+// app.get('/login', async (req,res) => {
+//     let user = req.body;
     
-    udb.getUser(user.email, async (rows: any) => {
-        if (!rows[0]) {
-            res.status(404).json("user not found");
-        } else {
-            //check if password is valid
-            const validpw = await bcrypt.compare(user.password, rows[0].password);
-            if (!validpw) {
-                res.status(400).json("invalid pw");
-            } else {
-                res.status(200).json("successful login");
-            }
-        }
-    });
-})
+//     udb.getUser(user.email, async (rows: any) => {
+//         if (!rows[0]) {
+//             res.status(404).json("user not found");
+//         } else {
+//             //check if password is valid
+//             const validpw = await bcrypt.compare(user.password, rows[0].password);
+//             if (!validpw) {
+//                 res.status(400).json("invalid pw");
+//             } else {
+//                 res.status(200).json("successful login");
+//             }
+//         }
+//     });
+// })
 
     app.delete('/logout', (req, res) => {
         // refreshTokens = refreshTokens.filter((token:any) => token !== req.body.token)
