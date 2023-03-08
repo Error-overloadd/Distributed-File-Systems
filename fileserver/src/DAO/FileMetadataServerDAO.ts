@@ -16,6 +16,10 @@ export class FileMetadataServerDAO{
             }  
             console.log('connected to file db');});
     }
+
+    end() {
+      this.dbConnection.end();
+    }
     
     getAllFiles(callback: Function){
         this.dbConnection.query(`SELECT * FROM dds_file`, (err: any,rows: any) => {
