@@ -6,7 +6,6 @@ import {FileMetadataServerDAO} from './DAO/FileMetadataServerDAO';
 
 const bodyParser = require('body-parser')
 const app = express();
-const db = new FileMetadataServerDAO();
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -40,28 +39,34 @@ app.get('/checkApi', (req: Request, res: Response) => {
 
 app.get('/getFileList', (req : Request, res: Response) => {
     try {
+        const db = new FileMetadataServerDAO();
         db.getAllFiles((rows: any) => {
-        res.status(200).send(rows);
+            res.status(200).send(rows);
         })
+        db.end();
     } catch (ex: any) {
         console.log(ex);
-        res.status(500).send({message: "Something went wrong."})
+        res.status(500).send({message: "Something went wrong.", error: ex || 'undefined'})
     }
 })
 
 app.get('/getFileById/:id',(req: Request, res: Response) => {
     // res.download(__dirname + '/testdownload.txt')    
+    
         let id:number = parseInt(req.params.id)    
         try {
+            const db = new FileMetadataServerDAO();
             db.getByFileId(id, (rows : any) => {
                 if(rows.length === 0) {
                     res.status(404).send({error: "File Not found", message: "No file object found"})
+                    return;
                 }
                 let filePath: string = rows[0]["path"];
                 res.download(filePath);
             })
+            db.end();
         } catch (ex : any) {
-            res.status(500).send({error: ex.Message.toString(), Message: "Error"});
+            res.status(500).send({error: ex || ex.Message.toString() || 'undefined', Message: "Error"});
         }
     })
 
@@ -112,13 +117,15 @@ app.post('/upload', upload.single('file'), async (req, res) => {
         path: req.file.path,
     }
     try {
+        const db = new FileMetadataServerDAO();
         db.addFile(fileObj, (rows: any) => {
             res.status(200).send(rows);
         });
+        db.end();
     } catch (ex: any) {
-        console.log('err: '+ ex.Message);
+        console.log('err: '+ ex || ex.Message || 'undefined');
         fs.unlink(`${req.file.destination}/${req.file.filename}`, (err : any) => {
-            if(err) throw err;
+            // if(err) throw err;
             res.status(500).send({ error : "Could not upload file", message: err.Message || "Unknown"})
         })
     }
@@ -145,11 +152,15 @@ app.post('/deleteByFileName',(req: Request, res:Response) => {
 })
 
 app.delete('/deleteFileById/:id',(req: Request, res:Response) => {
+    
     let id:number = parseInt(req.params.id);
-    db.getByFileId(id, (rows: any) => {
+    try {
+        const db = new FileMetadataServerDAO();
+        db.getByFileId(id, (rows: any) => {
             console.log(rows);
             if(rows.length === 0) {
                 res.status(400).send({error: "Bad Request", message: "No file object found"})
+                return;
             }
             let filePath: string = rows[0]["path"];
             fs.unlink(filePath, (err : any) => {
@@ -166,7 +177,12 @@ app.delete('/deleteFileById/:id',(req: Request, res:Response) => {
                     res.status(500).send({message: "an error occured when trying to delete file from db"});
                 }
             })
-    })
+        });
+        db.end();
+    } catch (ex) {
+        res.status(500).send({message: "an error occured when trying to delete file", exception: ex});
+    }
+    
 
     
     // const directory = './src/';
