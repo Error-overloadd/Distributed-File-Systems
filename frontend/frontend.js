@@ -7,7 +7,7 @@ let requestConfig = {
     crossDomain: true
 }
 let loginUser = false;
-
+const expiredTime = 3500;
 /*
 * ====================================================================
 * User Handling part
@@ -110,13 +110,17 @@ function logout(){
 }
 
 function checkisLogin() {
-    const expiredTime = 3500;
     const accessToken = localStorage.getItem('accessToken');
     const tokenTime = localStorage.getItem('tokenTime');
     const timeDiffInSec = (new Date().getTime() - tokenTime) / 1000;
-    if (accessToken && timeDiffInSec < expiredTime) {
-        loginUser = true;
-        document.querySelector("#loginStatus").innerHTML="login success";
+    if (accessToken) {
+        if (timeDiffInSec < expiredTime){
+            loginUser = true;
+            document.querySelector("#loginStatus").innerHTML="login success";
+        }else{
+            logout();
+        }
+
     }
 }
 
@@ -247,7 +251,6 @@ async function fetchFiles(){
 * */
 
 function updateToken(){
-    const expiredTime = 3500;
     const refreshToken = localStorage.getItem('refreshToken');
     const userID = localStorage.getItem('userID');
     const tokenTime = localStorage.getItem('tokenTime');
