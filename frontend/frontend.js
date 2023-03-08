@@ -48,34 +48,12 @@ function userRegister(){
 }
 
 function userLogin(){
-    // let userName = document.querySelector("#username").value
-    // let passWord = document.querySelector("#pass").value;
-    // resourcesServer({
-    //     method:'get',
-    //     url:"authenticateUser",
-    //     userName:userName,
-    //     passWord:passWord
-    // }).then(res=>{
-    //     if(res.status >= 200 && res.status < 300){
-    //         console.log(res.data.toString())
-    //         loginUser=userName
-    //     }
-    // }).catch(function (error){
-    //     console.log(error.message)
-    // })
-    let userName = document.querySelector("#username").value;
-    let passWord = document.querySelector("#pass").value;
+  
+
+    let password = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
-<<<<<<< Updated upstream
-    if(userName==="Derek Liu"&&passWord==="112233"&&email==="Derek.liu@gmail.com"){
-        window.alert("Log in successful !!");
-    }else{
-        window.alert("You need make a accunt");
-    }
-    
-=======
     console.log(email+"\n"+password);
-    await resourcesServer({
+     resourcesServer({
         method: 'post',
         url: "login",
         data:{
@@ -87,27 +65,60 @@ function userLogin(){
             const userID = res.data.userID;
             const accessToken = res.data.accessToken;
             const refreshToken = res.data.refreshToken;
-
             localStorage.setItem('userID', userID);
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             document.querySelector("#loginStatus").innerHTML="login success";
-            // console.log("#############");
-            // console.log("accessToken")
-            // console.log(userID);
-            // console.log(accessToken);
-            // console.log("refreshtoken");
-            // console.log(refreshToken);
-            // console.log("#############");
+            console.log("#############");
+            console.log("accessToken")
+            console.log(accessToken);
+            console.log("refreshtoken");
+            console.log(refreshToken);
+            console.log("#############");
             loginUser = true;
         }
     }).catch(function (error){
         document.querySelector("#loginStatus").innerHTML="login failed"+"<br>"+error.message
     })
 
-
->>>>>>> Stashed changes
+    /*
+    if(userName==="Derek Liu"&&passWord==="112233"&&email==="Derek.liu@gmail.com"){
+        window.alert("Log in successful !!");
+    }else{
+        window.alert("You need make a accunt");
+    }
+    */
 }
+ function fetchFiles(){
+    if (loginUser == false){
+        alert("please login");
+    }else {
+        //await updateToken();
+       // const userID = localStorage.getItem('userID');
+        const token = localStorage.getItem('accessToken');
+      //  console.log("This is test:",userID);
+        console.log("This is test:",token);
+        // const config = {
+        //     headers:{Authorization: `Bearer ${token}` }
+        // };
+     //   console.log(config);
+        resourcesServer({
+            method: 'POST',
+            url: "fetchFiles",
+            headers:{Authorization: `Bearer ${token}` }
+            
+        }).then(res => {
+            if (res.status >= 200 && res.status < 300) {
+                console.log("fetchFiles succeed! \n"+res.data);
+            }
+        }).catch(function (error) {
+            console.log("fetchFiles failed! \n"+error.message);
+            
+        })
+    }
+}
+
+
 
 
 /*
@@ -197,37 +208,7 @@ function deleteFile(){
     }
 
 }
-<<<<<<< Updated upstream
-=======
 
-
-async function fetchFiles(){
-    if (loginUser == false){
-        alert("please login");
-    }else {
-        //await updateToken();
-        const userID = localStorage.getItem('userID');
-        const token = localStorage.getItem('accessToken');
-        console.log("This is test:",userID);
-        console.log("This is test:",token);
-       
-        resourcesServer({
-            method: 'get',
-            url: "fetchFiles",
-            params:{
-                payload:{userID:userID},
-                headers:{Authorization: `Bearer ${token}`}
-            }
-            
-        }).then(res => {
-            if (res.status >= 200 && res.status < 300) {
-                console.log("fetchFiles succeed! \n"+res.data);
-            }
-        }).catch(function (error) {
-            console.log("fetchFiles failed! \n"+error.message);
-        })
-    }
-}
 
 /*
 * function for updating access token before accessing resources
@@ -237,7 +218,7 @@ function updateToken(){
     const refreshToken = localStorage.getItem('refreshToken');
     const userID = localStorage.getItem('userID');
     resourcesServer({
-        method: 'post',
+        method: 'get',
         url: "token",
         data:{
             userID:userID,
@@ -247,13 +228,12 @@ function updateToken(){
         if(res.status === 200){
             const accessToken = res.data.accessToken;
             localStorage.setItem('accessToken', accessToken);
-            // console.log("Updated access Token");
-            // console.log(accessToken);
-            // console.log("#############");
+             console.log("Updated access Token");
+             console.log(accessToken);
+            console.log("#############");
         }
     }).catch(function (error){
         alert("Token failed, please try login again"+"\n"+error.message);
     })
 
 }
->>>>>>> Stashed changes

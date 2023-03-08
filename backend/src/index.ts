@@ -4,12 +4,12 @@ import fs from 'fs';
 import path from 'path';
 // jwt
 import cookieParser from "cookie-parser";
-import cors from "cors";
+
 import { FileMetadataServerDAO } from "./DAO/FileMetadataServerDAO";
 import { UserDAO } from "./DAO/UserDAO";
 import bodyParser from 'body-parser';
 import { brotliDecompress } from "zlib";
-
+const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 //file handlding
@@ -37,18 +37,19 @@ declare global {
 const app = express();
 const ms = new MainServer()
 
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, delete');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    if (req.method == 'OPTIONS') {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'content-type');
-        res.status(200).end();
-    }
-    next();
-});
+// app.use(function (req, res, next) {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, delete');
+//     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//     if (req.method == 'OPTIONS') {
+//         res.setHeader('Access-Control-Allow-Origin', '*');
+//         res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+//         res.setHeader('Access-Control-Allow-Headers', 'content-type');
+//         res.status(200).end();
+//     }
+//     next();
+// });
+app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -180,11 +181,7 @@ app.get('/', (req, res) => {
     })
 
     function generateAccessToken(payload:any) {
-<<<<<<< Updated upstream
-        return jwt.sign(payload, 'secretKey', {expiresIn: '30s'});
-=======
-        return jwt.sign(payload, 'secretKey', {expiresIn: '95s'});
->>>>>>> Stashed changes
+        return jwt.sign(payload, 'secretKey', {expiresIn: '20s'});
     }
 
     app.post('/token', (req, res) => {
@@ -216,14 +213,15 @@ app.get('/', (req, res) => {
                 if (!validpw) {
                     return res.status(400).json("invalid pw");
                 } else {
-                    const payload = {email: user.email}
+                    const payload = {any: result.id}
                     const accessToken = generateAccessToken(payload);
                     const refreshToken = jwt.sign(payload, 'refreshSecretKey');
-
-                    console.log("Refresh Token: "+refreshToken);
+                    console.log("*************************************")
+                    console.log("AcessToken:", accessToken)
+                    console.log("Refresh Token: ",refreshToken);
                     console.log("UserID",result.id);
                   
-                    files=[{userID:user.id}];
+                    files=[{userID:result.id}];
                     // refreshTokens.push(refreshToken);
                     console.log(files)
                     udb.addRefreshToken(result.id, refreshToken, (rows: any)=> {
@@ -238,6 +236,7 @@ app.get('/', (req, res) => {
         // refreshTokens = refreshTokens.filter((token:any) => token !== req.body.token)
         
         udb.removeRefreshToken(req.body.id, (rows: any) => {
+
             return res.status(204).json("logout successful, refresh token deleted");
         })
 
@@ -246,31 +245,34 @@ app.get('/', (req, res) => {
     
     // put below programs to other server (file managing) 
     // sample usage of authenticateToken function
-    app.get('/fetchFiles', authenticateToken, (req, res) => {
+    app.post('/fetchFiles', authenticateToken, (req, res) => {
         // @ts-ignore
-<<<<<<< Updated upstream
-        res.json(files.filter(files => files.email === req.payload.email))
-=======
+        // files=[{userID:result.id}];
+         
         
-        res.json(files.filter(files => req.userID === req.payload.userID))
->>>>>>> Stashed changes
+        //res.json(files.filter(files => req.userID === req.payload.userID))
     })
 
     function authenticateToken(req:Request, res:Response, next:NextFunction) {
+        
         const authHeader = req.headers['authorization'];
+        
+        console.log(req.body);
+        
         const token = authHeader && authHeader.split(' ')[1]
-        if(token == null) return res.sendStatus(401)
+    
+        // console.log("THIS IS WHT",authHeader)
+        // console.log("WTF this is ",token);
+        if(token === null) return res.sendStatus(401)
 
         jwt.verify(token, 'secretKey', (err:any, payload:any) => {
             if(err) return res.sendStatus(403);
             // @ts-ignore
             req.payload = payload
-<<<<<<< Updated upstream
-=======
             
             console.log('fetch files test pass')
->>>>>>> Stashed changes
             next();
         })
+    
         
     }
