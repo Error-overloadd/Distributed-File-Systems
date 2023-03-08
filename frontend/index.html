@@ -31,13 +31,15 @@
   <div class = "button">
     <button class="userButton" id = "login" onclick="userLogin()">login</button>
   </div>
+
   <div class = "button">
-    <button class="userButton" id = "updateToken" onclick="updateToken()">update token</button>
+    <button class="userButton" id = "logout" onclick="logout()">logout</button>
   </div>
 
   <div class = "button">
-    <button class="userButton" id = "fetchFiles" onclick="fetchFiles()">fetch files</button>
+    <button class="userButton" id = "testButton" onclick="fetchFiles()">fetch files</button>
   </div>
+
   <div class = "userStatus" id = "loginStatus">
     not login yet
   </div>
@@ -65,7 +67,6 @@
       <button class="fileButton" id = "uploadFileButton" onclick="uploadFile()">upload</button>
     </div>
     <div class = "fileStatus" id = "uploadFileStatus">
-      <br>
     </div>
 
   </div>
@@ -78,7 +79,6 @@
       <button class="fileButton" id = "deleteFileButton" onclick="deleteFile()">delete</button>
     </div>
     <div class = "fileStatus" id = "deleteFileStatus">
-      <br>
     </div>
   </div>
 
