@@ -63,19 +63,10 @@ function userLogin(){
     // }).catch(function (error){
     //     console.log(error.message)
     // })
-    let userName = document.querySelector("#username").value;
-    let passWord = document.querySelector("#pass").value;
+    let password = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
-<<<<<<< Updated upstream
-    if(userName==="Derek Liu"&&passWord==="112233"&&email==="Derek.liu@gmail.com"){
-        window.alert("Log in successful !!");
-    }else{
-        window.alert("You need make a accunt");
-    }
-    
-=======
     console.log(email+"\n"+password);
-    await resourcesServer({
+     resourcesServer({
         method: 'post',
         url: "login",
         data:{
@@ -92,13 +83,6 @@ function userLogin(){
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             document.querySelector("#loginStatus").innerHTML="login success";
-            // console.log("#############");
-            // console.log("accessToken")
-            // console.log(userID);
-            // console.log(accessToken);
-            // console.log("refreshtoken");
-            // console.log(refreshToken);
-            // console.log("#############");
             loginUser = true;
         }
     }).catch(function (error){
@@ -106,7 +90,6 @@ function userLogin(){
     })
 
 
->>>>>>> Stashed changes
 }
 
 
@@ -197,8 +180,6 @@ function deleteFile(){
     }
 
 }
-<<<<<<< Updated upstream
-=======
 
 
 async function fetchFiles(){
@@ -212,12 +193,12 @@ async function fetchFiles(){
         console.log("This is test:",token);
        
         resourcesServer({
-            method: 'get',
+            // method: 'post',
+            // url: "fetchFiles",
+            // headers:{Authorization: `Bearer ${token}`}
+            method: 'POST',
             url: "fetchFiles",
-            params:{
-                payload:{userID:userID},
-                headers:{Authorization: `Bearer ${token}`}
-            }
+            headers:{Authorization: `Bearer ${token}` }
             
         }).then(res => {
             if (res.status >= 200 && res.status < 300) {
@@ -225,6 +206,7 @@ async function fetchFiles(){
             }
         }).catch(function (error) {
             console.log("fetchFiles failed! \n"+error.message);
+           // console.log(headers);
         })
     }
 }
@@ -256,4 +238,3 @@ function updateToken(){
     })
 
 }
->>>>>>> Stashed changes

@@ -4,13 +4,13 @@ import fs from 'fs';
 import path from 'path';
 // jwt
 import cookieParser from "cookie-parser";
-import cors from "cors";
+
 import { UserDAO } from "./DAO/UserDAO";
 import bodyParser from 'body-parser';
 import { brotliDecompress } from "zlib";
 
 const bcrypt = require('bcrypt');
-
+const cors = require('cors');
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const jwt = require('jsonwebtoken');
@@ -39,18 +39,19 @@ declare global {
 const app = express();
 const ms = new MainServer()
 
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, delete');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    if (req.method == 'OPTIONS') {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'content-type');
-        res.status(200).end();
-    }
-    next();
-});
+// app.use(function (req, res, next) {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, delete');
+//     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//     if (req.method == 'OPTIONS') {
+//         res.setHeader('Access-Control-Allow-Origin', '*');
+//         res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+//         res.setHeader('Access-Control-Allow-Headers', 'content-type');
+//         res.status(200).end();
+//     }
+//     next();
+// });
+app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -270,19 +271,17 @@ app.post('/addFileServer', (req, res) => {
                     if (!validpw) {
                         return res.status(400).json("invalid pw");
                     } else {
-                        const payload = {email: user.email}
+                        const payload = {any: result.id}
                         const accessToken = generateAccessToken(payload);
                         const refreshToken = jwt.sign(payload, 'refreshSecretKey');
     
                         console.log("Refresh Token: "+refreshToken);
                         console.log("UserID",result.id);
                       
-                        files=[{userID:user.id}];
-                        // refreshTokens.push(refreshToken);
-                        console.log(files)
-                        udb.addRefreshToken(result.id, refreshToken, (rows: any)=> {
-                            return res.status(200).json({userID: result.id, accessToken: accessToken, refreshToken: refreshToken});
-                        })
+            
+                        // udb.addRefreshToken(result.id, refreshToken, (rows: any)=> {
+                        //     return res.status(200).json({userID: result.id, accessToken: accessToken, refreshToken: refreshToken});
+                        // })
                     }
                 }
             });
@@ -329,19 +328,21 @@ app.post('/addFileServer', (req, res) => {
     
     // put below programs to other server (file managing) 
     // sample usage of authenticateToken function
-    app.get('/fetchFiles', authenticateToken, (req, res) => {
+    app.post('/fetchFiles', authenticateToken, (req, res) => {
         // @ts-ignore
         
-        res.json(files.filter(files => req.userID === req.payload.userID))
+        // res.json(files.filter(files => req.userID === req.payload.userID))
     })
 
     function authenticateToken(req:Request, res:Response, next:NextFunction) {
         const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[1]
-        if(token == null) return res.sendStatus(401)
-
+        // const token = authHeader && authHeader.split(' ')
+        const token = authHeader 
+        if(token === null) return res.sendStatus(401)
+        console.log(token);
+        
         jwt.verify(token, 'secretKey', (err:any, payload:any) => {
-            if(err) return res.sendStatus(403);
+             if(err) return res.sendStatus(403);
             // @ts-ignore
             req.payload = payload
             
