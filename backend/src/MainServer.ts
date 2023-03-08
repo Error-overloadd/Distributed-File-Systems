@@ -48,13 +48,14 @@ export class MainServer {
     }
 
     async deleteFileFromFileServer(filename: string){
-        
-
+        console.log("main server deleting "+filename);
         axios.delete('http://localhost:4000/deleteByFileName/', {
             data: {
               Filename: filename
             }
-          }).then(()=>{console.log("File deleted")})
+          }).then(()=>{
+            console.log("File deleted" + filename)
+          })
     }
 
 
@@ -102,6 +103,5 @@ export class MainServer {
         });
     }
 
-    
 
 }

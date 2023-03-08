@@ -47,9 +47,9 @@ app.post('/saveFile', (req, res) => {
     })
 })
 
-app.post('/deleteByFileName',(req: Request, res:Response) => {
+app.delete('/deleteByFileName',(req: Request, res:Response) => {
     let filename:string = req.body.Filename
-    
+    console.log("deleting "+filename);
     const directory = './src/';
     const fs = require('fs');
 

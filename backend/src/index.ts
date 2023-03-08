@@ -37,28 +37,10 @@ declare global {
 const app = express();
 const ms = new MainServer()
 
-// app.use(function (req, res, next) {
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, delete');
-//     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-//     if (req.method == 'OPTIONS') {
-//         res.setHeader('Access-Control-Allow-Origin', '*');
-//         res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-//         res.setHeader('Access-Control-Allow-Headers', 'content-type');
-//         res.status(200).end();
-//     }
-//     next();
-// });
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-/*app.use(
-    cors({
-        credentials: true,
-        origin: "http://localhost:4001"
-    })
-);*/
 
 
 const db = new FileMetadataServerDAO();
@@ -133,7 +115,7 @@ app.get('/', (req, res) => {
         ms.deleteByFileName(name,res)
     })
     
-    app.post('/addFile',upload.single('file'), (req, res) => {
+    app.post('/addFile',authenticateToken,upload.single('file'), (req, res) => {
         console.log(req);
         if (!req.file) {
             res.status(400).send('No file uploaded');
@@ -191,7 +173,7 @@ app.get('/', (req, res) => {
     })
 
     function generateAccessToken(payload:any) {
-        return jwt.sign(payload, 'secretKey', {expiresIn: '999s'});
+        return jwt.sign(payload, 'secretKey', {expiresIn: '3600s'});
     }
 
     app.post('/token', (req, res) => {
@@ -257,7 +239,6 @@ app.get('/', (req, res) => {
     })
 
     function authenticateToken(req:Request, res:Response, next:NextFunction) {
-    console.log('fetch files test')
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1]
         if(token == null) return res.sendStatus(401)
