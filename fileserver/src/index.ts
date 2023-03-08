@@ -18,7 +18,7 @@ app.get('/getByFileName',(req: Request, res: Response) => {
     console.log(filename)
         
 
-    const directory = './src';
+    const directory = './storage';
     const fs = require('fs');
     const path = require( "path" );
 
@@ -39,8 +39,8 @@ app.get('/getByFileName',(req: Request, res: Response) => {
 app.post('/saveFile', (req, res) => {
     const filename = req.body.Name
     const base64String = req.body.base64
-
-    const filepath = path.join(__dirname,filename)
+    const directory = './storage/';
+    const filepath = directory+filename
     base64ToFile(base64String,filepath).then(()=>{
         console.log(filename+"saved")
         res.send("ok");
@@ -50,7 +50,7 @@ app.post('/saveFile', (req, res) => {
 app.delete('/deleteByFileName',(req: Request, res:Response) => {
     let filename:string = req.body.Filename
     console.log("deleting "+filename);
-    const directory = './src/';
+    const directory = './storage/';
     const fs = require('fs');
 
     fs.readdirSync(directory).forEach((file: string) => {
