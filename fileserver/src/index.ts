@@ -52,7 +52,7 @@ app.delete('/deleteByFileName',(req: Request, res:Response) => {
     console.log("deleting "+filename);
     const directory = './storage/';
     const fs = require('fs');
-
+    let counter = 0;
     fs.readdirSync(directory).forEach((file: string) => {
         if (filename == file) 
         {
@@ -64,6 +64,12 @@ app.delete('/deleteByFileName',(req: Request, res:Response) => {
                 }
                 console.log('File has been deleted!');
                 });
+            counter ++;
         }
     });
+    if (counter == 0){
+        console.log('Nothing deleted');
+    }else{
+        console.log("delete "+ filename +" with number " + counter )
+    }
 })
