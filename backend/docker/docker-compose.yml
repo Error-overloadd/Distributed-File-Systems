@@ -1,55 +1,131 @@
-# version: '3.8'
-# networks:
-#   dfsnetwork:
-#     name: dfsnetwork
-# services:
-#   db_1:
-#     container_name: dfs_db_1
-#     image: mysql:5.7
-#     restart: always
-#     environment:
-#       MYSQL_ROOT_USER: root
-#       MYSQL_ROOT_PASSWORD: dfs123
-#       MARIADB_DATABASE: fileDB
-#       MYSQL_USER: user
-#       MYSQL_PASSWORD: dfs123
-#     ports:
-#       - '3310:3306'
-#     volumes:
-#       - "./init:/docker-entrypoint-initdb.d/:ro"
-#     networks:
-#       - dfsnetwork    
-#   db_2:
-#     container_name: dfs_db_2
-#     image: mysql:5.7
-#     restart: always
-#     environment:
-#       MYSQL_ROOT_USER: root
-#       MYSQL_ROOT_PASSWORD: dfs123
-#       MARIADB_DATABASE: fileDB
-#       MYSQL_USER: user
-#       MYSQL_PASSWORD: dfs123
-#     ports:
-#       - '3320:3306'
-#     volumes:
-#       - "./init:/docker-entrypoint-initdb.d/:ro"    
-#     networks:
-#       - dfsnetwork    
-#   db_3:
-#     container_name: dfs_db_3
-#     image: mysql:5.7
-#     restart: always
-#     environment:
-#       MYSQL_ROOT_USER: root
-#       MYSQL_ROOT_PASSWORD: dfs123
-#       MARIADB_DATABASE: fileDB
-#       MYSQL_USER: user
-#       MYSQL_PASSWORD: dfs123
-#     ports:
-#       - '3330:3306'
-#     volumes:
-#       - "./init:/docker-entrypoint-initdb.d/:ro"
-#     networks:
-#       - dfsnetwork    
-
-    
+version: '3.8'
+networks:
+  dfsnetwork:
+    name: dfsnetwork
+services:
+  db_1:
+    container_name: dfs_db_1
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: dfs123
+      MARIADB_DATABASE: fileDB
+      MYSQL_USER: user
+      MYSQL_PASSWORD: dfs123
+    ports:
+      - 3310:3306
+    volumes:
+      - "./init:/docker-entrypoint-initdb.d/:ro"
+    networks:
+      - dfsnetwork    
+  db_2:
+    container_name: dfs_db_2
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: dfs123
+      MARIADB_DATABASE: fileDB
+      MYSQL_USER: user
+      MYSQL_PASSWORD: dfs123
+    ports:
+      - 3320:3306
+    volumes:
+      - "./init:/docker-entrypoint-initdb.d/:ro"    
+    networks:
+      - dfsnetwork    
+  db_3:
+    container_name: dfs_db_3
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: dfs123
+      MARIADB_DATABASE: fileDB
+      MYSQL_USER: user
+      MYSQL_PASSWORD: dfs123
+    ports:
+      - 3330:3306
+    volumes:
+      - "./init:/docker-entrypoint-initdb.d/:ro"
+    networks:
+      - dfsnetwork    
+  backendserver_1:
+    container_name: dfs_backend_1
+    build: 
+      context: ../
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 3002:3002
+    networks:
+      - dfsnetwork
+  backendserver_2:
+    container_name: dfs_backend_2
+    build: 
+      context: ../
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 3003:3003
+    networks:
+      - dfsnetwork      
+  backendserver_3:
+    container_name: dfs_backend_3
+    build: 
+      context: ../
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 3004:3004
+    networks:
+      - dfsnetwork
+  fileserver_1:
+    container_name: fileserver_1
+    build: 
+      context: ../../fileserver
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 4000:4000
+    networks:
+      - dfsnetwork
+  fileserver_2:
+    container_name: fileserver_2
+    build: 
+      context: ../../fileserver
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 4001:4001
+    networks:
+      - dfsnetwork                            
+  fileserver_3:
+    container_name: fileserver_3
+    build: 
+      context: ../../fileserver
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 4002:4002
+    networks:
+      - dfsnetwork            
