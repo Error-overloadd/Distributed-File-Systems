@@ -2,7 +2,7 @@ var mysql = require('mysql2');
 export class FileMetadataServerDAO{
 
     dbConnection = mysql.createConnection({
-        host: "localhost",
+        host: "dfs_db_1",
         user: "root",
         password: "dfs123",
         port:'3310',

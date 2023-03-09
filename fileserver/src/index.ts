@@ -23,11 +23,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 declare global {
-  namespace Express {
-    interface Request {
-      file: any;
+    namespace Express {
+        interface Request {
+            uploadfile: any;
+        }
     }
-  }
 }
 
 app.listen(4000, () => {
@@ -114,30 +114,28 @@ app.get("/getByFileName", (req: Request, res: Response) => {
 //     })
 // })
 
-app.post("/upload", authenticateToken, upload.single("file"), async (req, res) => {
-  const fileObj = {
-    name: req.file.filename,
-    size: req.file.size,
-    content_type: req.file.mimetype,
-    serverId: 1,
-    path: req.file.path,
-  };
-  try {
-    const db = new FileMetadataServerDAO();
-    db.addFile(fileObj, (rows: any) => {
-      res.status(200).send(rows);
-    });
-    db.end();
-  } catch (ex: any) {
-    res
-      .status(500)
-      .send({ error: "Could not upload file", message: ex || "Unknown" });
-    console.log("err: " + ex || ex.Message || "undefined");
-    fs.unlink(`${req.file.destination}/${req.file.filename}`, (err: any) => {
-      // if(err) throw err;
-    });
-  }
-});
+app.post('/upload', upload.single('uploadfile'), async (req, res) => {
+    const fileObj = {
+        name: req.uploadfile.filename,
+        size: req.uploadfile.size,
+        content_type: req.uploadfile.mimetype,
+        serverId: 1,
+        path: req.uploadfile.path,
+    }
+    try {
+        const db = new FileMetadataServerDAO();
+        db.addFile(fileObj, (rows: any) => {
+            res.status(200).send(rows);
+        });
+        db.end();
+    } catch (ex: any) {
+        res.status(500).send({ error : "Could not upload file", message: ex || "Unknown"})
+        console.log('err: '+ ex || ex.Message || 'undefined');
+        fs.unlink(`${req.uploadfile.destination}/${req.uploadfile.filename}`, (err : any) => {
+            // if(err) throw err;
+        })
+    }
+  });
 
 app.post("/deleteByFileName", (req: Request, res: Response) => {
   let filename: string = req.body.Filename;

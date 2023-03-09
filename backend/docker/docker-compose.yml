@@ -3,6 +3,11 @@ version: '3.8'
 networks:
   dfsnetwork:
     name: dfsnetwork
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+    
 services:
   db_1:
     container_name: dfs_db_1
@@ -19,7 +24,9 @@ services:
     volumes:
       - "./init:/docker-entrypoint-initdb.d/:ro"
     networks:
-      - dfsnetwork    
+      dfsnetwork:
+          ipv4_address: 172.28.1.1
+
   db_2:
     container_name: dfs_db_2
     image: mysql:5.7

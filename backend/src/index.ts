@@ -81,10 +81,8 @@ app.use(
   })
 );
 
-app.use(
-  "/getFileList",
-  createProxyMiddleware({
-    target: "http://localhost:4000",
+ app.use('/getFileList', createProxyMiddleware({
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getFileList`]: '/upload',
@@ -183,34 +181,36 @@ app.post("/addFileServer", (req, res) => {
 // AUTH START
 
 // adds user to the userDB
-app.post("/registerUser", async (req, res) => {
-  let user = req.body;
+    app.post('/registerUser', async (req,res) =>{
+        let user = req.body;
+        console.log(user);
+        // generate userID
+        const dateStr:any = Date.now().toString(36); // convert num to base 36 and stringify
+        const randomStr:any = Math.random().toString(36).substring(2, 8); // start at index 2 to skip decimal point
+        const id = `${dateStr}-${randomStr}`;
+        user.id = id;
 
-  // generate userID
-  const dateStr: any = Date.now().toString(36);
-  const randomStr: any = Math.random().toString(36).substring(2, 8);
-  const id = `${dateStr}-${randomStr}`;
-  user.id = id;
+        // hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedpw = await bcrypt.hash(user.password, salt);
+        user.password = hashedpw;
 
-  // hash password
-  const salt = await bcrypt.genSalt(10);
-  const hashedpw = await bcrypt.hash(user.password, salt);
-  user.password = hashedpw;
+        console.log(user);
+        try {
+            const udb = new UserDAO();
+            udb.addUser(user, (rows: any) => {
+                res.status(200).json(rows);
+            });
+            udb.end();
+        } catch(ex) {
+            res.status(500).send({ error : "Could not upload file", message: ex || "Unknown"})
+            console.log('err: '+ ex || 'undefined');
+        }
+    })
 
-  console.log(user);
-  try {
-    const udb = new UserDAO();
-    udb.addUser(user, (rows: any) => {
-      res.status(200).json(rows);
-    });
-    udb.end();
-  } catch (ex) {
-    res
-      .status(500)
-      .send({ error: "Could not upload file", message: ex || "Unknown" });
-    console.log("err: " + ex || "undefined");
-  }
-});
+    function generateAccessToken(payload:any) {
+        return jwt.sign(payload, 'secretKey', {expiresIn: '30s'});
+    }
 
 // checks if user exists in the userDB
 app.post("/login", async (req, res) => {
