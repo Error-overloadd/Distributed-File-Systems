@@ -3,7 +3,7 @@ POST http://localhost:3002/registerUser
 Content-Type: application/json
 
 {
-  "name":"Ben Ten",
+  "name":"Adam Adamson",
   "email":"adam@test.com",
   "password":"adam123",
   "isAdmin":true
