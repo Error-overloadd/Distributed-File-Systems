@@ -137,11 +137,16 @@ function uploadFile(){
     const formData = new FormData();
     formData.append('file', file);
     console.log(file.length);
+    const token = localStorage.getItem('accessToken');
+    
+    console.log("This is test:",token);
+       
     resourcesServer({
         method:'post',
         url:"addFile",
         data:formData,
         headers: {
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
         }
     }).then(res => {
