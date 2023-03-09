@@ -264,7 +264,7 @@ app.delete("/logout", (req, res) => {
   try {
     const udb = new UserDAO();
     udb.removeRefreshToken(req.body.id, (rows: any) => {
-      return res.status(204).json("logout successful, refresh token deleted");
+      return res.status(200).send({message: "logout successful, refresh token deleted"});
     });
     udb.end();
   } catch (ex) {

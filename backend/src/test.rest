@@ -3,7 +3,7 @@ POST http://localhost:3002/registerUser
 Content-Type: application/json
 
 {
-  "name":"Ben Ten",
+  "name":"Adam Adamson",
   "email":"adam@test.com",
   "password":"adam123",
   "isAdmin":true
@@ -33,9 +33,9 @@ DELETE  http://localhost:3002/logout
 Content-Type: application/json
 
 {
-  "id": "lf01cbnq-s0fjk6"
+  "id": "lf00ryrg-uy2tqe"
 }
 
 ### fetch posts
 GET http://localhost:3002/fetchFiles
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMDByeXJnLXV5MnRxZSIsImlhdCI6MTY3ODMwNjY5MCwiZXhwIjoxNjc4MzA2NzUwfQ.UkKWURNEmGTd5iO0muSQEYyvh154s7GBkrvQkb2fSQk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMDByeXJnLXV5MnRxZSIsImlhdCI6MTY3ODMyMjQyMywiZXhwIjoxNjc4MzIyNDgzfQ.-tTLgeHIwZ10LetddtPCfZFDaQ4wzLABPeNEqxeIYiI
