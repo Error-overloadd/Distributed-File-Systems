@@ -1,13 +1,16 @@
+
 let generalRequest =new axios.create({
-    baseURL:"http://localhost:3002/",
+    baseURL:"http://localhost:5000/",
     crossDomain: true
 })
 let requestConfig = {
-    baseURL:"http://localhost:3002/",
+    baseURL:"http://localhost:5000/",
     crossDomain: true
 }
+const expiredTime = 50;
+
 let loginUser = false;
-const expiredTime = 3500;
+
 /*
 * ====================================================================
 * User Handling part
@@ -15,39 +18,38 @@ const expiredTime = 3500;
 * */
 
 function addJWT(post){
-    const userID = localStorage.getItem('userID')
+    //const userID = localStorage.getItem('userID')
     const accessToken = localStorage.getItem('accessToken');
-    if (accessToken && userID){
+    if (accessToken){
         post.headers.Authorization =  'Bearer'+' '+ accessToken;
-        post.data = post.data || new FormData();
-        post.data.append('userID',userID);
+        //post.data = post.data || new FormData();
+        //post.data.append('userID',userID);
     }
     return post;
 }
 function userRegister(){
-    let userName = document.querySelector("#username").value
+    let userName = document.querySelector("#name").value
     let passWord = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
-    let datas ={
-        name:userName,
-        password:passWord,
-        email:email,
-        isAdmin:0
-    }
     console.log(typeof(passWord),typeof(userName),typeof(email));
-    console.log(JSON.stringify(datas));
     generalRequest({
-        method:'post',
-        url:"registerUser/",
-        headers:{
-            'content-type':"application/json"
+        method: 'post',
+        url: "registerUser/",
+        headers: {
+            'content-type': "application/json"
         },
-       data:JSON.stringify(datas)
-        // data:{id:12}
+        data: {
+            email: email,
+            password: passWord,
+            name: userName,
+            isAdmin: false
+        },
     }).then(res=>{
         if(res.status >= 200 && res.status < 300){
-            console.log("It works rn")
+            alert("Register succeed");
+            console.log("Register succeed");
             console.log(res)
+            userLogin();
         }
     }).catch(function (error){
         if (error.status === 404){
@@ -59,7 +61,6 @@ function userRegister(){
 
 
 function userLogin(){
-    let username = document.querySelector("#username").value;
     let password = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
     console.log(email+"\n"+password);
@@ -80,7 +81,8 @@ function userLogin(){
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             localStorage.setItem('tokenTime',newTokenTime);
-            document.querySelector("#loginStatus").innerHTML="login success";
+            localStorage.setItem('email',email);
+            document.querySelector("#loginStatus").innerHTML="login as:" + email ;
             console.log("#############");
             console.log("tokenTime");
             console.log(newTokenTime);
@@ -94,7 +96,14 @@ function userLogin(){
             loginUser = true;
         }
     }).catch(function (error){
-        document.querySelector("#loginStatus").innerHTML="login failed"+"<br>"+error.message
+        if(error.response.status === 400){
+            document.querySelector("#loginStatus").innerHTML="Password is wrong";
+        }else if(error.response.status === 404){
+            document.querySelector("#loginStatus").innerHTML="user not existed";
+        }else{
+            document.querySelector("#loginStatus").innerHTML="login failed"+"<br>"+error.message
+        }
+
     })
 
 }
@@ -115,8 +124,9 @@ function checkisLogin() {
     const timeDiffInSec = (new Date().getTime() - tokenTime) / 1000;
     if (accessToken) {
         if (timeDiffInSec < expiredTime){
+            const email = localStorage.getItem('email');
             loginUser = true;
-            document.querySelector("#loginStatus").innerHTML="login success";
+            document.querySelector("#loginStatus").innerHTML="login as "+ email;
         }else{
             logout();
         }
@@ -183,7 +193,7 @@ function uploadFile(){
             }
         }).then(res => {
             if(res.status >= 200 && res.status < 300){
-                document.querySelector("#uploadFileStatus").innerHTML= res.data;
+                document.querySelector("#uploadFileStatus").innerHTML= "upload succeed!";
             }else{
                 document.querySelector("#uploadFileStatus").innerHTML="error:"+ res.data;
             }
