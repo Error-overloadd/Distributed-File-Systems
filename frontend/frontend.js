@@ -134,15 +134,18 @@ function userLogin(){
 function getFileById(){
     let fileid=document.querySelector("#getFileName").value;
     console.log(fileid);
+    let oldUrl="getFileById";
+    // let newURL=oldUrl+""+fileid
+    // console.log(newURL);
     resourcesServer({
-        methdo:'GET',
-        url:"getByFileId",
+        method:'GET',
+        url:oldUrl,
         responseType:'arraybuffer',
         params:{
             fileid:fileid
-
         }
-
+        
+      
     }).then(res=>{
                 if(res.status >= 200 && res.status < 300){
                     const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
@@ -196,15 +199,15 @@ function uploadFile(){
 * can be done by login user only
 * */
 
-function deleteFile(){
-    let fileName =document.querySelector("#deleteFileName").value;
+function deleteFileById(){
+    let fileid =document.querySelector("#deleteFileName").value;
     //const message =  document.querySelector('.chat_box').value;
     if(loginUser){
         resourcesServer({
             method:'delete',
-            url:"deleteByFilename",
+            url:"deleteFileById",
             params: {
-                fileName:fileName
+                fileid:fileid
             }
         }).then(res=>{
             if(res.status >= 200 && res.status < 300){

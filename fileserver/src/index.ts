@@ -53,11 +53,13 @@ app.get("/getFileList", (req: Request, res: Response) => {
   }
 });
 
-app.get("/getFileById/:id", (req: Request, res: Response) => {
+app.get("/getFileById", (req: Request, res: Response) => {
   // res.download(__dirname + '/testdownload.txt')
+  //console.log(req.query.fileid);
+  let stringId: any = req.query.fileid;
+   let id: number = parseInt(stringId);
 
-  let id: number = parseInt(req.params.id);
-  console.log(parseInt(req.params.id));
+  //console.log("It works");
   try {
     const db = new FileMetadataServerDAO();
     db.getByFileId(id, (rows: any) => {
@@ -68,6 +70,7 @@ app.get("/getFileById/:id", (req: Request, res: Response) => {
         return;
       }
       let filePath: string = rows[0]["path"];
+      console.log(filePath);
       res.download(filePath);
     });
     db.end();
@@ -89,7 +92,7 @@ app.get("/getByFileName", (req: Request, res: Response) => {
   const fs = require("fs");
   const path = require("path");
   fs.readdirSync(directory).forEach((file: string) => {
-    if (filename == file) {
+    if (filename === file) {
       console.log(file);
       let absolutePath = path.resolve(directory, file);
       console.log(file);
@@ -114,7 +117,7 @@ app.get("/getByFileName", (req: Request, res: Response) => {
 //         res.send("ok");
 //     })
 // })
-
+// UPLOAD : WORKS
 app.post("/upload", authenticateToken, upload.single("file"), async (req, res) => {
   const fileObj = {
     name: req.file.filename,
@@ -159,12 +162,15 @@ app.post("/deleteByFileName", (req: Request, res: Response) => {
   });
 });
 
-app.delete("/deleteFileById/:id", (req: Request, res: Response) => {
-  let id: number = parseInt(req.params.id);
+app.delete("/deleteFileById", (req: Request, res: Response) => {
+  let stringid:any =  req.query.fileid;
+
+  let id: number = parseInt(stringid);
+  console.log("It works");
   try {
     const db = new FileMetadataServerDAO();
     db.getByFileId(id, (rows: any) => {
-      console.log(rows);
+      
       if (rows.length === 0) {
         res
           .status(400)
