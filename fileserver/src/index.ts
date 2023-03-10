@@ -14,7 +14,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: (req: any, file: any, cb: any) => {
-    cb(null, "./storage/"); // setting path
+    const path = "./storage/";
+    fs.mkdirSync(path, { recursive: true })
+    cb(null, path); // setting path
   },
   filename: (req: any, file: any, cb: any) => {
     const extname = path.extname(file.originalname);
@@ -22,13 +24,13 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
-declare global {
-    namespace Express {
-        interface Request {
-            uploadfile: any;
-        }
-    }
-}
+// declare global {
+//     namespace Express {
+//         interface Request {
+//             file: any;
+//         }
+//     }
+// }
 
 app.listen(4000, () => {
   console.log("server started");
@@ -115,12 +117,17 @@ app.get("/getByFileName", (req: Request, res: Response) => {
 // })
 
 app.post('/upload', upload.single('uploadfile'), async (req, res) => {
+  console.log(req);
+  if(!req.file) {
+    res.status(400).send({error: "No file attached"});
+    return;
+  }
     const fileObj = {
-        name: req.uploadfile.filename,
-        size: req.uploadfile.size,
-        content_type: req.uploadfile.mimetype,
+        name: req.file?.filename,
+        size: req.file?.size,
+        content_type: req.file?.mimetype,
         serverId: 1,
-        path: req.uploadfile.path,
+        path: req.file?.path,
     }
     try {
         const db = new FileMetadataServerDAO();
@@ -131,7 +138,7 @@ app.post('/upload', upload.single('uploadfile'), async (req, res) => {
     } catch (ex: any) {
         res.status(500).send({ error : "Could not upload file", message: ex || "Unknown"})
         console.log('err: '+ ex || ex.Message || 'undefined');
-        fs.unlink(`${req.uploadfile.destination}/${req.uploadfile.filename}`, (err : any) => {
+        fs.unlink(`${req.file.destination}/${req.file.filename}`, (err : any) => {
             // if(err) throw err;
         })
     }
