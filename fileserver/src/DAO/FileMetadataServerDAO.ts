@@ -5,7 +5,7 @@ export class FileMetadataServerDAO{
         host: "dfs_db_1",
         user: "root",
         password: "dfs123",
-        port:'3310',
+        port:'3306',
         database: 'fileDB'
       });
 

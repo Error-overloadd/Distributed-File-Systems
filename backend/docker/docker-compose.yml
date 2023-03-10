@@ -24,8 +24,7 @@ services:
     volumes:
       - "./init:/docker-entrypoint-initdb.d/:ro"
     networks:
-      dfsnetwork:
-          ipv4_address: 172.28.1.1
+      - dfsnetwork
 
   db_2:
     container_name: dfs_db_2

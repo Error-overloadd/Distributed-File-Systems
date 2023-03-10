@@ -90,10 +90,8 @@ app.use(
   })
 );
 
-app.use(
-  "/getFileById",
-  createProxyMiddleware({
-    target: "http://localhost:4000",
+ app.use('/getFileById', createProxyMiddleware({
+    target:  "http://fileserver_1:4000",
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getFileList`]: '/upload',
@@ -101,10 +99,8 @@ app.use(
   })
 );
 
-app.use(
-  "/deleteFileById",
-  createProxyMiddleware({
-    target: "http://localhost:4000",
+ app.use('/deleteFileById', createProxyMiddleware({
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getFileList`]: '/upload',
