@@ -71,13 +71,13 @@ app.use(
 );
 
 app.use(
-  "/addFile",
+  "/upload",
   createProxyMiddleware({
     target: "http://fileserver_1:4000",
     changeOrigin: true,
-    pathRewrite: {
-      [`^/addFile`]: "/upload",
-    },
+    // pathRewrite: {
+    //   [`^/addFile`]: "/upload",
+    // },
   })
 );
 
