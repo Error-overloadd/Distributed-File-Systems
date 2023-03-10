@@ -135,3 +135,15 @@ services:
       - 4002:4000
     networks:
       - dfsnetwork            
+  nginx:
+      image: nginx:alpine
+      build: 
+        context: ../../nginx-docker
+      ports:
+        - "5000:80"
+      depends_on:
+      - backendserver_1
+      - backendserver_2
+      - backendserver_3
+      networks:
+      - dfsnetwork 
