@@ -7,7 +7,8 @@ let requestConfig = {
     baseURL:"http://localhost:3002/",
     crossDomain: true
 }
-const expiredTime = 50;
+//unit is in second
+const expiredTime = 990;
 
 let loginUser = false;
 
@@ -149,11 +150,12 @@ function getFile(){
     let fileid = document.querySelector("#getFileName").value;
     generalRequest({
         method:'GET',
-        url:"getFileById/",
+        url:"getFileById/"+fileid,
         responseType: 'arraybuffer',
+        /*
         params: {
-            fileid:fileid
-        }
+            id:fileid
+        }*/
     }).then(res=>{
         if(res.status >= 200 && res.status < 300){
             const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
@@ -260,10 +262,11 @@ function deleteFile(){
         updateToken();
         const newRequest = axios.create(requestConfig);
         newRequest.interceptors.request.use(addJWT);
-        newRequest.delete('deleteFileById',{
+        newRequest.delete('deleteFileById/'+fileid,{
+            /*
             params: {
-                fileid:fileid
-            }
+                id:fileid
+            }*/
         }).then(res=>{
             if(res.status >= 200 && res.status < 300){
                 console.log("file deleted");
