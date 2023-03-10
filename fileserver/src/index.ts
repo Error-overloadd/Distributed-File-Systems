@@ -189,9 +189,10 @@ app.delete("/deleteFileById/:id", (req: Request, res: Response) => {
         try {
           db.deleteByFileId(id, (rows: any) => {
             res.status(200).send({ message: "Deleted file" });
+            db.end();
           });
         } catch (err: any) {
-          console.log("Error deleting in fs: " + err.Message || "undefined");
+          console.log("Error deleting in fs: " + err || "undefined");
           res
             .status(500)
             .send({
@@ -200,7 +201,7 @@ app.delete("/deleteFileById/:id", (req: Request, res: Response) => {
         }
       });
     });
-    db.end();
+    
   } catch (ex) {
     res
       .status(500)
