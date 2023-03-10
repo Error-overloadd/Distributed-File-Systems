@@ -5,7 +5,7 @@ Content-Type: application/json
 {
   "name":"Adam Adamson",
   "email":"adam@test.com",
-  "password":"adam123",
+  "password":"ben123",
   "isAdmin":true
 }
 
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
     "email":"adam@test.com",
-    "password":"adam123"
+    "password":"ben123"
 }
 
 ### generate new access token using provided refresh token during login
@@ -33,7 +33,7 @@ DELETE  http://localhost:3002/logout
 Content-Type: application/json
 
 {
-  "id": "lf00ryrg-uy2tqe"
+  "id": "lf26zg1e-dtmnxg"
 }
 
 ### fetch posts
