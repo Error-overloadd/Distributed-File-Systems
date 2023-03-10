@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
 app.use(
   "/getByFileName",
   createProxyMiddleware({
-    target: "http://localhost:4000",
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getByFileName`]: '/getByFileName',
@@ -65,7 +65,7 @@ app.use(
 app.use(
   "/getByFileId",
   createProxyMiddleware({
-    target: "http://localhost:4000",
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
   })
 );
@@ -73,7 +73,7 @@ app.use(
 app.use(
   "/addFile",
   createProxyMiddleware({
-    target: "http://localhost:4000",
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
     pathRewrite: {
       [`^/addFile`]: "/upload",
@@ -270,10 +270,6 @@ app.delete("/logout", (req, res) => {
     console.log("err: " + ex || "undefined");
   }
 });
-
-function generateAccessToken(payload: any) {
-  return jwt.sign(payload, 'secretKey', {expiresIn: '1m'});
-}
 
 app.post("/token", (req, res) => {
   const refreshToken = req.body.token;
