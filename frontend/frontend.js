@@ -1,10 +1,10 @@
 
 let generalRequest =new axios.create({
-    baseURL:"http://localhost:5000/",
+    baseURL:"http://localhost:3002/",
     crossDomain: true
 })
 let requestConfig = {
-    baseURL:"http://localhost:5000/",
+    baseURL:"http://localhost:3002/",
     crossDomain: true
 }
 const expiredTime = 50;
@@ -146,13 +146,13 @@ function checkisLogin() {
 * */
 
 function getFile(){
-    let fileName = document.querySelector("#getFileName").value;
+    let fileid = document.querySelector("#getFileName").value;
     generalRequest({
         method:'GET',
-        url:"getByFileName/",
+        url:"getFileById/",
         responseType: 'arraybuffer',
         params: {
-            fileName:fileName
+            fileid:fileid
         }
     }).then(res=>{
         if(res.status >= 200 && res.status < 300){
@@ -169,6 +169,43 @@ function getFile(){
         document.querySelector("#getFileStatus").innerHTML=error.message;
     })
 }
+
+/*
+*Get FileList from server
+*
+ */
+function getFileList(){
+    const fileList =  document.querySelector("#fileList");
+    generalRequest({
+        method:'GET',
+        url:"getFileList/"
+    }).then(res=>{
+        if(res.status >= 200 && res.status < 300){
+            eraseFileList()
+            for (let file of res.data){
+                const newRow = fileList.insertRow();
+                newRow.innerHTML=
+                    '<td>'+ file.fileId +'</td>' +
+                    '<td>'+ file.name +'</td>' +
+                    '<td>'+ file.size +'</td>' +
+                    '<td>'+ file.content_type +'</td>' +
+                    '<td>'+ file.created_date +'</td>' +
+                    '<td>'+ file.fileserver +'</td>' +
+                    '<td>'+ file.path +'</td>'
+            }
+            console.log(res.data);
+        }
+    }).catch(function (error){
+       console.log (error.message);
+    })
+
+    function eraseFileList(){
+        while (fileList.rows.length > 1) {
+            fileList.deleteRow(1);
+        }
+    }
+}
+
 /*
 * upload file on server
 * can be done by login user only
@@ -190,6 +227,12 @@ function uploadFile(){
         newRequest.post('addFile',formData,{
             headers: {
                 'Content-Type': 'multipart/form-data'
+            },
+            onUploadProgress:(progressEvent) => {
+                let completed = Math.round(
+                    (progressEvent.loaded * 100) / progressEvent.total
+                );
+                document.querySelector("#uploadFileStatus").innerHTML = "uploading" + completed + '%';
             }
         }).then(res => {
             if(res.status >= 200 && res.status < 300){
@@ -211,15 +254,15 @@ function uploadFile(){
 * */
 
 function deleteFile(){
-    let fileName =document.querySelector("#deleteFileName").value;
+    let fileid =document.querySelector("#deleteFileName").value;
     document.querySelector("#deleteFileStatus").innerHTML = "";
     if(loginUser){
         updateToken();
         const newRequest = axios.create(requestConfig);
         newRequest.interceptors.request.use(addJWT);
-        newRequest.delete('deleteByFilename',{
+        newRequest.delete('deleteFileById',{
             params: {
-                fileName:fileName
+                fileid:fileid
             }
         }).then(res=>{
             if(res.status >= 200 && res.status < 300){
@@ -292,4 +335,3 @@ function updateToken(){
     }
 }
 checkisLogin();
-

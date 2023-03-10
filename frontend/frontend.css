@@ -1,3 +1,14 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+/*
 body {
     background-color: powderblue;
   }
@@ -8,7 +19,7 @@ body {
  margin: 0px auto;
  margin-top: 80px;
  width: 350px;
- height: 400px;    
+ height: 400px;
 
 }
 .user_interface .input_box{
@@ -17,7 +28,7 @@ body {
 .user_interface .input_box .username #username{
     margin-top: 60px;
     line-height: 45px;
-    
+
     border:none;
     background: none;
     border-bottom: #FFFFFF 2px solid;
@@ -78,3 +89,4 @@ body {
     margin: 0 auto;
     width: auto;
 }
+ */

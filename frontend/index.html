@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>559 project frontend</title>
-  <!--<link rel="stylesheet" href="./fronend.css">-->
+  <link rel="stylesheet" href="./frontend.css">
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
@@ -50,7 +50,7 @@
 
 <div class = fileInterface>
   <div class ="getFile">
-    <label for="getFileName">File name want to get from server:</label>
+    <label for="getFileName">File id want to get from server:</label>
     <br>
     <input type="text" id="getFileName" name="getFileName">
     <div class = "button">
@@ -74,7 +74,7 @@
   </div>
   <hr>
   <div class ="deleteFile">
-    <label for="deleteFileName">FileName want to delete on server:</label>
+    <label for="deleteFileName">File id want to delete on server:</label>
     <br>
     <input type="text" id="deleteFileName" name="deleteFileName">
     <div class = "button">
@@ -83,7 +83,26 @@
     <div class = "fileStatus" id = "deleteFileStatus">
     </div>
   </div>
+  <hr>
+  <div class = "button">
+    <button class="fileButton" id = "getFileList" onclick="getFileList()">update file list</button>
+  </div>
 
+  <table id="fileList">
+    <thead>
+    <tr>
+      <th>fileId</th>
+      <th>Name</th>
+      <th>Size</th>
+      <th>Content Type</th>
+      <th>Created Date</th>
+      <th>fileserver</th>
+      <th>path</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
 </div>
 
 <script src = "frontend.js"></script>
