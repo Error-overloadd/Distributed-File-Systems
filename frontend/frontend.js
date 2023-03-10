@@ -9,6 +9,7 @@ let loginUser = true;
 * User Handling part
 * ====================================================================
 * */
+// TEST: WORK
 function userRegister(){
     let userName = document.querySelector("#username").value
     let passWord = document.querySelector("#pass").value;
@@ -46,7 +47,7 @@ function userRegister(){
 
 
 }
-
+//TEST: WORK
 function userLogin(){
     // let userName = document.querySelector("#username").value
     // let passWord = document.querySelector("#pass").value;
@@ -104,34 +105,64 @@ function userLogin(){
 * anyone can do that
 * */
 
-function getFile(){
-    let fileName = document.querySelector("#getFileName").value;
+// function getFile(){
+//     let fileName = document.querySelector("#getFileName").value;
+//     resourcesServer({
+//         method:'GET',
+//         url:"getByFileName/",
+//         responseType: 'arraybuffer',
+//         params: {
+//             fileName:fileName
+//         }
+//     }).then(res=>{
+//         if(res.status >= 200 && res.status < 300){
+//             const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
+//             console.log(res.data.length);
+//             const source = document.createElement('a'); //a tag for downloading
+//             source.download = fileName;
+//             source.href = downloadUrl;
+//             document.body.appendChild(source);
+//             source.click();
+//             document.body.removeChild(source);
+//         }
+//     }).catch(function (error){
+//         document.querySelector("#getFileStatus").innerHTML=error.message;
+//     })
+// }
+
+// To creat function get file by id
+function getFileById(){
+    let fileid=document.querySelector("#getFileName").value;
+    console.log(fileid);
     resourcesServer({
-        method:'GET',
-        url:"getByFileName/",
-        responseType: 'arraybuffer',
-        params: {
-            fileName:fileName
+        methdo:'GET',
+        url:"getByFileId",
+        responseType:'arraybuffer',
+        params:{
+            fileid:fileid
+
         }
+
     }).then(res=>{
-        if(res.status >= 200 && res.status < 300){
-            const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
-            console.log(res.data.length);
-            const source = document.createElement('a'); //a tag for downloading
-            source.download = fileName;
-            source.href = downloadUrl;
-            document.body.appendChild(source);
-            source.click();
-            document.body.removeChild(source);
-        }
-    }).catch(function (error){
-        document.querySelector("#getFileStatus").innerHTML=error.message;
-    })
+                if(res.status >= 200 && res.status < 300){
+                    const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
+                    console.log(res.data.length);
+                    const source = document.createElement('a'); //a tag for downloading
+                    source.download = fileName;
+                    source.href = downloadUrl;
+                    document.body.appendChild(source);
+                    source.click();
+                    document.body.removeChild(source);
+                }
+            }).catch(function (error){
+                document.querySelector("#getFileStatus").innerHTML=error.message;
+            })
 }
 /*
 * upload file on server
 * can be done by login user only
 * */
+//UPLOADFILE: WORK
 function uploadFile(){
     let file =document.querySelector("#uploadFile").files[0]
     const formData = new FormData();
@@ -143,7 +174,7 @@ function uploadFile(){
        
     resourcesServer({
         method:'post',
-        url:"addFile",
+        url:"upload",
         data:formData,
         headers: {
             Authorization: `Bearer ${token}`,
@@ -152,9 +183,11 @@ function uploadFile(){
     }).then(res => {
         if(res.status >= 200 && res.status < 300){
             document.querySelector("#uploadFileStatus").innerHTML=res.data;
+            window.alert("The file uploaded successful !! ")
         }
     }).catch(error => {
         console.log(error);
+        window.alert("The file cant upload it rn, please try again!")
     });
 }
 

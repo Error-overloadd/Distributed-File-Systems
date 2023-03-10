@@ -57,6 +57,7 @@ app.get("/getFileById/:id", (req: Request, res: Response) => {
   // res.download(__dirname + '/testdownload.txt')
 
   let id: number = parseInt(req.params.id);
+  console.log(parseInt(req.params.id));
   try {
     const db = new FileMetadataServerDAO();
     db.getByFileId(id, (rows: any) => {
