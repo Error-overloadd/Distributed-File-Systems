@@ -116,7 +116,7 @@ app.get("/getByFileName", (req: Request, res: Response) => {
 //     })
 // })
 
-app.post("/upload", upload.single("uploadfile"), async (req, res) => {
+app.post("/upload", authenticateToken, upload.single("uploadfile"), async (req, res) => {
   console.log(req);
   if (!req.file) {
     res.status(400).send({ error: "No file attached" });
@@ -185,7 +185,7 @@ app.post("/deleteByFileName", (req: Request, res: Response) => {
   });
 });
 
-app.delete("/deleteFileById/:id", (req: Request, res: Response) => {
+app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Response) => {
   let id: number = parseInt(req.params.id);
   try {
     const db = new FileMetadataServerDAO_1();

@@ -5,7 +5,7 @@ Content-Type: application/json
 {
   "name":"Adam Adamson",
   "email":"adam@test.com",
-  "password":"ben123",
+  "password":"adam123",
   "isAdmin":true
 }
 
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
     "email":"adam@test.com",
-    "password":"ben123"
+    "password":"adam123"
 }
 
 ### generate new access token using provided refresh token during login
@@ -23,8 +23,8 @@ POST http://localhost:3002/token
 Content-Type: application/json
 
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMDByeXJnLXV5MnRxZSIsImlhdCI6MTY3ODMwNjY5MH0.SeyRm65PZADHQRpqwKmhqeJ7fS4BlJ1CF_UnDG1Ccvs",
-  "userID": "lf00ryrg-uy2tqe"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMnQwazFkLWF3M3VhZyIsImlhdCI6MTY3ODQ2ODg1Nn0.1PFdYtnctlErRrjmNVEb1OWXmqaXvl2vc_L7wOg-_jY",
+  "userID": "lf2t0k1d-aw3uag"
 
 }
 
