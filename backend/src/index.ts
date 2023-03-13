@@ -55,6 +55,18 @@ app.get("/", (req, res) => {
 });
 
 app.use(
+  "/checkApi",
+  createProxyMiddleware({
+    target: "http://fileserver_1:4000",
+    changeOrigin: true,
+    // pathRewrite: {
+    //     [`^/getByFileName`]: '/getByFileName',
+    // },
+  })
+);
+
+
+app.use(
   "/getByFileName",
   createProxyMiddleware({
     target: "http://fileserver_1:4000",
