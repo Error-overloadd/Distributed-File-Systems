@@ -237,7 +237,7 @@ app.post("/registerUser", async (req, res) => {
 });
 
 function generateAccessToken(payload: any) {
-  return jwt.sign(payload, "secretKey", { expiresIn: "30s" });
+  return jwt.sign(payload, "secretKey", { expiresIn: "600s" });
 }
 
 // checks if user exists in the userDB
