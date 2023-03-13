@@ -1,4 +1,12 @@
 version: '3.8'
+networks:
+  dfsnetwork:
+    name: dfsnetwork
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+    
 services:
   db_1:
     container_name: dfs_db_1
@@ -11,10 +19,12 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: dfs123
     ports:
-      - '3310:3306'
+      - 3310:3306
     volumes:
-      # - "./storgae/init.sql:/docker-entrypoint-initdb.d/init.sql"
       - "./init:/docker-entrypoint-initdb.d/:ro"
+    networks:
+      - dfsnetwork
+
   db_2:
     container_name: dfs_db_2
     image: mysql:5.7
@@ -26,10 +36,11 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: dfs123
     ports:
-      - '3320:3306'
+      - 3320:3306
     volumes:
-      # - "./storgae/init.sql:/docker-entrypoint-initdb.d/init.sql"
       - "./init:/docker-entrypoint-initdb.d/:ro"    
+    networks:
+      - dfsnetwork    
   db_3:
     container_name: dfs_db_3
     image: mysql:5.7
@@ -41,7 +52,98 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: dfs123
     ports:
-      - '3330:3306'
+      - 3330:3306
     volumes:
-      # - "./storgae/init.sql:/docker-entrypoint-initdb.d/init.sql"
-      - "./init:/docker-entrypoint-initdb.d/:ro"     
+      - "./init:/docker-entrypoint-initdb.d/:ro"
+    networks:
+      - dfsnetwork    
+  backendserver_1:
+    container_name: dfs_backend_1
+    build: 
+      context: ../
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 3002:3002
+    networks:
+      - dfsnetwork
+  backendserver_2:
+    container_name: dfs_backend_2
+    build: 
+      context: ../
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 3003:3002
+    networks:
+      - dfsnetwork      
+  backendserver_3:
+    container_name: dfs_backend_3
+    build: 
+      context: ../
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 3004:3002
+    networks:
+      - dfsnetwork
+  fileserver_1:
+    container_name: fileserver_1
+    build: 
+      context: ../../fileserver
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 4000:4000
+    networks:
+      - dfsnetwork
+  fileserver_2:
+    container_name: fileserver_2
+    build: 
+      context: ../../fileserver
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 4001:4000
+    networks:
+      - dfsnetwork                            
+  fileserver_3:
+    container_name: fileserver_3
+    build: 
+      context: ../../fileserver
+      target: production
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+    ports: 
+      - 4002:4000
+    networks:
+      - dfsnetwork            
+  nginx:
+      image: nginx:alpine
+      build: 
+        context: ../../nginx-docker
+      ports:
+        - "5000:80"
+      depends_on:
+      - backendserver_1
+      - backendserver_2
+      - backendserver_3
+      networks:
+      - dfsnetwork 

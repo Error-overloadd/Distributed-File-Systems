@@ -157,19 +157,19 @@ function getFile(){
             id:fileid
         }*/
     }).then(res=>{
-        if(res.status >= 200 && res.status < 300){
-            const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
-            console.log(res.data.length);
-            const source = document.createElement('a'); //a tag for downloading
-            source.download = fileName;
-            source.href = downloadUrl;
-            document.body.appendChild(source);
-            source.click();
-            document.body.removeChild(source);
-        }
-    }).catch(function (error){
-        document.querySelector("#getFileStatus").innerHTML=error.message;
-    })
+                if(res.status >= 200 && res.status < 300){
+                    const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
+                    console.log(res.data.length);
+                    const source = document.createElement('a'); //a tag for downloading
+                    source.download = fileName;
+                    source.href = downloadUrl;
+                    document.body.appendChild(source);
+                    source.click();
+                    document.body.removeChild(source);
+                }
+            }).catch(function (error){
+                document.querySelector("#getFileStatus").innerHTML=error.message;
+            })
 }
 
 /*
@@ -212,6 +212,7 @@ function getFileList(){
 * upload file on server
 * can be done by login user only
 * */
+//UPLOADFILE: WORK
 function uploadFile(){
 
     let file =document.querySelector("#uploadFile").files[0]

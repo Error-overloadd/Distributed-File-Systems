@@ -1,11 +1,11 @@
 var mysql = require('mysql2');
-export class FileMetadataServerDAO{
+export class FileMetadataServerDAO_3{
 
     dbConnection = mysql.createConnection({
-        host: "localhost",
+        host: "dfs_db_3",
         user: "root",
         password: "dfs123",
-        port:'3310',
+        port:'3306',
         database: 'fileDB'
       });
 
@@ -14,7 +14,7 @@ export class FileMetadataServerDAO{
             if (err){
                 throw err;
             }  
-            console.log('connected to file db');});
+            console.log('connected to file db3');});
     }
 
     end() {

@@ -2,7 +2,9 @@ import express, { NextFunction, Request, response, Response } from "express";
 import path from "path";
 import * as fs from "fs";
 import { base64ToFile, fileToBase64 } from "./fileUtil";
-import { FileMetadataServerDAO } from "./DAO/FileMetadataServerDAO";
+import { FileMetadataServerDAO_1 } from "./FileDB/db_1";
+import { FileMetadataServerDAO_2 } from "./FileDB/db_2";
+import { FileMetadataServerDAO_3 } from "./FileDB/db_3";
 
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
@@ -14,7 +16,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: (req: any, file: any, cb: any) => {
-    cb(null, "./storage/"); // setting path
+    const path = "./storage/";
+    fs.mkdirSync(path, { recursive: true });
+    cb(null, path); // setting path
   },
   filename: (req: any, file: any, cb: any) => {
     const extname = path.extname(file.originalname);
@@ -22,13 +26,13 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
-declare global {
-  namespace Express {
-    interface Request {
-      file: any;
-    }
-  }
-}
+// declare global {
+//     namespace Express {
+//         interface Request {
+//             file: any;
+//         }
+//     }
+// }
 
 app.listen(4000, () => {
   console.log("server started");
@@ -40,7 +44,7 @@ app.get("/checkApi", (req: Request, res: Response) => {
 
 app.get("/getFileList", (req: Request, res: Response) => {
   try {
-    const db = new FileMetadataServerDAO();
+    const db = new FileMetadataServerDAO_1();
     db.getAllFiles((rows: any) => {
       res.status(200).send(rows);
     });
@@ -58,7 +62,7 @@ app.get("/getFileById/:id", (req: Request, res: Response) => {
 
   let id: number = parseInt(req.params.id);
   try {
-    const db = new FileMetadataServerDAO();
+    const db = new FileMetadataServerDAO_1();
     db.getByFileId(id, (rows: any) => {
       if (rows.length === 0) {
         res
@@ -71,12 +75,10 @@ app.get("/getFileById/:id", (req: Request, res: Response) => {
     });
     db.end();
   } catch (ex: any) {
-    res
-      .status(500)
-      .send({
-        error: ex || ex.Message.toString() || "undefined",
-        Message: "Error",
-      });
+    res.status(500).send({
+      error: ex || ex.Message.toString() || "undefined",
+      Message: "Error",
+    });
   }
 });
 
@@ -114,18 +116,43 @@ app.get("/getByFileName", (req: Request, res: Response) => {
 //     })
 // })
 
-app.post("/upload", authenticateToken, upload.single("file"), async (req, res) => {
+app.post("/upload", authenticateToken, upload.single("uploadfile"), async (req, res) => {
+  console.log(req);
+  if (!req.file) {
+    res.status(400).send({ error: "No file attached" });
+    return;
+  }
   const fileObj = {
-    name: req.file.filename,
-    size: req.file.size,
-    content_type: req.file.mimetype,
+    name: req.file?.filename,
+    size: req.file?.size,
+    content_type: req.file?.mimetype,
     serverId: 1,
-    path: req.file.path,
+    path: req.file?.path,
   };
   try {
-    const db = new FileMetadataServerDAO();
+    const db = new FileMetadataServerDAO_1();
     db.addFile(fileObj, (rows: any) => {
       res.status(200).send(rows);
+
+      // update slave dbs
+      try {
+        const db_2 = new FileMetadataServerDAO_2();
+        db_2.addFile(fileObj, (rows: any) => {
+          console.log("filedb2 update successful");
+        });
+        db_2.end();
+      } catch (ex: any) {
+        console.log("filedb2 update err: " + ex || ex.Message || "undefined");
+      }
+      try {
+        const db_3 = new FileMetadataServerDAO_3();
+        db_3.addFile(fileObj, (rows: any) => {
+          console.log("filedb3 update successful");
+        });
+        db_3.end();
+      } catch (ex: any) {
+        console.log("filedb3 update err: " + ex || ex.Message || "undefined");
+      }
     });
     db.end();
   } catch (ex: any) {
@@ -158,10 +185,10 @@ app.post("/deleteByFileName", (req: Request, res: Response) => {
   });
 });
 
-app.delete("/deleteFileById/:id", (req: Request, res: Response) => {
+app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Response) => {
   let id: number = parseInt(req.params.id);
   try {
-    const db = new FileMetadataServerDAO();
+    const db = new FileMetadataServerDAO_1();
     db.getByFileId(id, (rows: any) => {
       console.log(rows);
       if (rows.length === 0) {
@@ -173,36 +200,54 @@ app.delete("/deleteFileById/:id", (req: Request, res: Response) => {
       let filePath: string = rows[0]["path"];
       fs.unlink(filePath, (err: any) => {
         if (err) {
-          res
-            .status(500)
-            .send({
-              error: "Error deleting File from server",
-              message: err.Message || "undefined",
-            });
+          res.status(500).send({
+            error: "Error deleting File from server",
+            message: err.Message || "undefined",
+          });
           return;
         }
         try {
           db.deleteByFileId(id, (rows: any) => {
             res.status(200).send({ message: "Deleted file" });
+
+            // update slave dbs
+            try {
+              const db_2 = new FileMetadataServerDAO_2();
+              db_2.deleteByFileId(id, (rows: any) => {
+                console.log("filedb2 update successful");
+              });
+              db_2.end();
+            } catch (ex: any) {
+              console.log(
+                "filedb2 update err: " + ex || ex.Message || "undefined"
+              );
+            }
+            try {
+              const db_3 = new FileMetadataServerDAO_3();
+              db_3.deleteByFileId(id, (rows: any) => {
+                console.log("filedb3 update successful");
+              });
+              db_3.end();
+            } catch (ex: any) {
+              console.log(
+                "filedb3 update err: " + ex || ex.Message || "undefined"
+              );
+            }
+            db.end();
           });
         } catch (err: any) {
-          console.log("Error deleting in fs: " + err.Message || "undefined");
-          res
-            .status(500)
-            .send({
-              message: "an error occured when trying to delete file from db",
-            });
+          console.log("Error deleting in fs: " + err || "undefined");
+          res.status(500).send({
+            message: "an error occured when trying to delete file from db",
+          });
         }
       });
     });
-    db.end();
   } catch (ex) {
-    res
-      .status(500)
-      .send({
-        message: "an error occured when trying to delete file",
-        exception: ex,
-      });
+    res.status(500).send({
+      message: "an error occured when trying to delete file",
+      exception: ex,
+    });
   }
 
   // const directory = './src/';
@@ -233,7 +278,7 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
     // @ts-ignore
     req.payload = payload;
     console.log("from authenticateToken: access granted");
-    
+
     next();
   });
 }

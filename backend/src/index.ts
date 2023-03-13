@@ -3,9 +3,11 @@ import { MainServer } from "./MainServer";
 import fs from "fs";
 import path from "path";
 import cookieParser from "cookie-parser";
-import { UserDAO } from "./DAO/UserDAO";
+import { UserDAO_1 } from "./UserDB/db_1";
 import bodyParser from "body-parser";
 import { brotliDecompress } from "zlib";
+import { UserDAO_2 } from "./UserDB/db_2";
+import { UserDAO_3 } from "./UserDB/db_3";
 
 const bcrypt = require("bcrypt");
 const cors = require("cors");
@@ -48,13 +50,14 @@ app.listen(3002, () => {
 });
 
 app.get("/", (req, res) => {
+  console.log("hello world");
   res.send("hello world");
 });
 
 app.use(
   "/getByFileName",
   createProxyMiddleware({
-    target: "http://localhost:4000",
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getByFileName`]: '/getByFileName',
@@ -65,26 +68,26 @@ app.use(
 app.use(
   "/getByFileId",
   createProxyMiddleware({
-    target: "http://localhost:4000",
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
   })
 );
 
 app.use(
-  "/addFile",
+  "/upload",
   createProxyMiddleware({
-    target: "http://localhost:4000",
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
-    pathRewrite: {
-      [`^/addFile`]: "/upload",
-    },
+    // pathRewrite: {
+    //   [`^/addFile`]: "/upload",
+    // },
   })
 );
 
 app.use(
   "/getFileList",
   createProxyMiddleware({
-    target: "http://localhost:4000",
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getFileList`]: '/upload',
@@ -95,7 +98,7 @@ app.use(
 app.use(
   "/getFileById",
   createProxyMiddleware({
-    target: "http://localhost:4000",
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getFileList`]: '/upload',
@@ -106,7 +109,7 @@ app.use(
 app.use(
   "/deleteFileById",
   createProxyMiddleware({
-    target: "http://localhost:4000",
+    target: "http://fileserver_1:4000",
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getFileList`]: '/upload',
@@ -185,10 +188,10 @@ app.post("/addFileServer", (req, res) => {
 // adds user to the userDB
 app.post("/registerUser", async (req, res) => {
   let user = req.body;
-
+  console.log(user);
   // generate userID
-  const dateStr: any = Date.now().toString(36);
-  const randomStr: any = Math.random().toString(36).substring(2, 8);
+  const dateStr: any = Date.now().toString(36); // convert num to base 36 and stringify
+  const randomStr: any = Math.random().toString(36).substring(2, 8); // start at index 2 to skip decimal point
   const id = `${dateStr}-${randomStr}`;
   user.id = id;
 
@@ -198,10 +201,31 @@ app.post("/registerUser", async (req, res) => {
   user.password = hashedpw;
 
   console.log(user);
+
   try {
-    const udb = new UserDAO();
+    const udb = new UserDAO_1();
     udb.addUser(user, (rows: any) => {
       res.status(200).json(rows);
+
+      // update replica dbs upon successful update to master db
+      try {
+        const udb_2 = new UserDAO_2();
+        udb_2.addUser(user, (rows: any) => {
+          console.log("userdb2 updated");
+        });
+        udb_2.end();
+      } catch (ex) {
+        console.log("userdb2 update err: " + ex || "undefined");
+      }
+      try {
+        const udb_3 = new UserDAO_3();
+        udb_3.addUser(user, (rows: any) => {
+          console.log("userdb3 updated");
+        });
+        udb_3.end();
+      } catch (ex) {
+        console.log("userdb3 update err: " + ex || "undefined");
+      }
     });
     udb.end();
   } catch (ex) {
@@ -212,11 +236,15 @@ app.post("/registerUser", async (req, res) => {
   }
 });
 
+function generateAccessToken(payload: any) {
+  return jwt.sign(payload, "secretKey", { expiresIn: "600s" });
+}
+
 // checks if user exists in the userDB
 app.post("/login", async (req, res) => {
   let user = req.body;
   try {
-    const udb = new UserDAO();
+    const udb = new UserDAO_1();
     udb.getUser(user.email, async (rows: any) => {
       const result = rows[0];
       // check if user exists
@@ -241,14 +269,35 @@ app.post("/login", async (req, res) => {
       // console.log("Email: " + user.email);
       // console.log("Payload: " + payload);
 
-      const udb2 = new UserDAO();
+      const udb2 = new UserDAO_1();
       udb2.addRefreshToken(result.id, refreshToken, (rows: any) => {
-        return res.status(200).json({
+        res.status(200).json({
           userID: result.id,
           accessToken: accessToken,
           refreshToken: refreshToken,
         });
+
+        // update replica dbs upon successful update to master db
+        try {
+          const udb_2 = new UserDAO_2();
+          udb_2.addRefreshToken(result.id, refreshToken, (rows: any) => {
+            console.log("userdb2 updated");
+          });
+          udb_2.end();
+        } catch (ex) {
+          console.log("userdb2 update err: " + ex || "undefined");
+        }
+        try {
+          const udb_3 = new UserDAO_3();
+          udb_3.addRefreshToken(result.id, refreshToken, (rows: any) => {
+            console.log("userdb3 updated");
+          });
+          udb_3.end();
+        } catch (ex) {
+          console.log("userdb3 update err: " + ex || "undefined");
+        }
       });
+      udb2.end();
     });
     udb.end();
   } catch (ex) {
@@ -262,9 +311,31 @@ app.post("/login", async (req, res) => {
 app.delete("/logout", (req, res) => {
   // refreshTokens = refreshTokens.filter((token:any) => token !== req.body.token)
   try {
-    const udb = new UserDAO();
+    const udb = new UserDAO_1();
     udb.removeRefreshToken(req.body.id, (rows: any) => {
-      return res.status(200).send({message: "logout successful, refresh token deleted"});
+      res
+        .status(200)
+        .send({ message: "logout successful, refresh token deleted" });
+
+      // update replica dbs upon successful update to master db
+      try {
+        const udb_2 = new UserDAO_2();
+        udb_2.removeRefreshToken(req.body.id, (rows: any) => {
+          console.log("userdb2 updated");
+        });
+        udb_2.end();
+      } catch (ex) {
+        console.log("userdb2 update err: " + ex || "undefined");
+      }
+      try {
+        const udb_3 = new UserDAO_3();
+        udb_3.removeRefreshToken(req.body.id, (rows: any) => {
+          console.log("userdb3 updated");
+        });
+        udb_3.end();
+      } catch (ex) {
+        console.log("userdb3 update err: " + ex || "undefined");
+      }
     });
     udb.end();
   } catch (ex) {
@@ -275,24 +346,20 @@ app.delete("/logout", (req, res) => {
   }
 });
 
-function generateAccessToken(payload: any) {
-  return jwt.sign(payload, 'secretKey', {expiresIn: '1m'});
-}
-
 app.post("/token", (req, res) => {
   const refreshToken = req.body.token;
   const userID = req.body.userID;
   if (refreshToken == null)
     return res.status(401).send({ error: "no refresh token provided" });
   try {
-    const udb = new UserDAO();
+    const udb = new UserDAO_1();
     udb.getRefreshToken(userID, (rows: any) => {
       if (rows[0].refreshToken == null)
         return res.status(403).send({ error: "invalid refresh token" });
       jwt.verify(refreshToken, "refreshSecretKey", (err: any, user: any) => {
         if (err)
           return res.status(403).send({ error: "invalid refresh token" });
-        
+
         const accessToken = generateAccessToken({ id: userID });
         res.status(200).json({ accessToken: accessToken });
       });
@@ -325,20 +392,20 @@ const files = [
   },
 ];
 
-app.get('/fetchFiles', authenticateToken, (req, res) => {
+app.get("/fetchFiles", authenticateToken, (req, res) => {
   // @ts-ignore
-  res.json(files.filter(files => files.ID === req.payload.id))
-})
+  res.json(files.filter((files) => files.ID === req.payload.id));
+});
 
-function authenticateToken(req:Request, res:Response, next:NextFunction) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]
-  if(token == null) return res.status(401).send("no access token provided");
+function authenticateToken(req: Request, res: Response, next: NextFunction) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.status(401).send("no access token provided");
 
-  jwt.verify(token, 'secretKey', (err:any, payload:any) => {
-      if(err) return res.status(403).send(err);
-      // @ts-ignore
-      req.payload = payload;
-      next();
-  })
+  jwt.verify(token, "secretKey", (err: any, payload: any) => {
+    if (err) return res.status(403).send(err);
+    // @ts-ignore
+    req.payload = payload;
+    next();
+  });
 }
