@@ -69,6 +69,7 @@ app.get("/getFileById/:id", (req: Request, res: Response) => {
   // res.download(__dirname + '/testdownload.txt')
 
   let id: number = parseInt(req.params.id);
+  console.log("GET THE CURRENT ID:"+id);
   try {
     const db = new FileMetadataServerDAO_1();
     db.getByFileId(id, (rows: any) => {
@@ -124,8 +125,8 @@ app.get("/getByFileName", (req: Request, res: Response) => {
 //     })
 // })
 
-app.post("/upload", authenticateToken, upload.single("uploadfile"), async (req, res) => {
-  console.log(req);
+app.post("/upload", authenticateToken, upload.single("file"), async (req, res) => {
+  console.log("This is test breakpoint"+req);
   if (!req.file) {
     res.status(400).send({ error: "No file attached" });
     return;
@@ -196,6 +197,7 @@ app.post("/deleteByFileName", (req: Request, res: Response) => {
 
 app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Response) => {
   let id: number = parseInt(req.params.id);
+  console.log("GET THE CURRENT ID:"+id);
   try {
     const db = new FileMetadataServerDAO_1();
     db.getByFileId(id, (rows: any) => {

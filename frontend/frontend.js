@@ -1,10 +1,10 @@
 
 let generalRequest =new axios.create({
-    baseURL:"http://localhost:3002/",
+    baseURL:"http://localhost:5000/",
     crossDomain: true
 })
 let requestConfig = {
-    baseURL:"http://localhost:3002/",
+    baseURL:"http://localhost:5000/",
     crossDomain: true
 }
 //unit is in second
@@ -32,6 +32,12 @@ function userRegister(){
     let userName = document.querySelector("#name").value
     let passWord = document.querySelector("#pass").value;
     let email = document.querySelector("#email").value;
+    let datas={
+        email: email,
+        password: passWord,
+        name: userName,
+        isAdmin: false
+    }
     console.log(typeof(passWord),typeof(userName),typeof(email));
     generalRequest({
         method: 'post',
@@ -39,12 +45,7 @@ function userRegister(){
         headers: {
             'content-type': "application/json"
         },
-        data: {
-            email: email,
-            password: passWord,
-            name: userName,
-            isAdmin: false
-        },
+        data:JSON.stringify(datas)
     }).then(res=>{
         if(res.status >= 200 && res.status < 300){
             alert("Register succeed");
@@ -148,20 +149,17 @@ function checkisLogin() {
 
 function getFile(){
     let fileid = document.querySelector("#getFileName").value;
-    generalRequest({
-        method:'GET',
-        url:"getFileById/"+fileid,
-        responseType: 'arraybuffer',
-        /*
-        params: {
-            id:fileid
-        }*/
+        generalRequest({
+            method:'GET',
+            url:"getFileById/"+fileid,
+            responseType: 'arraybuffer'
+
     }).then(res=>{
                 if(res.status >= 200 && res.status < 300){
                     const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
                     console.log(res.data.length);
                     const source = document.createElement('a'); //a tag for downloading
-                    source.download = fileName;
+                    source.download = fileid;
                     source.href = downloadUrl;
                     document.body.appendChild(source);
                     source.click();
@@ -176,6 +174,7 @@ function getFile(){
 *Get FileList from server
 *
  */
+//GETFILELIST： WORK（Update）
 function getFileList(){
     const fileList =  document.querySelector("#fileList");
     generalRequest({
@@ -212,7 +211,7 @@ function getFileList(){
 * upload file on server
 * can be done by login user only
 * */
-//UPLOADFILE: WORK
+//UPLOADFILE: WORK (Update)
 function uploadFile(){
 
     let file =document.querySelector("#uploadFile").files[0]
@@ -227,7 +226,7 @@ function uploadFile(){
     if (loginUser){
         const newRequest = axios.create(requestConfig);
         newRequest.interceptors.request.use(addJWT);
-        newRequest.post('addFile',formData,{
+        newRequest.post('upload',formData,{
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
