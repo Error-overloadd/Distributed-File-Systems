@@ -131,7 +131,7 @@ services:
       target: production
     environment:
       - NAME=fileserver_2
-      - ACCESS_URL=fileserver_1:4001
+      - ACCESS_URL=fileserver_2:4001
     depends_on:
       - db_1
       - db_2
@@ -148,7 +148,7 @@ services:
       target: production
     environment:
       - NAME=fileserver_3
-      - ACCESS_URL=fileserver_1:4002
+      - ACCESS_URL=fileserver_3:4002
     depends_on:
       - db_1
       - db_2
