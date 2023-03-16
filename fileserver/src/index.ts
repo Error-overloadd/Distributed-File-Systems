@@ -1,10 +1,11 @@
 import express, { NextFunction, Request, response, Response } from "express";
 import path from "path";
 import * as fs from "fs";
-import { base64ToFile, fileToBase64 } from "./fileUtil";
 import { FileMetadataServerDAO_1 } from "./FileDB/db_1";
 import { FileMetadataServerDAO_2 } from "./FileDB/db_2";
 import { FileMetadataServerDAO_3 } from "./FileDB/db_3";
+import { connectQueue, sendMessage } from "./rabbitmq/broker";
+import { STORAGE_PATH } from "./constants";
 
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
@@ -16,9 +17,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: (req: any, file: any, cb: any) => {
-    const path = "./storage/";
-    fs.mkdirSync(path, { recursive: true });
-    cb(null, path); // setting path
+    // const path = "./storage/";
+    fs.mkdirSync(STORAGE_PATH, { recursive: true });
+    cb(null, STORAGE_PATH); // setting path
   },
   filename: (req: any, file: any, cb: any) => {
     const extname = path.extname(file.originalname);
@@ -33,13 +34,20 @@ const upload = multer({ storage });
 //         }
 //     }
 // }
+export const NAME = process.env.NAME || "Unknown FS";
+const ACCESS_URL = process.env.ACCESS_URL || "";
 
-app.listen(4000, () => {
-  console.log("server started");
+connectQueue().then(() => {
+  app.listen(4000, () => {
+    console.log("server started");
+    console.log(NAME);
+  });
 });
 
 app.get("/checkApi", (req: Request, res: Response) => {
   res.status(200).send("API running");
+  console.log('sending');
+  sendMessage(JSON.stringify({ message: "checkApi Hit"}));
 });
 
 app.get("/getFileList", (req: Request, res: Response) => {
@@ -133,7 +141,8 @@ app.post("/upload", authenticateToken, upload.single("file"), async (req, res) =
   try {
     const db = new FileMetadataServerDAO_1();
     db.addFile(fileObj, (rows: any) => {
-      res.status(200).send(rows);
+      res.status(200).send({id: rows.insertId});
+      sendMessage({task: "NewFile", id: rows.insertId, fileObj, address: `http://${ACCESS_URL}`});
 
       // update slave dbs
       try {
@@ -200,6 +209,7 @@ app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Respons
         return;
       }
       let filePath: string = rows[0]["path"];
+      let fileObj: string = rows[0];
       fs.unlink(filePath, (err: any) => {
         if (err) {
           res.status(500).send({
@@ -211,7 +221,7 @@ app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Respons
         try {
           db.deleteByFileId(id, (rows: any) => {
             res.status(200).send({ message: "Deleted file" });
-
+            sendMessage({task: "DeleteFile", fileObj: fileObj});
             // update slave dbs
             try {
               const db_2 = new FileMetadataServerDAO_2();
