@@ -46,7 +46,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(3002, () => {
-  console.log("server started, listening at port 3002");
+  console.log("server started, listening at port 5000");
 });
 
 app.get("/", (req, res) => {

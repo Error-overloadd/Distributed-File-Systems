@@ -8,7 +8,7 @@ th, td {
     text-align: left;
 }
 
-/*
+
 body {
     background-color: powderblue;
   }
@@ -22,24 +22,34 @@ body {
  height: 400px;
 
 }
-.user_interface .input_box{
-    margin-top: 30px;
-}
-.user_interface .input_box .username #username{
-    margin-top: 60px;
-    line-height: 45px;
 
+/*.user_interface .input_box{*/
+/*    margin-top: 30px;*/
+/*}*/
+/*.user_interface .input_box .username #username{*/
+/*    margin-top: 64px;*/
+/*    line-height: 45px;*/
+
+/*    border:none;*/
+/*    background: none;*/
+/*    border-bottom: #FFFFFF 2px solid;*/
+/*    padding: 5px 10px;*/
+/*    outline: none;*/
+/*    color:#FFFFFF*/
+/*}*/
+#username{
     border:none;
-    background: none;
-    border-bottom: #FFFFFF 2px solid;
-    padding: 5px 10px;
-    outline: none;
-    color:#FFFFFF
+    margin-top: 64px;
+    line-height: normal;
 }
-
-.user_interface #register{
+#pass{
+    border:none;
+    margin-top: 62px;
+    line-height: normal;
+}
+#register{
     line-height: 30px;
-    margin-top:30px;
+    margin-top:60px;
     width: 130px;
     height: 30px;
     border-radius: 13px;
@@ -48,9 +58,9 @@ body {
     color: black;
     text-align: center;
 }
-.user_interface  #login{
+ #login{
     line-height: 30px;
-    margin-top:60px;
+    margin-top:65px;
     width: 130px;
     height: 30px;
     border-radius: 13px;
@@ -63,6 +73,17 @@ body {
     line-height: 30px;
     border-radius: auto;
     color: black;
+}
+#logout{
+    border-radius: auto;
+    line-height: 30px;
+    margin-top:70px;
+    width: 130px;
+    height: 30px;
+    border-radius: 13px;
+}
+#loginStatus{
+    margin-top:90px;
 }
 .fileInterface .uploadFile .deleteFile{
     background-color: aquamarine;}
@@ -89,4 +110,3 @@ body {
     margin: 0 auto;
     width: auto;
 }
- */
