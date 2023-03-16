@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import { brotliDecompress } from "zlib";
 import { UserDAO_2 } from "./UserDB/db_2";
 import { UserDAO_3 } from "./UserDB/db_3";
+import { UserController } from "./Controller/UserController";
 
 const bcrypt = require("bcrypt");
 const cors = require("cors");
@@ -202,38 +203,9 @@ app.post("/registerUser", async (req, res) => {
 
   console.log(user);
 
-  try {
-    const udb = new UserDAO_1();
-    udb.addUser(user, (rows: any) => {
-      res.status(200).json(rows);
+  let uc = new UserController()
+  uc.addUser(res,user)
 
-      // update replica dbs upon successful update to master db
-      try {
-        const udb_2 = new UserDAO_2();
-        udb_2.addUser(user, (rows: any) => {
-          console.log("userdb2 updated");
-        });
-        udb_2.end();
-      } catch (ex) {
-        console.log("userdb2 update err: " + ex || "undefined");
-      }
-      try {
-        const udb_3 = new UserDAO_3();
-        udb_3.addUser(user, (rows: any) => {
-          console.log("userdb3 updated");
-        });
-        udb_3.end();
-      } catch (ex) {
-        console.log("userdb3 update err: " + ex || "undefined");
-      }
-    });
-    udb.end();
-  } catch (ex) {
-    res
-      .status(500)
-      .send({ error: "Could not upload file", message: ex || "Unknown" });
-    console.log("err: " + ex || "undefined");
-  }
 });
 
 function generateAccessToken(payload: any) {
