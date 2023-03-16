@@ -1,16 +1,16 @@
 ### register user
-POST http://localhost:3002/registerUser
+POST http://localhost:5000/registerUser
 Content-Type: application/json
 
 {
-  "name":"Adam Adamson",
-  "email":"adam@test.com",
+  "name":"Ben Adamson",
+  "email":"ben@test.com",
   "password":"adam123",
   "isAdmin":true
 }
 
 ### user login, generate access token & refresh token
-POST http://localhost:3002/login
+POST http://localhost:5000/login
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ### generate new access token using provided refresh token during login
-POST http://localhost:3002/token
+POST http://localhost:5000/token
 Content-Type: application/json
 
 {
@@ -29,7 +29,7 @@ Content-Type: application/json
 }
 
 ### logout, delete refresh token provided during login
-DELETE  http://localhost:3002/logout
+DELETE  http://localhost:5000/logout
 Content-Type: application/json
 
 {
@@ -37,5 +37,5 @@ Content-Type: application/json
 }
 
 ### fetch posts
-GET http://localhost:3002/fetchFiles
+GET http://localhost:5000/fetchFiles
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMDByeXJnLXV5MnRxZSIsImlhdCI6MTY3ODMyMjQyMywiZXhwIjoxNjc4MzIyNDgzfQ.-tTLgeHIwZ10LetddtPCfZFDaQ4wzLABPeNEqxeIYiI

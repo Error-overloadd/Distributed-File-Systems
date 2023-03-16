@@ -35,7 +35,7 @@ export class UserController{
     
 
     // sql query to add user to database for registration
-    addUser(res: Response, user: any){
+    async addUser(res: Response, user: any){
         // let dbm = new DBmanager("userDB")
         
         // try {      
@@ -89,11 +89,14 @@ export class UserController{
         //     })
   
         let dbm = new DBmanager("userDB")
-        let connections = dbm.getRunningConnections()
+        let connections = await dbm.getRunningConnections()
         let result_rows
+        
+        console.log("\nlength = " + connections.length);
+        
+
         connections.forEach(function(connection){
           let udb = new UserDAO(connection);
-          
           
           try{
             udb.addUser(user, (rows: any) => {
