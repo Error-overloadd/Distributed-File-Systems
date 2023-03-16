@@ -45,6 +45,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+const FILE_SERVER_TARGET = "nginx:80/fs";
+
 app.listen(3002, () => {
   console.log("server started, listening at port 3002");
 });
@@ -57,7 +59,7 @@ app.get("/", (req, res) => {
 app.use(
   "/checkApi",
   createProxyMiddleware({
-    target: "http://fileserver_1:4000",
+    target: `http://${FILE_SERVER_TARGET}`,
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getByFileName`]: '/getByFileName',
@@ -69,7 +71,7 @@ app.use(
 app.use(
   "/getByFileName",
   createProxyMiddleware({
-    target: "http://fileserver_1:4000",
+    target: `http://${FILE_SERVER_TARGET}`,
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getByFileName`]: '/getByFileName',
@@ -80,7 +82,7 @@ app.use(
 app.use(
   "/getByFileId",
   createProxyMiddleware({
-    target: "http://fileserver_1:4000",
+    target: `http://${FILE_SERVER_TARGET}`,
     changeOrigin: true,
   })
 );
@@ -88,7 +90,7 @@ app.use(
 app.use(
   "/upload",
   createProxyMiddleware({
-    target: "http://fileserver_1:4000",
+    target: `http://${FILE_SERVER_TARGET}`,
     changeOrigin: true,
     // pathRewrite: {
     //   [`^/addFile`]: "/upload",
@@ -99,7 +101,7 @@ app.use(
 app.use(
   "/getFileList",
   createProxyMiddleware({
-    target: "http://fileserver_1:4000",
+    target: `http://${FILE_SERVER_TARGET}`,
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getFileList`]: '/upload',
@@ -110,7 +112,7 @@ app.use(
 app.use(
   "/getFileById",
   createProxyMiddleware({
-    target: "http://fileserver_1:4000",
+    target: `http://${FILE_SERVER_TARGET}`,
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getFileList`]: '/upload',
@@ -121,7 +123,7 @@ app.use(
 app.use(
   "/deleteFileById",
   createProxyMiddleware({
-    target: "http://fileserver_1:4000",
+    target: `http://${FILE_SERVER_TARGET}`,
     changeOrigin: true,
     // pathRewrite: {
     //     [`^/getFileList`]: '/upload',
