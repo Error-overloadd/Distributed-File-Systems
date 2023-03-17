@@ -8,7 +8,7 @@ let requestConfig = {
     crossDomain: true
 }
 //unit is in second
-const expiredTime = 50;
+const expiredTime = 600;
 
 let loginUser = false;
 
@@ -128,6 +128,8 @@ function checkisLogin() {
         if (timeDiffInSec < expiredTime){
             const email = localStorage.getItem('email');
             loginUser = true;
+            localStorage.setItem('tokenTime','0');
+            updateToken();
             document.querySelector("#loginStatus").innerHTML="login as "+ email;
         }else{
             logout();
@@ -152,14 +154,16 @@ function getFile(){
         generalRequest({
             method:'GET',
             url:"getFileById/"+fileid,
-            responseType: 'arraybuffer'
+            responseType: 'blob'
 
     }).then(res=>{
                 if(res.status >= 200 && res.status < 300){
                     const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
-                    console.log(res.data.length);
                     const source = document.createElement('a'); //a tag for downloading
-                    source.download = fileid;
+                    const fileName = res.headers['content-disposition'].match(/filename="?([^"]+)"?/)[1];
+                    console.log(fileName);
+                    console.log(encodeURIComponent(fileName));
+                    source.download = encodeURIComponent(fileName);
                     source.href = downloadUrl;
                     document.body.appendChild(source);
                     source.click();
@@ -270,7 +274,7 @@ function deleteFile(){
         }).then(res=>{
             if(res.status >= 200 && res.status < 300){
                 console.log("file deleted");
-                document.querySelector("#deleteFileStatus").innerHTML=res.data;
+                document.querySelector("#deleteFileStatus").innerHTML="file deleted";
             }
         }).catch(function (error){
             document.querySelector("#deleteFileStatus").innerHTML=error.message;

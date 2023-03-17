@@ -80,6 +80,7 @@ app.get("/getFileById/:id", (req: Request, res: Response) => {
         return;
       }
       let filePath: string = rows[0]["path"];
+      res.set('Access-Control-Expose-Headers', 'Content-Disposition');
       res.download(filePath);
     });
     db.end();
