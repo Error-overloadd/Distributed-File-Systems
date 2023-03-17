@@ -8,7 +8,7 @@ let requestConfig = {
     crossDomain: true
 }
 //unit is in second
-const expiredTime = 600;
+const expiredTime = 480;
 
 let loginUser = false;
 

@@ -80,7 +80,9 @@ app.get("/getFileById/:id", (req: Request, res: Response) => {
         return;
       }
       let filePath: string = rows[0]["path"];
+      //allow client to get fileName under CORS
       res.set('Access-Control-Expose-Headers', 'Content-Disposition');
+      //res.setHeader('Content-Disposition', 'attachment; filename="test.test"');
       res.download(filePath);
     });
     db.end();
