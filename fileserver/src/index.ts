@@ -60,8 +60,8 @@ app.get("/getFileList", (req: Request, res: Response) => {
   } catch (ex: any) {
     console.log(ex);
     res
-      .status(500)
-      .send({ message: "Something went wrong.", error: ex || "undefined" });
+        .status(500)
+        .send({ message: "Something went wrong.", error: ex || "undefined" });
   }
 });
 
@@ -75,8 +75,8 @@ app.get("/getFileById/:id", (req: Request, res: Response) => {
     db.getByFileId(id, (rows: any) => {
       if (rows.length === 0) {
         res
-          .status(404)
-          .send({ error: "File Not found", message: "No file object found" });
+            .status(404)
+            .send({ error: "File Not found", message: "No file object found" });
         return;
       }
       let filePath: string = rows[0]["path"];
@@ -170,8 +170,8 @@ app.post("/upload", authenticateToken, upload.single("file"), async (req, res) =
     db.end();
   } catch (ex: any) {
     res
-      .status(500)
-      .send({ error: "Could not upload file", message: ex || "Unknown" });
+        .status(500)
+        .send({ error: "Could not upload file", message: ex || "Unknown" });
     console.log("err: " + ex || ex.Message || "undefined");
     fs.unlink(`${req.file.destination}/${req.file.filename}`, (err: any) => {
       // if(err) throw err;
@@ -207,8 +207,8 @@ app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Respons
       console.log(rows);
       if (rows.length === 0) {
         res
-          .status(400)
-          .send({ error: "Bad Request", message: "No file object found" });
+            .status(400)
+            .send({ error: "Bad Request", message: "No file object found" });
         return;
       }
       let filePath: string = rows[0]["path"];
@@ -234,7 +234,7 @@ app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Respons
               db_2.end();
             } catch (ex: any) {
               console.log(
-                "filedb2 update err: " + ex || ex.Message || "undefined"
+                  "filedb2 update err: " + ex || ex.Message || "undefined"
               );
             }
             try {
@@ -245,7 +245,7 @@ app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Respons
               db_3.end();
             } catch (ex: any) {
               console.log(
-                "filedb3 update err: " + ex || ex.Message || "undefined"
+                  "filedb3 update err: " + ex || ex.Message || "undefined"
               );
             }
             db.end();
