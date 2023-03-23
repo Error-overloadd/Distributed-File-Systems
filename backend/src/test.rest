@@ -39,3 +39,14 @@ Content-Type: application/json
 ### fetch posts
 GET http://localhost:3002/fetchFiles
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMDByeXJnLXV5MnRxZSIsImlhdCI6MTY3ODMyMjQyMywiZXhwIjoxNjc4MzIyNDgzfQ.-tTLgeHIwZ10LetddtPCfZFDaQ4wzLABPeNEqxeIYiI
+
+### my new user test
+POST http://localhost:4101/registerUser
+Content-Type: application/json
+
+{
+  "name":"Adam Adamson",
+  "email":"qwe@qwe.com",
+  "password":"qwer123",
+  "isAdmin":true
+}

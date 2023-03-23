@@ -1,8 +1,9 @@
 var mysql = require('mysql2');
-export class UserDAO_1{
+export class UserDAO_3{
 
     dbConnection = mysql.createConnection({
-        host: "dfs_db_1",
+        //host: "dfs_db_3",
+        host:"172.28.0.3",
         user: "root",
         password: "dfs123",
         port:'3306',
@@ -14,7 +15,7 @@ export class UserDAO_1{
             if (err){
                 throw err;
             }  
-            console.log('connected to user db 1');});
+            console.log('connected to user db3');});
     }
 
     // the following piece of code extacts the # of rows in the user table (to be used for id generation)

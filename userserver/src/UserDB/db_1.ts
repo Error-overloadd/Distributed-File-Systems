@@ -2,7 +2,8 @@ var mysql = require('mysql2');
 export class UserDAO_1{
 
     dbConnection = mysql.createConnection({
-        host: "dfs_db_1",
+        //host: "dfs_db_1",
+        host:"172.28.0.4",
         user: "root",
         password: "dfs123",
         port:'3306',

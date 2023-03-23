@@ -5,7 +5,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import { UserDAO_1 } from "./UserDB/db_1";
 import bodyParser from "body-parser";
-import { brotliDecompress } from "zlib";
+//import { brotliDecompress } from "zlib";
 import { UserDAO_2 } from "./UserDB/db_2";
 import { UserDAO_3 } from "./UserDB/db_3";
 
@@ -40,10 +40,10 @@ const ms = new MainServer();
 
 app.use(cors());
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: '1gb' }));
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ limit: '1gb',extended: false }));
 
 const FILE_SERVER_TARGET = "nginx:80/fs";
 
@@ -196,7 +196,49 @@ app.post("/addFileServer", (req, res) => {
   //     res.json(rows);
   // });
 });
+//*******************************************************************
+// USER PART
+//*******************************************************************
+import axios from 'axios';
+const userserverAdd = 'http://localhost:4101/'
+app.use("/registerUser",async(req,res)=>{
+    try{
+        const response = await axios.post(userserverAdd+'registerUser',req.body);
+        res.json(response.data);
+    }catch(error){
+        res.status(500).json({message:"error"});
+    }
+})
 
+app.use("/login",async(req,res)=>{
+    try{
+        const response = await axios.post(userserverAdd+'login',req.body);
+        res.json(response.data);
+    }catch(error){
+        res.status(500).json({message:"error"});
+    }
+
+})
+
+app.use("/logout",async(req,res)=>{
+    try{
+        const response = await axios.delete(userserverAdd+'logout',req.body);
+        res.json(response.data);
+    }catch(error){
+        res.status(500).json({message:"error"});
+    }
+})
+
+app.use("/token",async(req,res)=>{
+    try{
+        const response = await axios.post(userserverAdd+'token',req.body);
+        res.json(response.data);
+    }catch(error){
+        res.status(500).json({message:"error"});
+    }
+})
+
+/* Previous code of user part, moved to sepreated file now.
 // AUTH START
 
 // adds user to the userDB
@@ -387,7 +429,7 @@ app.post("/token", (req, res) => {
     console.log("err: " + ex || "undefined");
   }
 });
-
+*/
 // put below programs to other server (file managing)
 // sample usage of authenticateToken function
 

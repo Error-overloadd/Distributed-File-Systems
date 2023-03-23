@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
     cb(null, file.originalname); // setting file name
   },
 });
-const upload = multer({ storage });
+const upload = multer({ storage, limits: { fileSize: 1024 * 1024 * 1024 } });
 // declare global {
 //     namespace Express {
 //         interface Request {
