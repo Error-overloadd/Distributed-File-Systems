@@ -145,7 +145,7 @@ app.post("/upload", authenticateToken, upload.single("file"), async (req, res) =
     const db = new FileMetadataServerDAO_1();
     db.addFile(fileObj, (rows: any) => {
       res.status(200).send({id: rows.insertId});
-      sendMessage({task: "NewFile", id: rows.insertId, fileObj, address: `http://${ACCESS_URL}`});
+      sendMessage({task: "NewFile", id: rows.insertId, fileObj, address: `http://${ACCESS_URL}/getFileById/${rows.insertId}`, source: NAME});
 
       // update slave dbs
       try {
@@ -224,7 +224,7 @@ app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Respons
         try {
           db.deleteByFileId(id, (rows: any) => {
             res.status(200).send({ message: "Deleted file" });
-            sendMessage({task: "DeleteFile", fileObj: fileObj});
+            sendMessage({task: "DeleteFile", fileObj: fileObj, source: NAME});
             // update slave dbs
             try {
               const db_2 = new FileMetadataServerDAO_2();
