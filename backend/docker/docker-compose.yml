@@ -169,4 +169,52 @@ services:
       - backendserver_2
       - backendserver_3
       networks:
+      - dfsnetwork
+  dao_1:
+    container_name: dfs_dao_1
+    build: 
+      context: ../../dao
+      target: production
+    ports: 
+      - 5100:5100
+    environment:
+      - CONTAINER_NAME=dfs_db_1   
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+      - rabbitmq    
+    networks:
       - dfsnetwork 
+  dao_2:
+    container_name: dfs_dao_2
+    build: 
+      context: ../../dao
+      target: production
+    environment:
+      - CONTAINER_NAME=dfs_db_2         
+    ports: 
+      - 5200:5100
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+      - rabbitmq    
+    networks:
+      - dfsnetwork
+  dao_3:
+    container_name: dfs_dao_3
+    build: 
+      context: ../../dao
+      target: production
+    environment:
+      - CONTAINER_NAME=dfs_db_3         
+    ports: 
+      - 5300:5100
+    depends_on:
+      - db_1
+      - db_2
+      - db_3
+      - rabbitmq      
+    networks:
+      - dfsnetwork                  
