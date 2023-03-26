@@ -84,6 +84,9 @@ export class FileMetadataServerDAO{
     }
     
     addFile(fileObject: any, callback: Function){
+        console.log("dao.addFIle############################")
+        console.log(fileObject);
+        console.log("########################################")
         this.dbConnection.query(`INSERT INTO dds_file(name, size, content_type, created_date, fileserver, path) VALUES ('${fileObject.name}', ${fileObject.size}, '${fileObject.content_type}', NOW(), ${fileObject.serverId}, '${fileObject.path}');`, (err: any,rows: any) => {
             if(err) throw err;
           

@@ -199,15 +199,13 @@ app.post("/addFileServer", (req, res) => {
 
 
 // AUTH START
+//FORCE TALK TO dao1 by now, fix after dealing with nginx
 import axios from 'axios';
-const userserverAdd = 'http://dao_1:5100/'
+const dbAdd = 'http://dao_1:5100/'
+//FORCE TALK TO dao1 by now, fixed after dealing with nginx
 app.use("/registerUser",async(req,res)=>{
   try{
-    const response = await axios.post(userserverAdd+'registerUser',req.body,{
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    const response = await axios.post(dbAdd+'registerUser',req.body);
     res.json(response.data);
   }catch(error){
     res.status(500).json({message:"error\n"+error});
@@ -216,7 +214,7 @@ app.use("/registerUser",async(req,res)=>{
 
 app.use("/login",async(req,res)=>{
   try{
-    const response = await axios.post(userserverAdd+'login',req.body);
+    const response = await axios.post(dbAdd+'login',req.body);
     res.json(response.data);
   }catch(error){
     res.status(500).json({message:"error\n"+error});
@@ -226,7 +224,7 @@ app.use("/login",async(req,res)=>{
 
 app.use("/logout",async(req,res)=>{
   try{
-    const response = await axios.delete(userserverAdd+'logout',req.body);
+    const response = await axios.delete(dbAdd+'logout',req.body);
     res.json(response.data);
   }catch(error){
     res.status(500).json({message:"error\n"+error});
@@ -235,7 +233,7 @@ app.use("/logout",async(req,res)=>{
 
 app.use("/token",async(req,res)=>{
   try{
-    const response = await axios.post(userserverAdd+'token',req.body);
+    const response = await axios.post(dbAdd+'token',req.body);
     res.json(response.data);
   }catch(error){
     res.status(500).json({message:"error\n"+error});

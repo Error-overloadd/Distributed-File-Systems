@@ -184,7 +184,7 @@ app.get("/getFileById/:id", (req, res) => {
                 serverId: rows[0]["serverId"],
                 path: rows[0]["path"]
             };
-            res.status(200).json(stringify(fileObj));
+            res.status(200).json(fileObj);
         });
         fdb.end()
         }catch (ex: any) {
@@ -205,6 +205,8 @@ app.post("/upload", (req, res) => {
         serverId: req.body.serverId,
         path: req.body.path
     };
+    console.log(fileObj);
+
     try{
         const fdb = new FileMetadataServerDAO();
         fdb.addFile(fileObj, (rows: any) => {

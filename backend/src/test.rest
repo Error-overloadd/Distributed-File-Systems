@@ -4,8 +4,8 @@ Content-Type: application/json
 
 {
   "name":"Adam Adamson",
-  "email":"adam@test.com",
-  "password":"adam123",
+  "email":"qwer@qwer.com",
+  "password":"qwer123",
   "isAdmin":true
 }
 
