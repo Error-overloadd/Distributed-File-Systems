@@ -23,8 +23,8 @@ POST http://localhost:3002/token
 Content-Type: application/json
 
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMnQwazFkLWF3M3VhZyIsImlhdCI6MTY3ODQ2ODg1Nn0.1PFdYtnctlErRrjmNVEb1OWXmqaXvl2vc_L7wOg-_jY",
-  "userID": "lf2t0k1d-aw3uag"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmcDVtc3VoLTFqaHdhayIsImlhdCI6MTY3OTgyMDY5Mn0.GuXtKE9SJY_nb4sncykAS704uI2H0BCw9nCR1AxhVhA",
+  "userID": "lfp5msuh-1jhwak"
 
 }
 
@@ -79,4 +79,4 @@ Content-Type: application/json
 }
 
 ### check alive
-GET http://localhost:5100/
+GET http://0.0.0.0:5100/
