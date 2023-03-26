@@ -1,10 +1,12 @@
 import express from "express";
 import { FileMetadataServerDAO } from "./fileDAO";
 import { UserDAO } from "./userDAO";
-//###########
+//USER IMPORT
 import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser"
+import {stringify} from "querystring";
+
 //#############
 const app = express();
 //#############
@@ -149,11 +151,89 @@ app.post("/token", (req, res) => {
 //FILE DB
 //########################################################################
 
-app.post("/upload", (req, res) => {
-
-
+app.get("/getFileList", (req, res) => {
+    try {
+        const fdb = new FileMetadataServerDAO();
+        fdb.getAllFiles((rows: any) => {
+            res.status(200).send(rows);
+        });
+        fdb.end();
+    } catch (ex: any) {
+        console.log(ex);
+        res
+            .status(500)
+            .send({ message: "Something went wrong while getFileList.", error: ex || "undefined" });
+    }
 });
 
+app.get("/getFileById/:id", (req, res) => {
+    let id: number = parseInt(req.params.id);
+    try {
+        const fdb = new FileMetadataServerDAO();
+        fdb.getByFileId(id, (rows: any) => {
+            if (rows.length === 0) {
+                res
+                    .status(404)
+                    .send({error: "File Not found", message: "No file object found"});
+                return;
+            }
+            const fileObj = {
+                name: rows[0]["filename"],
+                size: rows[0]["size"],
+                content_type:rows[0]["content_type"],
+                serverId: rows[0]["serverId"],
+                path: rows[0]["path"]
+            };
+            res.status(200).json(stringify(fileObj));
+        });
+        fdb.end()
+        }catch (ex: any) {
+        res.status(500).send({
+            error: ex || ex.Message.toString() || "undefined",
+            Message: "Error while getFIleByID",
+        });
+    }
+});
+
+
+app.post("/upload", (req, res) => {
+
+    const fileObj = {
+        name: req.body.name,
+        size: req.body.size,
+        content_type: req.body.content_type,
+        serverId: req.body.serverId,
+        path: req.body.path
+    };
+    try{
+        const fdb = new FileMetadataServerDAO();
+        fdb.addFile(fileObj, (rows: any) => {
+            res.status(200).json({id: rows.insertId});
+        });
+        fdb.end();
+    } catch (ex: any) {
+        res
+            .status(500)
+            .send({ error: "Could not upload file", message: ex || "Unknown" });
+        console.log("err: " + ex || ex.Message || "undefined");
+    }
+
+});
+app.delete("/deleteFileById/:id",(req,res)=>{
+    let id: number = parseInt(req.params.id);
+    try{
+        const fdb = new FileMetadataServerDAO();
+        fdb.deleteByFileId(id, (rows: any) => {
+            res.status(200).send({ message: "Deleted file" });
+        });
+        fdb.end();
+    } catch (err: any) {
+        console.log("Error deleting in fs: " + err || "undefined");
+        res.status(500).send({
+            message: "an error occured when trying to delete file from db",
+        });
+    }
+});
 //########################################################################
 //OTHERS
 //########################################################################
@@ -191,7 +271,6 @@ app.post("/upload", (req, res) => {
     else{
         res.send("Database service is connected to both DBs and ready");
     }
-   
-    
+
     
   });

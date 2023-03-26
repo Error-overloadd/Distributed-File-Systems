@@ -40,25 +40,26 @@ Content-Type: application/json
 GET http://localhost:3002/fetchFiles
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMDByeXJnLXV5MnRxZSIsImlhdCI6MTY3ODMyMjQyMywiZXhwIjoxNjc4MzIyNDgzfQ.-tTLgeHIwZ10LetddtPCfZFDaQ4wzLABPeNEqxeIYiI
 
-### register user2
-POST http://localhost:5100/registerUser
+### test upload
+POST http://localhost:5100/upload
 Content-Type: application/json
 
 {
-  "name":"Adam Adamson",
-  "email":"qwe@qwe.com",
-  "password":"qwer123",
-  "isAdmin":true
+  "name":"dummy0.mp4",
+  "size":"114514",
+  "content_type":"video/mp4",
+  "serverId":"1",
+  "path":"./storage/dummy0.mp4"
 }
 
-### user login2
-POST http://localhost:5100/login
-Content-Type: application/json
+### test get list
+GET http://localhost:5100/getFileList
 
-{
-  "email":"qwe@qwe.com",
-  "password":"qwer123"
-}
+### test getFileByid
+GET http://localhost:5100/getFileById/1
+
+###test delete
+DELETE http://localhost:5100/deleteFileById/6
 
 ### generate new access token using provided refresh token during login
 POST http://localhost:5100/token
@@ -70,13 +71,5 @@ Content-Type: application/json
 
 }
 
-### logout2, delete refresh token provided during login
-DELETE  http://localhost:5100/logout
-Content-Type: application/json
-
-{
-  "id": "lfp0tpsv-0820xz"
-}
-
 ### check alive
-GET http://0.0.0.0:5100/
+GET http://localhost:5100/
