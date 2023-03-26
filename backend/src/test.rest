@@ -39,3 +39,44 @@ Content-Type: application/json
 ### fetch posts
 GET http://localhost:3002/fetchFiles
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMDByeXJnLXV5MnRxZSIsImlhdCI6MTY3ODMyMjQyMywiZXhwIjoxNjc4MzIyNDgzfQ.-tTLgeHIwZ10LetddtPCfZFDaQ4wzLABPeNEqxeIYiI
+
+### register user2
+POST http://localhost:5100/registerUser
+Content-Type: application/json
+
+{
+  "name":"Adam Adamson",
+  "email":"qwe@qwe.com",
+  "password":"qwer123",
+  "isAdmin":true
+}
+
+### user login2
+POST http://localhost:5100/login
+Content-Type: application/json
+
+{
+  "email":"qwe@qwe.com",
+  "password":"qwer123"
+}
+
+### generate new access token using provided refresh token during login
+POST http://localhost:5100/token
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmcDB0cHN2LTA4MjB4eiIsImlhdCI6MTY3OTgxMjIyN30.XHfPmbaEufAuJgLCn_dWin4ZlMctBu-rylprwW7OQIU",
+  "userID": "lfp0tpsv-0820xz"
+
+}
+
+### logout2, delete refresh token provided during login
+DELETE  http://localhost:5100/logout
+Content-Type: application/json
+
+{
+  "id": "lfp0tpsv-0820xz"
+}
+
+### check alive
+GET http://localhost:5100/
