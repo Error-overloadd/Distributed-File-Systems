@@ -6,7 +6,6 @@ import { FileMetadataServerDAO_2 } from "./FileDB/db_2";
 import { FileMetadataServerDAO_3 } from "./FileDB/db_3";
 import { connectQueue, sendMessage } from "./rabbitmq/broker";
 import { STORAGE_PATH } from "./constants";
-
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const app = express();
@@ -44,49 +43,42 @@ connectQueue().then(() => {
   });
 });
 
+//FORCE TALK TO dao1 by now, fix after dealing with nginx
+import axios from 'axios';
+import {stringify} from "querystring";
+const dbAdd = 'http://dao_1:5100/'
+
+//FORCE TALK TO dao1 by now, fixed after dealing with nginx
 app.get("/checkApi", (req: Request, res: Response) => {
   res.status(200).send("API running");
   console.log('sending');
   sendMessage(JSON.stringify({ message: "checkApi Hit"}));
 });
 
-app.get("/getFileList", (req: Request, res: Response) => {
-  try {
-    const db = new FileMetadataServerDAO_1();
-    db.getAllFiles((rows: any) => {
-      res.status(200).send(rows);
-    });
-    db.end();
-  } catch (ex: any) {
-    console.log(ex);
-    res
-        .status(500)
-        .send({ message: "Something went wrong.", error: ex || "undefined" });
+app.get("/getFileList", async(req: Request, res: Response) => {
+  try{
+    const response = await axios.get(dbAdd+'getFileList');
+    res.json(response.data);
+  }catch(error){
+    res.status(500).json({message:"error\n"+error});
   }
 });
 
-app.get("/getFileById/:id", (req: Request, res: Response) => {
+app.get("/getFileById/:id", async(req: Request, res: Response) => {
   // res.download(__dirname + '/testdownload.txt')
 
   let id: number = parseInt(req.params.id);
   console.log("GET THE CURRENT ID:"+id);
+
   try {
-    const db = new FileMetadataServerDAO_1();
-    db.getByFileId(id, (rows: any) => {
-      if (rows.length === 0) {
-        res
-            .status(404)
-            .send({ error: "File Not found", message: "No file object found" });
-        return;
-      }
-      let filePath: string = rows[0]["path"];
+    const response = await axios.get(dbAdd+'getFileById/'+id);
+    let filePath: string = response.data.path;
+    console.log("getFileById path@"+filePath);
       //allow client to get fileName under CORS
       res.set('Access-Control-Expose-Headers', 'Content-Disposition');
       //res.setHeader('Content-Disposition', 'attachment; filename="test.test"');
       res.download(filePath);
-    });
-    db.end();
-  } catch (ex: any) {
+  }catch (ex: any) {
     res.status(500).send({
       error: ex || ex.Message.toString() || "undefined",
       Message: "Error",
@@ -141,33 +133,21 @@ app.post("/upload", authenticateToken, upload.single("file"), async (req, res) =
     serverId: 1,
     path: req.file?.path,
   };
+  console.log("upload file Obj###############");
+  console.log(fileObj);
+  console.log("################################")
   try {
-    const db = new FileMetadataServerDAO_1();
-    db.addFile(fileObj, (rows: any) => {
-      res.status(200).send({id: rows.insertId});
-      sendMessage({task: "NewFile", id: rows.insertId, fileObj, address: `http://${ACCESS_URL}/getFileById/${rows.insertId}`, source: NAME});
-
-      // update slave dbs
-      try {
-        const db_2 = new FileMetadataServerDAO_2();
-        db_2.addFile(fileObj, (rows: any) => {
-          console.log("filedb2 update successful");
-        });
-        db_2.end();
-      } catch (ex: any) {
-        console.log("filedb2 update err: " + ex || ex.Message || "undefined");
-      }
-      try {
-        const db_3 = new FileMetadataServerDAO_3();
-        db_3.addFile(fileObj, (rows: any) => {
-          console.log("filedb3 update successful");
-        });
-        db_3.end();
-      } catch (ex: any) {
-        console.log("filedb3 update err: " + ex || ex.Message || "undefined");
-      }
+    const response = await axios.post(dbAdd+'upload/',{
+      name: req.file?.filename,
+      size: req.file?.size,
+      content_type: req.file?.mimetype,
+      serverId: 1,
+      path: req.file?.path,
     });
-    db.end();
+    const fileId = response.data.id;
+    res.status(200).send({id:fileId});
+    sendMessage({task: "NewFile", id:fileId, fileObj, address: `http://${ACCESS_URL}`});
+
   } catch (ex: any) {
     res
         .status(500)
@@ -198,22 +178,21 @@ app.post("/deleteByFileName", (req: Request, res: Response) => {
   });
 });
 
-app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Response) => {
+app.delete("/deleteFileById/:id", authenticateToken, async(req: Request, res: Response) => {
   let id: number = parseInt(req.params.id);
   console.log("GET THE CURRENT ID:"+id);
   try {
-    const db = new FileMetadataServerDAO_1();
-    db.getByFileId(id, (rows: any) => {
-      console.log(rows);
-      if (rows.length === 0) {
-        res
-            .status(400)
-            .send({ error: "Bad Request", message: "No file object found" });
-        return;
-      }
-      let filePath: string = rows[0]["path"];
-      let fileObj: string = rows[0];
-      fs.unlink(filePath, (err: any) => {
+    const response = await axios.get(dbAdd+'getFileById/'+id);
+    if (response.status === 404){
+      res
+          .status(400)
+          .send({ error: "Bad Request", message: "No file object found" });
+      return;
+    }
+      let filePath: string = response.data.path;
+      let fileObj: string = stringify(response.data);
+
+      await fs.unlink(filePath, (err: any) => {
         if (err) {
           res.status(500).send({
             error: "Error deleting File from server",
@@ -221,43 +200,20 @@ app.delete("/deleteFileById/:id", authenticateToken, (req: Request, res: Respons
           });
           return;
         }
-        try {
-          db.deleteByFileId(id, (rows: any) => {
-            res.status(200).send({ message: "Deleted file" });
-            sendMessage({task: "DeleteFile", fileObj: fileObj, source: NAME});
-            // update slave dbs
-            try {
-              const db_2 = new FileMetadataServerDAO_2();
-              db_2.deleteByFileId(id, (rows: any) => {
-                console.log("filedb2 update successful");
-              });
-              db_2.end();
-            } catch (ex: any) {
-              console.log(
-                  "filedb2 update err: " + ex || ex.Message || "undefined"
-              );
-            }
-            try {
-              const db_3 = new FileMetadataServerDAO_3();
-              db_3.deleteByFileId(id, (rows: any) => {
-                console.log("filedb3 update successful");
-              });
-              db_3.end();
-            } catch (ex: any) {
-              console.log(
-                  "filedb3 update err: " + ex || ex.Message || "undefined"
-              );
-            }
-            db.end();
-          });
-        } catch (err: any) {
-          console.log("Error deleting in fs: " + err || "undefined");
-          res.status(500).send({
-            message: "an error occured when trying to delete file from db",
-          });
-        }
       });
-    });
+
+    try {
+      const response = await axios.delete(dbAdd+'deleteFileById/'+id);
+      if (response.status === 200){
+        res.status(200).send({ message: "Deleted file" });
+        sendMessage({task: "DeleteFile", fileObj: fileObj});
+      }
+    } catch (err: any) {
+      console.log("Error deleting in fs: " + err || "undefined");
+      res.status(500).send({
+        message: "an error occured when trying to delete file from db",
+      });
+    }
   } catch (ex) {
     res.status(500).send({
       message: "an error occured when trying to delete file",
