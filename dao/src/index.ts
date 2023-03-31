@@ -57,7 +57,7 @@ app.post("/registerUser", async (req, res) => {
         udb.addUser(user, (rows: any) => {
             res.status(200).json(rows);
         });
-        sendMessage({task:"adduser", any:user,source:CONTAINER_NAME })
+        sendMessage({task:"adduser", user:user,source:CONTAINER_NAME })
         udb.end();
     } catch (ex) {
         res
@@ -100,7 +100,7 @@ app.post("/login", async (req, res) => {
                     refreshToken: refreshToken,
                 });
             })
-            sendMessage({task:"login",id:result.id,refreshToken:refreshToken,any:rows,source:CONTAINER_NAME})
+            sendMessage({task:"login",id:result.id,refreshToken:refreshToken,rows:rows,source:CONTAINER_NAME})
             udb.end();
         });
 
@@ -226,7 +226,7 @@ app.post("/upload", (req, res) => {
         fdb.addFile(fileObj, (rows: any) => {
             res.status(200).json({id: rows.insertId});
         });
-        sendMessage({task:"upload", any:fileObj, source:CONTAINER_NAME})
+        sendMessage({task:"upload", fileObj:fileObj, source:CONTAINER_NAME})
         fdb.end();
     } catch (ex: any) {
         res
@@ -243,7 +243,7 @@ app.delete("/deleteFileById/:id",(req,res)=>{
         fdb.deleteByFileId(id, (rows: any) => {
             res.status(200).send({ message: "Deleted file" });
         });
-        sendMessage({task:"delete", any:id, source:CONTAINER_NAME})
+        sendMessage({task:"delete", id:id, source:CONTAINER_NAME})
         fdb.end();
     } catch (err: any) {
         console.log("Error deleting in fs: " + err || "undefined");
