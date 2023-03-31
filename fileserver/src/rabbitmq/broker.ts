@@ -66,7 +66,9 @@ const handleMessage = async (msg: any): Promise<boolean> => {
 	};
 	if(msg.task === 'DeleteFile'){
 		try {
-			await deleteFile(path.join(STORAGE_PATH, msg.fileObj.name));
+			const fileObj = msg.fileObj;
+			const name = fileObj.substring(fileObj.indexOf('storage%2F') + 10)
+			await deleteFile(path.join(STORAGE_PATH, name));
 			return true;
 		} catch (ex) {
 			return false;
@@ -115,6 +117,7 @@ async function downloadFile(fileUrl: string, msg: any): Promise<boolean> {
   }
 
   const deleteFile = async (filePath: string) => {
+	console.log("rabbitMQdeleteFile:"+filePath);
 	fs.unlink(filePath, (err) => {
 		if(err) {
 			console.log("Couldn't delete file: " +filePath);
