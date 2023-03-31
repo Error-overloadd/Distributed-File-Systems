@@ -113,12 +113,13 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.delete("/logout", (req, res) => {
+app.post("/logout", (req, res) => {
     // refreshTokens = refreshTokens.filter((token:any) => token !== req.body.token)
     try {
         const udb = new UserDAO();
+        console.log("logout in dao:##########################");
         console.log(req.body);
-        console.log("log out in dao: "+req.body.id);
+        console.log("##########################");
         udb.removeRefreshToken(req.body.id, (rows: any) => {
             sendMessage({task:"logout", id:req.body.id,source:CONTAINER_NAME});
             res

@@ -29,11 +29,11 @@ Content-Type: application/json
 }
 
 ### logout, delete refresh token provided during login
-DELETE  http://localhost:3002/logout
+POST  http://localhost:3002/logout
 Content-Type: application/json
 
 {
-  "id": "lfwoqai1-xy6dal"
+  "id": "lfx2uez0-obohp7"
 }
 
 ### fetch posts
