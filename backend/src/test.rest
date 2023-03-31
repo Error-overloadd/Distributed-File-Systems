@@ -33,7 +33,7 @@ DELETE  http://localhost:3002/logout
 Content-Type: application/json
 
 {
-  "id": "lf26zg1e-dtmnxg"
+  "id": "lfwn6dhk-hm8b99"
 }
 
 ### fetch posts

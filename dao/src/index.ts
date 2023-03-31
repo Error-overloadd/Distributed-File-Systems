@@ -149,7 +149,8 @@ app.post("/token", (req, res) => {
                 const accessToken = generateAccessToken({ id: userID });
                 res.status(200).json({ accessToken: accessToken });
             });
-            sendMessage({task:"token", id:userID, source:CONTAINER_NAME})
+            //No need to do so, the refresh token is sent to client only
+            //sendMessage({task:"token", id:userID, source:CONTAINER_NAME})
         });
         udb.end();
     } catch (ex) {

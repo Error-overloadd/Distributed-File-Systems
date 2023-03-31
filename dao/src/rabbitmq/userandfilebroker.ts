@@ -56,40 +56,13 @@ const handleMessage = async (msg: any): Promise<boolean>=> {
 //  USER DATABASE
 	if(msg.task==="adduser"){
 	try {
-		
-		if(msg.source!="dfs_db_1"){
-
-			const udb2= new UserDAO();
-			udb2.dbConnection.host="dfs_db_2";
-			udb2.addUser(msg.user, (rows: any) => {});
-			const udb3=new UserDAO();
-			udb3.dbConnection.host="dfs_db_3"
-			udb3.addUser(msg.user,(row:any)=>{});
-				return true;		
+		const udb =  new UserDAO();
+		if(localContainerName != 'NA' && localContainerName != msg.source){
+			udb.addUser(msg.user, (rows: any) => {
+				console.log("addUser: "+msg.user);
+			});
+			return true;
 		}
-
-		else if(msg.source!="dfs_db_2"){		
-			const udb1= new UserDAO();
-			udb1.dbConnection.host="dfs_db_1";
-			udb1.addUser(msg.user, (rows: any) => {});
-			const udb3=new UserDAO();
-			udb3.dbConnection.host="dfs_db_3"
-			udb3.addUser(msg.user,(row:any)=>{});
-				return true;		
-		}	
-
-
-		else if(msg.source!="dfs_db_3"){		
-			const udb1= new UserDAO();
-			udb1.dbConnection.host="dfs_db_1";
-			udb1.addUser(msg.user,(rows: any) => {});
-			const udb2=new UserDAO();
-			udb2.dbConnection.host="dfs_db_2"
-			udb2.addUser(msg.user,(row:any)=>{});
-			return true;		
-		}	
-	
-
 
 	} catch (ex) {
 		return false;
@@ -140,37 +113,14 @@ const handleMessage = async (msg: any): Promise<boolean>=> {
 	 // (Done)
 	if(msg.task==="login"){
 		try {
-			if(msg.source!="dfs_db_1"){
-
-				const udb2= new UserDAO();
-				udb2.dbConnection.host="dfs_db_2";
-				udb2.addRefreshToken(msg.result.id,msg.refreshToken, (rows: any) => {});
-				const udb3=new UserDAO();
-				udb3.dbConnection.host="dfs_db_3"
-				udb3.addRefreshToken(msg.result.id,msg.refreshToken,(row:any)=>{});
-					return true;		
+			const udb= new UserDAO();
+			if(localContainerName != 'NA' && localContainerName != msg.source){
+				udb.addRefreshToken(msg.id,msg.refreshToken, (rows: any) => {
+					console.log("login add access token: "+msg.id);
+					console.log(msg.refreshToken);
+				});
+				return true;
 			}
-
-			else if(msg.source!="dfs_db_2"){		
-				const udb1= new UserDAO();
-				udb1.dbConnection.host="dfs_db_1";
-				udb1.addRefreshToken(msg.result.id,msg.refreshToken, (rows: any) => {});
-				const udb3=new UserDAO();
-				udb3.dbConnection.host="dfs_db_3"
-				udb3.addRefreshToken(msg.result.id,msg.refreshToken,(row:any)=>{});
-					return true;		
-			}	
-
-
-			else if(msg.source!="dfs_db_3"){		
-				const udb1= new UserDAO();
-				udb1.dbConnection.host="dfs_db_1";
-				udb1.addRefreshToken(msg.result.id,msg.refreshToken, (rows: any) => {});
-				const udb2=new UserDAO();
-				udb2.dbConnection.host="dfs_db_2"
-				udb2.addRefreshToken(msg.result.id,msg.refreshToken,(row:any)=>{});
-				return true;		
-			}	
 		
 		} catch (ex) {
 			return false;
@@ -181,9 +131,8 @@ const handleMessage = async (msg: any): Promise<boolean>=> {
 		try {
 			const udb = new UserDAO();
 			if(localContainerName != 'NA' && localContainerName != msg.source){
-				udb.removeRefreshToken(msg.body.id, (rows: any) => {
-					console.log("logout done, remove refresh Token");
-					console.log(msg.body.token);
+				udb.removeRefreshToken(msg.id, (rows: any) => {
+					console.log("logout done, remove refresh Token:"+msg.id);
 				});
 			}
 
