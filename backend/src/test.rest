@@ -4,8 +4,8 @@ Content-Type: application/json
 
 {
   "name":"Adam Adamson",
-  "email":"adam@test.com",
-  "password":"adam123",
+  "email":"qwer@qwer.com",
+  "password":"qwer123",
   "isAdmin":true
 }
 
@@ -23,8 +23,8 @@ POST http://localhost:3002/token
 Content-Type: application/json
 
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMnQwazFkLWF3M3VhZyIsImlhdCI6MTY3ODQ2ODg1Nn0.1PFdYtnctlErRrjmNVEb1OWXmqaXvl2vc_L7wOg-_jY",
-  "userID": "lf2t0k1d-aw3uag"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmcDVtc3VoLTFqaHdhayIsImlhdCI6MTY3OTgyMDY5Mn0.GuXtKE9SJY_nb4sncykAS704uI2H0BCw9nCR1AxhVhA",
+  "userID": "lfp5msuh-1jhwak"
 
 }
 
@@ -39,3 +39,37 @@ Content-Type: application/json
 ### fetch posts
 GET http://localhost:3002/fetchFiles
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmMDByeXJnLXV5MnRxZSIsImlhdCI6MTY3ODMyMjQyMywiZXhwIjoxNjc4MzIyNDgzfQ.-tTLgeHIwZ10LetddtPCfZFDaQ4wzLABPeNEqxeIYiI
+
+### test upload
+POST http://localhost:5100/upload
+Content-Type: application/json
+
+{
+  "name":"dummy0.mp4",
+  "size":"114514",
+  "content_type":"video/mp4",
+  "serverId":"1",
+  "path":"./storage/dummy0.mp4"
+}
+
+### test get list
+GET http://localhost:5100/getFileList
+
+### test getFileByid
+GET http://localhost:5100/getFileById/1
+
+###test delete
+DELETE http://localhost:5100/deleteFileById/6
+
+### generate new access token using provided refresh token during login
+POST http://localhost:5100/token
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxmcDB0cHN2LTA4MjB4eiIsImlhdCI6MTY3OTgxMjIyN30.XHfPmbaEufAuJgLCn_dWin4ZlMctBu-rylprwW7OQIU",
+  "userID": "lfp0tpsv-0820xz"
+
+}
+
+### check alive
+GET http://localhost:5100/
