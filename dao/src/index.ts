@@ -117,12 +117,15 @@ app.delete("/logout", (req, res) => {
     // refreshTokens = refreshTokens.filter((token:any) => token !== req.body.token)
     try {
         const udb = new UserDAO();
+        console.log(req.body);
+        console.log("log out in dao: "+req.body.id);
         udb.removeRefreshToken(req.body.id, (rows: any) => {
+            sendMessage({task:"logout", id:req.body.id,source:CONTAINER_NAME});
             res
                 .status(200)
                 .send({ message: "logout successful, refresh token deleted" });
         });
-        sendMessage({task:"logout", id:req.body.id,source:CONTAINER_NAME})
+
         udb.end();
     } catch (ex) {
         res

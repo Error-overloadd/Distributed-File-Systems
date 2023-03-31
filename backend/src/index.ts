@@ -224,6 +224,7 @@ app.use("/login",async(req,res)=>{
 
 app.use("/logout",async(req,res)=>{
   try{
+    console.log(req.body);
     const response = await axios.delete(dbAdd+'logout',req.body);
     res.json(response.data);
   }catch(error){

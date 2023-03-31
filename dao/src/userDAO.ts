@@ -99,6 +99,7 @@ export class UserDAO{
 
     // sql query to add a refresh token to a user
     removeRefreshToken(id: any, callback: Function){
+        console.log("remove refresh token inDB:"+id);
         this.dbConnection.query(`UPDATE user set refreshToken = null where id = '${id}';`, (err: any,rows: any) => {
             if(err) throw err;
           
