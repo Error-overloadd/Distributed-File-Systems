@@ -11,7 +11,7 @@ const ROUTING_KEY = "";
 const OPTIONS= {};
 // node priority
 const DaoQUEUE= process.env.CONTAINER_NAME || 'DAOQ';
-
+const localContainerName= process.env.CONTAINER_NAME ||'NA';
 
 
 export async function connectQueue() {
@@ -179,83 +179,33 @@ const handleMessage = async (msg: any): Promise<boolean>=> {
  // (Done)
 	if(msg.task==="logout"){
 		try {
-			if(msg.source!="dfs_db_1"){
-
-				const udb2= new UserDAO();
-				udb2.dbConnection.host="dfs_db_2";
-				udb2.removeRefreshToken(msg.req.body.id, (rows: any) => {});
-				const udb3=new UserDAO();
-				udb3.dbConnection.host="dfs_db_3"
-				udb3.removeRefreshToken(msg.req.body.id,(row:any)=>{});
-					return true;		
-			}
-	
-			else if(msg.source!="dfs_db_2"){		
-				const udb1= new UserDAO();
-				udb1.dbConnection.host="dfs_db_1";
-				udb1.removeRefreshToken(msg.req.body.id, (rows: any) => {});
-				const udb3=new UserDAO();
-				udb3.dbConnection.host="dfs_db_3"
-				udb3.removeRefreshToken(msg.req.body.id,(row:any)=>{});
-					return true;		
-
-			}
-			
-			else if(msg.source!="dfs_db_3"){		
-				const udb1= new UserDAO();
-				udb1.dbConnection.host="dfs_db_1";
-				udb1.removeRefreshToken(msg.req.body.id, (rows: any) => {});
-				const udb2=new UserDAO();
-				udb2.dbConnection.host="dfs_db_2"
-				udb2.removeRefreshToken(msg.req.body.id,(row:any)=>{});
-					return true;		
-
+			const udb = new UserDAO();
+			if(localContainerName != 'NA' && localContainerName != msg.source){
+				udb.removeRefreshToken(msg.body.id, (rows: any) => {
+					console.log("logout done, remove refresh Token");
+					console.log(msg.body.token);
+				});
 			}
 
-		} catch (ex) {
-			return false;
+		} catch (error) {
+			console.log("logout error");
+			console.log(error);
 		}
 	}
 
-// DATA DATABASE
+// FILE DATA DATABASE
 	if(msg.task==="upload"){
 		try {
-			
-
-			if(msg.source!="dfs_db_1"){
-				const fdb2= new FileMetadataServerDAO();
-				fdb2.dbConnection.host="dfs_db_2";
-				fdb2.addFile(msg.fileObj,(rows:any)=>{})
-				const fdb3= new FileMetadataServerDAO();
-				fdb3.dbConnection.host="dfs_db_2";
-				fdb3.addFile(msg.fileObj,(rows:any)=>{})
-				return true;
+			const fdb = new FileMetadataServerDAO();
+			if(localContainerName != 'NA' && localContainerName != msg.source){
+				fdb.addFile(msg.fileObj,(rows:any) => {
+					console.log("upload done: "+msg.fileObj);
+				});
 			}
-			else if(msg.source!="dfs_db_2"){
-				const fdb1= new FileMetadataServerDAO();
-				fdb1.dbConnection.host="dfs_db_1";
-				fdb1.addFile(msg.fileObj,(rows:any)=>{})
-				const fdb3= new FileMetadataServerDAO();
-				fdb3.dbConnection.host="dfs_db_3";
-				fdb3.addFile(msg.fileObj,(rows:any)=>{})
-				return true;
-			}
-			else if(msg.source!="dfs_db_3"){
-				const fdb1= new FileMetadataServerDAO();
-				fdb1.dbConnection.host="dfs_db_1";
-				fdb1.addFile(msg.fileObj,(rows:any)=>{})
-				const fdb2= new FileMetadataServerDAO();
-				fdb2.dbConnection.host="dfs_db_2";
-				fdb2.addFile(msg.fileObj,(rows:any)=>{})
-				return true;
-			}
-
-
-
-
 
 		} catch (error) {
-			return false;
+			console.log("upload error");
+			console.log(error);
 		}
 
 
@@ -264,44 +214,19 @@ const handleMessage = async (msg: any): Promise<boolean>=> {
 	
 	if(msg.task==="delete"){
 		try {
-			if(msg.source!="dfs_db_1"){
-				const fdb2= new FileMetadataServerDAO();
-				fdb2.dbConnection.host="dfs_db_2";
-				fdb2.deleteByFileId(msg.id,(rows:any)=>{})
-				const fdb3= new FileMetadataServerDAO();
-				fdb3.dbConnection.host="dfs_db_2";
-				fdb3.deleteByFileId(msg.id,(rows:any)=>{})
-				return true;
+			const fdb = new FileMetadataServerDAO();
+			if(localContainerName != 'NA' && localContainerName != msg.source){
+				fdb.deleteByFileId(msg.id, (rows: any) => {
+					console.log("Delete File ID: "+msg.id);
+				});
 			}
-			else if(msg.source!="dfs_db_2"){
-				const fdb1= new FileMetadataServerDAO();
-				fdb1.dbConnection.host="dfs_db_1";
-				fdb1.deleteByFileId(msg.id,(rows:any)=>{})
-				const fdb3= new FileMetadataServerDAO();
-				fdb3.dbConnection.host="dfs_db_3";
-				fdb3.deleteByFileId(msg.id,(rows:any)=>{})
 				return true;
-			}
-			else if(msg.source!="dfs_db_3"){
-				const fdb1= new FileMetadataServerDAO();
-				fdb1.dbConnection.host="dfs_db_1";
-				fdb1.deleteByFileId(msg.id,(rows:any)=>{})
-				const fdb2= new FileMetadataServerDAO();
-				fdb2.dbConnection.host="dfs_db_2";
-				fdb2.deleteByFileId(msg.id,(rows:any)=>{})
-				return true;
-			}
-	
 		} catch (error) {
+			console.log("delete error");
+			console.log(error);
 			return false;
 		}
 	}
-
-
-
-
-
-
 
 
     return true;
