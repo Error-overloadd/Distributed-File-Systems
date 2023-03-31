@@ -146,7 +146,7 @@ app.post("/upload", authenticateToken, upload.single("file"), async (req, res) =
     });
     const fileId = response.data.id;
     res.status(200).send({id:fileId});
-    sendMessage({task: "NewFile", id: rows.insertId, fileObj, address: `http://${ACCESS_URL}/getFileById/${rows.insertId}`, source: NAME});
+    sendMessage({task: "NewFile", id: fileId, fileObj, address: `http://${ACCESS_URL}/getFileById/${fileId}`, source: NAME});
 
   } catch (ex: any) {
     res
