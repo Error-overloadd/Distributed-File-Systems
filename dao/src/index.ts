@@ -92,8 +92,8 @@ app.post("/login", async (req, res) => {
             const refreshToken = jwt.sign(payload, "refreshSecretKey");
             console.log("try adding refresh token to db || "+ result.id + "||" + refreshToken);
 
-            // const udb2 = new UserDAO();
-            udb.addRefreshToken(result.id, refreshToken, (rows: any) => {
+            const udb2 = new UserDAO();
+            udb2.addRefreshToken(result.id, refreshToken, (rows: any) => {
                 res.status(200).json({
                     userID: result.id,
                     accessToken: accessToken,
@@ -101,7 +101,7 @@ app.post("/login", async (req, res) => {
                 });
             })
             sendMessage({task:"login",id:result.id,refreshToken:refreshToken,rows:rows,source:CONTAINER_NAME})
-            udb.end();
+            udb2.end();
         });
 
         udb.end();
