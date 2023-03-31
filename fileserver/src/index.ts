@@ -146,7 +146,7 @@ app.post("/upload", authenticateToken, upload.single("file"), async (req, res) =
     });
     const fileId = response.data.id;
     res.status(200).send({id:fileId});
-    sendMessage({task: "NewFile", id:fileId, fileObj, address: `http://${ACCESS_URL}`});
+    sendMessage({task: "NewFile", id: rows.insertId, fileObj, address: `http://${ACCESS_URL}/getFileById/${rows.insertId}`, source: NAME});
 
   } catch (ex: any) {
     res
@@ -206,7 +206,7 @@ app.delete("/deleteFileById/:id", authenticateToken, async(req: Request, res: Re
       const response = await axios.delete(dbAdd+'deleteFileById/'+id);
       if (response.status === 200){
         res.status(200).send({ message: "Deleted file" });
-        sendMessage({task: "DeleteFile", fileObj: fileObj});
+        sendMessage({task: "DeleteFile", fileObj: fileObj, source: NAME});
       }
     } catch (err: any) {
       console.log("Error deleting in fs: " + err || "undefined");
