@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser"
 import {stringify} from "querystring";
-
+import { connectQueue, sendMessage} from "./rabbitmq/userandfilebroker";
 //#############
 const app = express();
 //#############
@@ -19,9 +19,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ limit: '1gb',extended: false }));
 //#############
-app.listen(5100, () => {
-    console.log("server started, listening at port 5100");
-  });
+
+
+// Create the rabbitmqserver Namer
+export const CONTAINER_NAME = process.env.CONTAINER_NAME || "Unknow USERANDFILE"
+
+connectQueue().then(()=>{
+  app.listen(5100,()=>{
+        console.log("Dao server started");
+        console.log(CONTAINER_NAME);
+    })
+})
+
+
 
 //########################################################################
 //USER DB
@@ -47,6 +57,7 @@ app.post("/registerUser", async (req, res) => {
         udb.addUser(user, (rows: any) => {
             res.status(200).json(rows);
         });
+        sendMessage({task:"adduser", any:user,source:CONTAINER_NAME })
         udb.end();
     } catch (ex) {
         res
@@ -81,15 +92,16 @@ app.post("/login", async (req, res) => {
             const refreshToken = jwt.sign(payload, "refreshSecretKey");
             console.log("try adding refresh token to db || "+ result.id + "||" + refreshToken);
 
-            const udb2 = new UserDAO();
-            udb2.addRefreshToken(result.id, refreshToken, (rows: any) => {
+            // const udb2 = new UserDAO();
+            udb.addRefreshToken(result.id, refreshToken, (rows: any) => {
                 res.status(200).json({
                     userID: result.id,
                     accessToken: accessToken,
                     refreshToken: refreshToken,
                 });
             })
-            udb2.end();
+            sendMessage({task:"login",id:result.id,refreshToken:refreshToken,any:rows,source:CONTAINER_NAME})
+            udb.end();
         });
 
         udb.end();
@@ -110,6 +122,7 @@ app.delete("/logout", (req, res) => {
                 .status(200)
                 .send({ message: "logout successful, refresh token deleted" });
         });
+        sendMessage({task:"logout", id:req.body.id,source:CONTAINER_NAME})
         udb.end();
     } catch (ex) {
         res
@@ -136,6 +149,7 @@ app.post("/token", (req, res) => {
                 const accessToken = generateAccessToken({ id: userID });
                 res.status(200).json({ accessToken: accessToken });
             });
+            sendMessage({task:"token", id:userID, source:CONTAINER_NAME})
         });
         udb.end();
     } catch (ex) {
@@ -212,6 +226,7 @@ app.post("/upload", (req, res) => {
         fdb.addFile(fileObj, (rows: any) => {
             res.status(200).json({id: rows.insertId});
         });
+        sendMessage({task:"upload", any:fileObj, source:CONTAINER_NAME})
         fdb.end();
     } catch (ex: any) {
         res
@@ -228,6 +243,7 @@ app.delete("/deleteFileById/:id",(req,res)=>{
         fdb.deleteByFileId(id, (rows: any) => {
             res.status(200).send({ message: "Deleted file" });
         });
+        sendMessage({task:"delete", any:id, source:CONTAINER_NAME})
         fdb.end();
     } catch (err: any) {
         console.log("Error deleting in fs: " + err || "undefined");

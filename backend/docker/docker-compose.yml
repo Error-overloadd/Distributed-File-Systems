@@ -178,7 +178,8 @@ services:
     ports: 
       - 5100:5100
     environment:
-      - CONTAINER_NAME=dfs_db_1   
+      - CONTAINER_NAME=dfs_db_1
+      - ACCESS_URL=dfs_dao_1:5100 
     depends_on:
       - db_1
       - db_2
@@ -192,7 +193,8 @@ services:
       context: ../../dao
       target: production
     environment:
-      - CONTAINER_NAME=dfs_db_2         
+      - CONTAINER_NAME=dfs_db_2
+            
     ports: 
       - 5200:5100
     depends_on:
@@ -208,7 +210,8 @@ services:
       context: ../../dao
       target: production
     environment:
-      - CONTAINER_NAME=dfs_db_3         
+      - CONTAINER_NAME=dfs_db_3 
+               
     ports: 
       - 5300:5100
     depends_on:
