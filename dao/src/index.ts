@@ -177,8 +177,9 @@ app.get("/getFileById/:id", (req, res) => {
                     .send({error: "File Not found", message: "No file object found"});
                 return;
             }
+
             const fileObj = {
-                name: rows[0]["filename"],
+                name: rows[0]["name"],
                 size: rows[0]["size"],
                 content_type:rows[0]["content_type"],
                 serverId: rows[0]["serverId"],

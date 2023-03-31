@@ -66,8 +66,8 @@ const handleMessage = async (msg: any): Promise<boolean> => {
 	};
 	if(msg.task === 'DeleteFile'){
 		try {
-			const fileObj = msg.fileObj;
-			const name = fileObj.substring(fileObj.indexOf('storage%2F') + 10)
+			// const fileObj = msg.fileObj;
+			const name = msg.fileObj.name
 			await deleteFile(path.join(STORAGE_PATH, name));
 			return true;
 		} catch (ex) {

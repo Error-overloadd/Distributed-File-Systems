@@ -190,7 +190,8 @@ app.delete("/deleteFileById/:id", authenticateToken, async(req: Request, res: Re
       return;
     }
       let filePath: string = response.data.path;
-      let fileObj: string = stringify(response.data);
+      console.log(response.data)
+      let fileObj:any = response.data;
 
       await fs.unlink(filePath, (err: any) => {
         if (err) {
