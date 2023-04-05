@@ -224,7 +224,12 @@ app.use("/login",async(req,res)=>{
 
 app.use("/logout",async(req,res)=>{
   try{
-    const response = await axios.delete(dbAdd+'logout',req.body);
+    console.log("backendlogout:##########################");
+    console.log(req.body);
+    console.log("##########################");
+    console.log(req.body.id);
+    console.log("##########################");
+    const response = await axios.post(dbAdd+'logout',req.body);
     res.json(response.data);
   }catch(error){
     res.status(500).json({message:"error\n"+error});

@@ -14,8 +14,8 @@ POST http://localhost:3002/login
 Content-Type: application/json
 
 {
-    "email":"adam@test.com",
-    "password":"adam123"
+    "email":"qwer@qwer.com",
+    "password":"qwer123"
 }
 
 ### generate new access token using provided refresh token during login
@@ -29,11 +29,11 @@ Content-Type: application/json
 }
 
 ### logout, delete refresh token provided during login
-DELETE  http://localhost:3002/logout
+POST  http://localhost:3002/logout
 Content-Type: application/json
 
 {
-  "id": "lf26zg1e-dtmnxg"
+  "id": "lfx2uez0-obohp7"
 }
 
 ### fetch posts
