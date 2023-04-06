@@ -4,19 +4,21 @@
   <meta charset="UTF-8">
   <title>559 project frontend</title>
   <link rel="stylesheet" href="./frontend.css">
-
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- I get some idea from here -->
+  <!-- https://w3codepen.com/html-css-login-form-page/ -->
 </head>
 <body>
 
 
+<!-- <div class ="user_interface">
 
-<div class ="user_interface">
   <div class = name>
     <label for="name">Name:</label>
     <input type="text" id="name" name="name">
   </div>
-  <br>
+  
   <div class = email>
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" title="Please input correct email format" >
@@ -39,17 +41,109 @@
     <button class="userButton" id = "logout" onclick="logout()">logout</button>
   </div>
 
-<!--  <div class = "button">-->
-<!--    <button class="userButton" id = "testButton" onclick="fetchFiles()">fetch files</button>-->
-<!--  </div>-->
 
   <div class = "userStatus" id = "loginStatus">
     not login yet
   </div>
-</div>
-<hr>
+</div> -->
+   
+    <div class="box">
+     
+      <div class="pre-box">
+          <h1>WELCOME</h1>
+          <p>JOIN US!</p>
+          <div class="img-box">
+              <img src="./img/cat.jpg" alt="">
+          </div>
+      </div>
+      <div class="register-form">
+        
+          <div class="title">
+              <h1>Register</h1>
+          </div>
+      
+          <div class="userInput">
+              <input type="email"placeholder="Email" id="email" name="email" title="Please input correct email format" >
+              <input type="name" placeholder="Name" id="name" name="name">
+              <input type="password" placeholder="Password" id="pass" name="password">
+          </div>
+   
+          <div class="Button">
+            <button class="userButton" id = "register" onclick="userRegister()">register</button>
+              
+              <p onclick="mySwitch()">Login?</p>
+          </div>
+      </div>
+   
+      <div class="userLogin">
+          
+          <div class="title">
+              <h1>LogIn</h1>
+          </div>
+      
+          <div class="userInput">
+       
+            <input type="email"placeholder="Email" id="Useremail" name="email" title="Please input correct email format" >
+            <input type="password" placeholder="Password" id="Userpass" name="password">
+          </div>
+          
+          <div class="Button">
+            <button class="userButton" id = "login" onclick="userLogin()">login</button>
+           
+              <p onclick="mySwitch()">register?</p>
+              <p onclick="location.href='./guest.html'">Guest?</p>
+          </div>
+          
+      </div>
+      <div class = "userStatus" id = "loginStatus">
+        not login yet
+      </div>
 
-<div class = fileInterface>
+      
+     </div>
+     <script>
+  
+       let flag=true
+       const mySwitch=()=>{
+          if(flag===true){
+           
+              $(".pre-box").css("transform","translateX(100%)")
+              
+              $(".pre-box").css("background-color","#c9e0ed")
+              
+              $("img").attr("src","./img/cat.jpg")
+              
+          }
+          else {
+              $(".pre-box").css("transform","translateX(0%)")
+              $(".pre-box").css("background-color","#edd4dc")
+             
+          }
+          flag=!flag
+       }
+ </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class = fileInterface>
   <div class ="getFile">
     <label for="getFileName">File id want to get from server:</label>
     <br>
@@ -104,8 +198,8 @@
     <tbody>
     </tbody>
   </table>
-</div>
-
+</div> -->
+    
 <script src = "frontend.js"></script>
 
 </body>

@@ -38,7 +38,7 @@ function userRegister(){
         name: userName,
         isAdmin: false
     }
-    console.log(typeof(passWord),typeof(userName),typeof(email));
+    // console.log(typeof(passWord),typeof(userName),typeof(email));
     generalRequest({
         method: 'post',
         url: "registerUser/",
@@ -51,7 +51,7 @@ function userRegister(){
             alert("Register succeed");
             console.log("Register succeed");
             console.log(res)
-            userLogin();
+          
         }
     }).catch(function (error){
         if (error.status === 404){
@@ -63,8 +63,9 @@ function userRegister(){
 
 
 function userLogin(){
-    let password = document.querySelector("#pass").value;
-    let email = document.querySelector("#email").value;
+    
+    let password = document.querySelector("#Userpass").value;
+    let email = document.querySelector("#Useremail").value;
     console.log(email+"\n"+password);
     generalRequest({
         method: 'post',
@@ -96,6 +97,10 @@ function userLogin(){
             console.log(refreshToken);
             console.log("#############");
             loginUser = true;
+            if(loginUser===true){
+                window.location.href="frontend.html";
+            }
+           
         }
     }).catch(function (error){
         if(error.response.status === 400){
@@ -103,10 +108,11 @@ function userLogin(){
         }else if(error.response.status === 404){
             document.querySelector("#loginStatus").innerHTML="user not existed";
         }else{
-            document.querySelector("#loginStatus").innerHTML="login failed"+"<br>"+error.message
+            
         }
 
     })
+   
 
 }
 
@@ -117,6 +123,7 @@ function logout(){
         localStorage.removeItem('tokenTime');
         localStorage.removeItem('userID');
     }
+    location.href="index.html";
     document.querySelector("#loginStatus").innerHTML="Not Login yet";
 }
 

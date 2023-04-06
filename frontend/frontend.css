@@ -1,114 +1,206 @@
-table {
-    border-collapse: collapse;
-    width: 100%;
+* {
+  
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-th, td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
+
+
+html,
+body {
+    height: 100%;
 }
-/*
 
 body {
-    background-color: powderblue;
-  }
-.user_interface{
- background-color: rgba(169, 105, 21, 0.524);
- border-radius:13 px;
- text-align: center;
- margin: 0px auto;
- margin-top: 80px;
- width: 350px;
- height: 400px;
-
+    overflow-x: hidden;
+    display: flex;
+    /* background: linear-gradient(to right, rgb(247, 209, 215), rgb(191, 227, 241)); */
+    background-image: linear-gradient(rgba(255, 255, 0, 0.4), #daadad);
 }
 
-/*.user_interface .input_box{*/
-/*    margin-top: 30px;*/
-/*}*/
-/*.user_interface .input_box .username #username{*/
-/*    margin-top: 64px;*/
-/*    line-height: 45px;*/
+.box {
+    width: 1050px;
+    height: 600px;
+    display: flex;
+     position: relative;
+    z-index: 2;
+    margin: auto;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, .6);
+    box-shadow: 2px 1px 19px rgba(0, 0, 0, .1);
+}
 
-/*    border:none;*/
-/*    background: none;*/
-/*    border-bottom: #FFFFFF 2px solid;*/
-/*    padding: 5px 10px;*/
-/*    outline: none;*/
-/*    color:#FFFFFF*/
-/*}*/
-/*
-#username{
-    border:none;
-    margin-top: 64px;
-    line-height: normal;
+.pre-box {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 99;
+    border-radius: 4px;
+    background-color: #edd4dc;
+    box-shadow: 2px 1px 19px rgba(0, 0, 0, .1);
+    transition: 0.5s ease-in-out;
 }
-#pass{
-    border:none;
-    margin-top: 62px;
-    line-height: normal;
-}
-#register{
-    line-height: 30px;
-    margin-top:60px;
-    width: 130px;
-    height: 30px;
-    border-radius: 13px;
-    outline:none;
-    border:none;
-    color: black;
+
+.pre-box h1 {
+    margin-top: 150px;
     text-align: center;
+    letter-spacing: 5px;
+    color: white;
+    user-select: none;
+    
 }
- #login{
-    line-height: 30px;
-    margin-top:65px;
-    width: 130px;
+.pre-box p {
     height: 30px;
-    border-radius: 13px;
-    outline:none;
-    border:none;
-    color: black;
+    line-height: 30px;
     text-align: center;
+    margin: 20px 0;
+    user-select: none;
+    font-weight: bold;
+    color: white;
+    
 }
-.user_interface #loginStatus{
-    line-height: 30px;
-    border-radius: auto;
-    color: black;
+
+.img-box {
+    width: 200px;
+    height: 200px;
+    margin: 20px auto;
+    border-radius: 50%;
+    user-select: none;
+    overflow: hidden;
+    box-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
 }
-#logout{
-    border-radius: auto;
-    line-height: 30px;
-    margin-top:70px;
-    width: 130px;
+
+
+.img-box img {
+    width: 100%;
+    transition: 0.5s;
+}
+
+
+.userLogin,
+.register-form {
+    flex: 1;
+    height: 100%;
+}
+
+
+.title {
+    height: 300px;
+    line-height: 500px;
+
+}
+
+
+.title h1 {
+    text-align: center;
+    color: white;
+    user-select: none;
+    letter-spacing: 5px;
+    text-shadow: 4px 4px 3px rgba(0, 0, 0, .1);
+
+}
+
+
+.userInput {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    
+}
+
+input {
+    width: 350px;
+    height: 40px;
+    margin-bottom: 20px;
+    text-indent: 10px;
+    border: 1px solid #fff;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 120px;
+ 
+    backdrop-filter: blur(10px);
+}
+
+
+
+input:focus::placeholder {
+    opacity: 0;
+}
+
+.Button {
+    display: flex;
+    justify-content: center;
+}
+
+
+button {
+    width: 150px;
     height: 30px;
-    border-radius: 13px;
+    margin: 0 7px;
+    line-height: 30px;
+    border: none;
+    border-radius: 4px;
+    background-color: #69b3f0;
+    color: white;
 }
-#loginStatus{
-    margin-top:90px;
-}
-.fileInterface .uploadFile .deleteFile{
-    background-color: aquamarine;}
 
-    .fileInterface{
-        margin-top: 160px;
-        border-radius: 60px;
-        font-size: 30px;
-        text-align: center;
-    }
+.uploadFile{
+   position: relative;
+}
 
-.button{
-    border-radius: 10px;
-    height: 60px;
-    width: 160px;
+
+
+.Button p {
+    height: 30px;
+    line-height: 30px;
+
+    user-select: none;
+    font-size: 14px;
+    color: black;
+
 }
-.ProjectName{
-    font-size: 30px;
-    text-align: center;
-    margin-top: 60px;
+
+.Button p:hover {
+    cursor: pointer;
+    border-bottom: 1px solid black;
 }
-.button{
-    display: block;
-    margin: 0 auto;
-    width: auto;
+
+label{
+    display:inline-block; width:1200px;
 }
-*/
+.fileInterface{
+    position: relative;
+    width:100% ;
+    height: 100%;
+    margin: 0 200px;
+}
+
+
+.getFile{
+    
+    width:100% ;
+    height: 150px;
+    display: flex;
+     position: relative;
+}
+.getFile #fileButton{
+    height: 30px;
+}
+.uploadFile{
+    width: 100%;
+    height: 150px;
+}
+
+.deleteFile{
+    width: 100%;
+    height: 150px;
+}
+input[type="file" i] {
+    position: right;
+    
+   
+}
+table{
+    width: 100%;
+}

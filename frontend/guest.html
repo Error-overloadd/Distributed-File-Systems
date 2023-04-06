@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
@@ -9,7 +10,7 @@
 </head>
 <body>
   <div class = "button">
-    <button class="userButton" id = "logout" onclick="logout()">logout</button>
+    <button class="userButton" id = "logout" onclick="location.href='./index.html'">Login?</button>
   </div>
 <div class = fileInterface>
   <div class ="getFile">
@@ -22,23 +23,7 @@
     </div>
   </div>
   
-  <div class = "uploadFile">
-    <!-- <label for="uploadFile">Choose file you want to upload to server:</label> -->
-    <input type="file" id="uploadFile" placeholder="Choose file you want to upload to server" name="uploadFile" accept="video/*,image/*" />
-    <button class="fileButton" id = "uploadFileButton" onclick="uploadFile()">upload</button>
-    <div class = "fileStatus" id = "uploadFileStatus">
-    </div>
 
-  </div>
-
-  <div class ="deleteFile">
-    <!-- <label for="deleteFileName">File id want to delete on server:</label> -->
-  
-    <input type="text" id="deleteFileName" placeholder="File id want to delete on server" name="deleteFileName">
-    <button class="fileButton" id = "deleteFileButton" onclick="deleteFile()">delete</button>
-    <div class = "fileStatus" id = "deleteFileStatus">
-    </div>
-  </div>
   
   <div>
     <button class="fileButton" id = "getFileList" onclick="getFileList()">update file list</button>
