@@ -3,11 +3,8 @@ import { MainServer } from "./MainServer";
 import fs from "fs";
 import path from "path";
 import cookieParser from "cookie-parser";
-import { UserDAO_1 } from "./UserDB/db_1";
 import bodyParser from "body-parser";
-import { brotliDecompress } from "zlib";
-import { UserDAO_2 } from "./UserDB/db_2";
-import { UserDAO_3 } from "./UserDB/db_3";
+import { DAOServerLE, leaderElection } from "./Utils/leaderElection";
 
 const bcrypt = require("bcrypt");
 const cors = require("cors");
@@ -35,6 +32,16 @@ declare global {
 }
 //file handling done
 
+//leader election basic setup
+const dsle1 = new DAOServerLE(3,'http://dao_1:5100/', false, false);
+const dsle2 = new DAOServerLE(2,'http://dao_2:5100/', false, false);
+const dsle3 = new DAOServerLE(1,'http://dao_3:5100/', false, false);
+const daoServers = [dsle1,dsle2,dsle3];
+
+const le = new leaderElection(daoServers);
+
+let leaderAdd: string | null = 'http://dao_1:5100/'
+//leader election basic setup done
 const app = express();
 const ms = new MainServer();
 
@@ -201,11 +208,11 @@ app.post("/addFileServer", (req, res) => {
 // AUTH START
 //FORCE TALK TO dao1 by now, fix after dealing with nginx
 import axios from 'axios';
-const dbAdd = 'http://dao_1:5100/'
 //FORCE TALK TO dao1 by now, fixed after dealing with nginx
 app.use("/registerUser",async(req,res)=>{
   try{
-    const response = await axios.post(dbAdd+'registerUser',req.body);
+    leaderAdd = await le.getCurrentLeader();
+    const response = await axios.post(leaderAdd+'registerUser',req.body);
     res.json(response.data);
   }catch(error){
     res.status(500).json({message:"error\n"+error});
@@ -214,7 +221,8 @@ app.use("/registerUser",async(req,res)=>{
 
 app.use("/login",async(req,res)=>{
   try{
-    const response = await axios.post(dbAdd+'login',req.body);
+    leaderAdd = await le.getCurrentLeader();
+    const response = await axios.post(leaderAdd+'login',req.body);
     res.json(response.data);
   }catch(error){
     res.status(500).json({message:"error\n"+error});
@@ -224,12 +232,13 @@ app.use("/login",async(req,res)=>{
 
 app.use("/logout",async(req,res)=>{
   try{
+    leaderAdd = await le.getCurrentLeader();
     console.log("backendlogout:##########################");
     console.log(req.body);
     console.log("##########################");
     console.log(req.body.id);
     console.log("##########################");
-    const response = await axios.post(dbAdd+'logout',req.body);
+    const response = await axios.post(leaderAdd+'logout',req.body);
     res.json(response.data);
   }catch(error){
     res.status(500).json({message:"error\n"+error});
@@ -238,7 +247,8 @@ app.use("/logout",async(req,res)=>{
 
 app.use("/token",async(req,res)=>{
   try{
-    const response = await axios.post(dbAdd+'token',req.body);
+    leaderAdd = await le.getCurrentLeader();
+    const response = await axios.post(leaderAdd+'token',req.body);
     res.json(response.data);
   }catch(error){
     res.status(500).json({message:"error\n"+error});
