@@ -46,7 +46,19 @@ connectQueue().then(() => {
 //FORCE TALK TO dao1 by now, fix after dealing with nginx
 import axios from 'axios';
 import {stringify} from "querystring";
-const dbAdd = 'http://dao_1:5100/'
+import { DAOServerLE, leaderElection } from "./leaderElection";
+
+const dbAdd = "http://nginx:80/dao"
+
+//leader election basic setup
+const dsle1 = new DAOServerLE(3,'http://dao_1:5100/', false, false);
+const dsle2 = new DAOServerLE(2,'http://dao_2:5100/', false, false);
+const dsle3 = new DAOServerLE(1,'http://dao_3:5100/', false, false);
+const daoServers = [dsle1,dsle2,dsle3];
+
+const le = new leaderElection(daoServers);
+
+let leaderAdd: string | null = 'http://dao_1:5100/'
 
 //FORCE TALK TO dao1 by now, fixed after dealing with nginx
 app.get("/checkApi", (req: Request, res: Response) => {
@@ -137,7 +149,8 @@ app.post("/upload", authenticateToken, upload.single("file"), async (req, res) =
   console.log(fileObj);
   console.log("################################")
   try {
-    const response = await axios.post(dbAdd+'upload/',{
+    leaderAdd = await le.getCurrentLeader();
+    const response = await axios.post(leaderAdd+'upload/',{
       name: req.file?.filename,
       size: req.file?.size,
       content_type: req.file?.mimetype,
@@ -204,7 +217,8 @@ app.delete("/deleteFileById/:id", authenticateToken, async(req: Request, res: Re
       });
 
     try {
-      const response = await axios.delete(dbAdd+'deleteFileById/'+id);
+      leaderAdd = await le.getCurrentLeader();
+      const response = await axios.delete(leaderAdd+'deleteFileById/'+id);
       if (response.status === 200){
         res.status(200).send({ message: "Deleted file" });
         sendMessage({task: "DeleteFile", fileObj: fileObj, source: NAME});
