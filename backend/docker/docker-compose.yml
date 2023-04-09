@@ -163,7 +163,7 @@ services:
       build: 
         context: ../../nginx-docker
       ports:
-        - "5000:80"
+        - "80:80"
       depends_on:
       - backendserver_1
       - backendserver_2
