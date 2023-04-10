@@ -5,7 +5,7 @@ const docker = new Docker();
 const intervalTime = 3000; // check every 3 seconds
 
 const { spawn } = require('child_process');
-let dockerDirectory = "\\root\\Distributed-File-Systems\\backend\\docker"
+let dockerDirectory = "/root/Distributed-File-Systems/backend/docker"
 
 setInterval(async () => {
   let dfs_dockers: ContainerInfo[] = []
