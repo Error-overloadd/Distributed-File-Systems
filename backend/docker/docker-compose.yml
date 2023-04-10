@@ -131,7 +131,7 @@ services:
       target: production
     environment:
       - NAME=fileserver_2
-      - ACCESS_URL=fileserver_2:4001
+      - ACCESS_URL=fileserver_2:4000
     depends_on:
       - db_1
       - db_2
@@ -148,7 +148,7 @@ services:
       target: production
     environment:
       - NAME=fileserver_3
-      - ACCESS_URL=fileserver_3:4002
+      - ACCESS_URL=fileserver_3:4000
     depends_on:
       - db_1
       - db_2
@@ -171,15 +171,15 @@ services:
       networks:
       - dfsnetwork
   dao_1:
-    container_name: dfs_dao_1
+    container_name: dao_1
     build: 
       context: ../../dao
       target: production
+    environment:
+      - CONTAINER_NAME=dao_1
+      - ACCESS_URL=dao_1:5100
     ports: 
       - 5100:5100
-    environment:
-      - CONTAINER_NAME=dfs_db_1
-      - ACCESS_URL=dfs_dao_1:5100 
     depends_on:
       - db_1
       - db_2
@@ -188,13 +188,13 @@ services:
     networks:
       - dfsnetwork 
   dao_2:
-    container_name: dfs_dao_2
+    container_name: dao_2
     build: 
       context: ../../dao
       target: production
     environment:
-      - CONTAINER_NAME=dfs_db_2
-            
+      - CONTAINER_NAME=dao_2
+      - ACCESS_URL=dao_2:5100
     ports: 
       - 5200:5100
     depends_on:
@@ -205,13 +205,13 @@ services:
     networks:
       - dfsnetwork
   dao_3:
-    container_name: dfs_dao_3
+    container_name: dao_3
     build: 
       context: ../../dao
       target: production
     environment:
-      - CONTAINER_NAME=dfs_db_3 
-               
+      - CONTAINER_NAME=dao_3
+      - ACCESS_URL=dao_3:5100
     ports: 
       - 5300:5100
     depends_on:
