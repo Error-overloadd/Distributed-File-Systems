@@ -1,10 +1,10 @@
 
 let generalRequest =new axios.create({
-    baseURL:"http://localhost:5000/",
+    baseURL:"http://64.225.105.170/",
     crossDomain: true
 })
 let requestConfig = {
-    baseURL:"http://localhost:5000/",
+    baseURL:"http://64.225.105.170/",
     crossDomain: true
 }
 //unit is in second
