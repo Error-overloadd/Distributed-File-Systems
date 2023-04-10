@@ -1,12 +1,14 @@
 import Docker, { ContainerInfo } from 'dockerode';
+import path from 'path';
 
 
 const docker = new Docker();
 const intervalTime = 3000; // check every 3 seconds
 
 const { spawn } = require('child_process');
-let dockerDirectory = "/root/Distributed-File-Systems/backend/docker"
-
+//let dockerDirectory = "/root/Distributed-File-Systems/backend/docker"
+let dockerDirectory = path.join('root','Distributed-File-Systems','backend','docker')
+console.log(dockerDirectory)
 setInterval(async () => {
   let dfs_dockers: ContainerInfo[] = []
   const containers = await docker.listContainers({all: true});
