@@ -22,7 +22,7 @@ setInterval(async () => {
   console.log(dfs_dockers.length)
   if (dfs_dockers.length < 14 ){
     console.log("Starting containers that are down")
-    
+    console.log(__dirname)
     const command = spawn('docker-compose', ['start'], {
       cwd: dockerDirectory
     });
