@@ -70,7 +70,8 @@ const handleMessage = async (msg: any): Promise<boolean>=> {
 	
 	
 	}
-	 // (Done)
+	 // No need to broadcast anything for acquiring tokens.
+	/*
 	if(msg.task==="token"){
 		try {
 			if(msg.source!="dfs_db_1"){
@@ -110,6 +111,7 @@ const handleMessage = async (msg: any): Promise<boolean>=> {
 			return false;
 		}
 	}
+	*/
 	 // (Done)
 	if(msg.task==="login"){
 		try {
