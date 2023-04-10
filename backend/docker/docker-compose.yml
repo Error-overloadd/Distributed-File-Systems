@@ -16,7 +16,7 @@ services:
         - 15672:15672
     networks:
         - dfsnetwork
-  db_1:
+  dfs_db_1:
     container_name: dfs_db_1
     image: mysql:5.7
     restart: always
@@ -33,7 +33,7 @@ services:
     networks:
       - dfsnetwork
 
-  db_2:
+  dfs_db_2:
     container_name: dfs_db_2
     image: mysql:5.7
     restart: always
@@ -49,7 +49,7 @@ services:
       - "./init:/docker-entrypoint-initdb.d/:ro"    
     networks:
       - dfsnetwork    
-  db_3:
+  dfs_db_3:
     container_name: dfs_db_3
     image: mysql:5.7
     restart: always
@@ -65,7 +65,7 @@ services:
       - "./init:/docker-entrypoint-initdb.d/:ro"
     networks:
       - dfsnetwork    
-  backendserver_1:
+  dfs_backendserver_1:
     container_name: dfs_backend_1
     build: 
       context: ../
@@ -79,7 +79,7 @@ services:
       - 3002:3002
     networks:
       - dfsnetwork
-  backendserver_2:
+  dfs_backendserver_2:
     container_name: dfs_backend_2
     build: 
       context: ../
@@ -93,7 +93,7 @@ services:
       - 3003:3002
     networks:
       - dfsnetwork      
-  backendserver_3:
+  dfs_backendserver_3:
     container_name: dfs_backend_3
     build: 
       context: ../
@@ -107,7 +107,7 @@ services:
       - 3004:3002
     networks:
       - dfsnetwork
-  fileserver_1:
+  dfs_fileserver_1:
     container_name: fileserver_1
     build: 
       context: ../../fileserver
@@ -124,7 +124,7 @@ services:
       - 4000:4000
     networks:
       - dfsnetwork
-  fileserver_2:
+  dfs_fileserver_2:
     container_name: fileserver_2
     build: 
       context: ../../fileserver
@@ -141,7 +141,7 @@ services:
       - 4001:4000
     networks:
       - dfsnetwork                            
-  fileserver_3:
+  dfs_fileserver_3:
     container_name: fileserver_3
     build: 
       context: ../../fileserver
