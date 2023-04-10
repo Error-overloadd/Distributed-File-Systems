@@ -9,7 +9,7 @@ const { spawn } = require('child_process');
 let dockerDirectory = "/root/Distributed-File-Systems/backend/docker"
 
 const required_containers: string[] = [
-'docker-nginx-1', 'fileserver_2',
+'docker_nginx_1', 'fileserver_2',
 'dfs_backend_3',  'dao_1',
 'dfs_backend_2',  'dao_3',
 'fileserver_3',   'dao_2',
