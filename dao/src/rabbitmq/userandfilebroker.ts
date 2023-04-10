@@ -21,7 +21,7 @@ export async function connectQueue() {
 		channel = await connection.createChannel();
 		await channel.assertExchange(DaoExchage, EXCHANGE_TYPE, OPTIONS);
 		// declare the leader election queue
-		const { queue } = await channel.assertQueue(DaoQUEUE, {exclusive: true});
+		const { queue } = await channel.assertQueue(DaoQUEUE);
 		
 		await channel.bindQueue(queue, DaoExchage, ROUTING_KEY);
 	
