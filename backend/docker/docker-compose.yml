@@ -16,7 +16,7 @@ services:
         - 15672:15672
     networks:
         - dfsnetwork
-  db_1:
+  dfs_db_1:
     container_name: dfs_db_1
     image: mysql:5.7
     restart: always
@@ -33,7 +33,7 @@ services:
     networks:
       - dfsnetwork
 
-  db_2:
+  dfs_db_2:
     container_name: dfs_db_2
     image: mysql:5.7
     restart: always
@@ -49,7 +49,7 @@ services:
       - "./init:/docker-entrypoint-initdb.d/:ro"    
     networks:
       - dfsnetwork    
-  db_3:
+  dfs_db_3:
     container_name: dfs_db_3
     image: mysql:5.7
     restart: always
@@ -65,43 +65,43 @@ services:
       - "./init:/docker-entrypoint-initdb.d/:ro"
     networks:
       - dfsnetwork    
-  backendserver_1:
+  dfs_backend_1:
     container_name: dfs_backend_1
     build: 
       context: ../
       target: production
     depends_on:
-      - db_1
-      - db_2
-      - db_3
+      - dfs_db_1
+      - dfs_db_2
+      - dfs_db_3
       - rabbitmq
     ports: 
       - 3002:3002
     networks:
       - dfsnetwork
-  backendserver_2:
+  dfs_backend_2:
     container_name: dfs_backend_2
     build: 
       context: ../
       target: production
     depends_on:
-      - db_1
-      - db_2
-      - db_3
+      - dfs_db_1
+      - dfs_db_2
+      - dfs_db_3
       - rabbitmq
     ports: 
       - 3003:3002
     networks:
       - dfsnetwork      
-  backendserver_3:
+  dfs_backend_3:
     container_name: dfs_backend_3
     build: 
       context: ../
       target: production
     depends_on:
-      - db_1
-      - db_2
-      - db_3
+      - dfs_db_1
+      - dfs_db_2
+      - dfs_db_3
       - rabbitmq
     ports: 
       - 3004:3002
@@ -116,9 +116,9 @@ services:
       - NAME=fileserver_1
       - ACCESS_URL=fileserver_1:4000
     depends_on:
-      - db_1
-      - db_2
-      - db_3
+      - dfs_db_1
+      - dfs_db_2
+      - dfs_db_3
       - rabbitmq
     ports: 
       - 4000:4000
@@ -133,9 +133,9 @@ services:
       - NAME=fileserver_2
       - ACCESS_URL=fileserver_2:4000
     depends_on:
-      - db_1
-      - db_2
-      - db_3
+      - dfs_db_1
+      - dfs_db_2
+      - dfs_db_3
       - rabbitmq
     ports: 
       - 4001:4000
@@ -150,9 +150,9 @@ services:
       - NAME=fileserver_3
       - ACCESS_URL=fileserver_3:4000
     depends_on:
-      - db_1
-      - db_2
-      - db_3
+      - dfs_db_1
+      - dfs_db_2
+      - dfs_db_3
       - rabbitmq
     ports: 
       - 4002:4000
@@ -165,9 +165,9 @@ services:
       ports:
         - "80:80"
       depends_on:
-      - backendserver_1
-      - backendserver_2
-      - backendserver_3
+      - dfs_backend_1
+      - dfs_backend_2
+      - dfs_backend_3
       networks:
       - dfsnetwork
   dao_1:
@@ -182,9 +182,9 @@ services:
     ports: 
       - 5100:5100
     depends_on:
-      - db_1
-      - db_2
-      - db_3
+      - dfs_db_1
+      - dfs_db_2
+      - dfs_db_3
       - rabbitmq    
     networks:
       - dfsnetwork 
@@ -200,9 +200,9 @@ services:
     ports: 
       - 5200:5100
     depends_on:
-      - db_1
-      - db_2
-      - db_3
+      - dfs_db_1
+      - dfs_db_2
+      - dfs_db_3
       - rabbitmq    
     networks:
       - dfsnetwork
@@ -218,9 +218,9 @@ services:
     ports: 
       - 5300:5100
     depends_on:
-      - db_1
-      - db_2
-      - db_3
+      - dfs_db_1
+      - dfs_db_2
+      - dfs_db_3
       - rabbitmq      
     networks:
       - dfsnetwork                  
