@@ -177,6 +177,7 @@ services:
       target: production
     environment:
       - CONTAINER_NAME=dao_1
+      - DB_NAME=dfs_db_1
       - ACCESS_URL=dao_1:5100
     ports: 
       - 5100:5100
@@ -194,6 +195,7 @@ services:
       target: production
     environment:
       - CONTAINER_NAME=dao_2
+      - DB_NAME=dfs_db_2
       - ACCESS_URL=dao_2:5100
     ports: 
       - 5200:5100
@@ -211,6 +213,7 @@ services:
       target: production
     environment:
       - CONTAINER_NAME=dao_3
+      - DB_NAME=dfs_db_3
       - ACCESS_URL=dao_3:5100
     ports: 
       - 5300:5100

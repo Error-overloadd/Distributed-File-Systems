@@ -1,5 +1,5 @@
 var mysql = require('mysql2');
-const containerName = process.env.CONTAINER_NAME
+const containerName = process.env.DB_NAME
 export class FileMetadataServerDAO{
 
     dbConnection = mysql.createConnection({
