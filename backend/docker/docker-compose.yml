@@ -65,7 +65,7 @@ services:
       - "./init:/docker-entrypoint-initdb.d/:ro"
     networks:
       - dfsnetwork    
-  dfs_backendserver_1:
+  dfs_backend_1:
     container_name: dfs_backend_1
     build: 
       context: ../
@@ -79,7 +79,7 @@ services:
       - 3002:3002
     networks:
       - dfsnetwork
-  dfs_backendserver_2:
+  dfs_backend_2:
     container_name: dfs_backend_2
     build: 
       context: ../
@@ -93,7 +93,7 @@ services:
       - 3003:3002
     networks:
       - dfsnetwork      
-  dfs_backendserver_3:
+  dfs_backend_3:
     container_name: dfs_backend_3
     build: 
       context: ../
@@ -107,7 +107,7 @@ services:
       - 3004:3002
     networks:
       - dfsnetwork
-  dfs_fileserver_1:
+  fileserver_1:
     container_name: fileserver_1
     build: 
       context: ../../fileserver
@@ -124,7 +124,7 @@ services:
       - 4000:4000
     networks:
       - dfsnetwork
-  dfs_fileserver_2:
+  fileserver_2:
     container_name: fileserver_2
     build: 
       context: ../../fileserver
@@ -141,7 +141,7 @@ services:
       - 4001:4000
     networks:
       - dfsnetwork                            
-  dfs_fileserver_3:
+  fileserver_3:
     container_name: fileserver_3
     build: 
       context: ../../fileserver
@@ -165,9 +165,9 @@ services:
       ports:
         - "80:80"
       depends_on:
-      - dfs_backendserver_1
-      - dfs_backendserver_2
-      - dfs_backendserver_3
+      - dfs_backend_1
+      - dfs_backend_2
+      - dfs_backend_3
       networks:
       - dfsnetwork
   dao_1:
