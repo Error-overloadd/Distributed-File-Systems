@@ -70,49 +70,7 @@ const handleMessage = async (msg: any): Promise<boolean>=> {
 	
 	
 	}
-	 // No need to broadcast anything for acquiring tokens.
-	/*
-	if(msg.task==="token"){
-		try {
-			if(msg.source!="dfs_db_1"){
 
-				const udb2= new UserDAO();
-				udb2.dbConnection.host="dfs_db_2";
-				udb2.getRefreshToken(msg.userID, (rows: any) => {});
-				const udb3=new UserDAO();
-				udb3.dbConnection.host="dfs_db_3"
-				udb3.getRefreshToken(msg.userID,(row:any)=>{});
-					return true;		
-				}
-	
-				else if(msg.source!="dfs_db_2"){		
-				const udb1= new UserDAO();
-				udb1.dbConnection.host="dfs_db_1";
-				udb1.getRefreshToken(msg.userID,(rows: any) => {});
-				const udb3=new UserDAO();
-				udb3.dbConnection.host="dfs_db_3"
-				udb3.getRefreshToken(msg.userID,(row:any)=>{});
-					return true;		
-				}	
-	
-	
-				else if(msg.source!="dfs_db_3"){		
-					const udb1= new UserDAO();
-					udb1.dbConnection.host="dfs_db_1";
-					udb1.getRefreshToken(msg.userID, (rows: any) => {});
-					const udb2=new UserDAO();
-					udb2.dbConnection.host="dfs_db_2"
-					udb2.getRefreshToken(msg.userID,(row:any)=>{});
-					return true;		
-				}	
-			
-			
-		} catch (ex) {
-			return false;
-		}
-	}
-	*/
-	 // (Done)
 	if(msg.task==="login"){
 		try {
 			const udb= new UserDAO();

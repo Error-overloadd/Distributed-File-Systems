@@ -17,17 +17,6 @@ export class UserDAO_2{
             console.log('connected to user db 2');});
     }
 
-    // the following piece of code extacts the # of rows in the user table (to be used for id generation)
-    // output format: [ { 'COUNT(*)': 4 } ]
-    // how to extract '4' from above?
-    // this.dbConnection.query(`SELECT COUNT(*) FROM user;`, (err: any,rows: any) => {
-    //     if(err) throw err;
-      
-    //     console.log('Data received from Db:');
-    //     console.log(rows);
-    //     callback(rows);
-    //   });
-
 
     end(){
         this.dbConnection.end();
